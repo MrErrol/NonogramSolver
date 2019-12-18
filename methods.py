@@ -25,3 +25,40 @@ def push_block_Origins(hints, blockOrigins, index=0):
         else:
             break
     return sth_changed, blockOrigins
+
+def deduce_new_block_origins(line, hints, blockOrigins):
+    """
+    Function tries to deduce higher than given block origins for a single given line.
+    
+    Returns:
+    --------
+    sth_changed - bool variable
+    blockOrigins - copy of (possibly updated) block origins
+    """
+    blockOrigins = copy(blockOrigins)
+    # Storing information whether function deduced anything new
+    sth_changed = False
+
+    i = 0
+    while i < len(hints):
+        # checking if there is enough space for the block and following empty cell
+        if not -1 in line[blockOrigins[i]:blockOrigins[i]+hints[i]] and not line[blockOrigins[i]+hints[i]] == 1:
+            i += 1
+            continue
+        # Situation when there is empty cell blocking place
+        elif -1 in line[blockOrigins[i]:blockOrigins[i]+hints[i]]:
+            shift = line[blockOrigins[i]:blockOrigins[i]+hints[i]][::-1].index(-1)
+            shift = hints[i] - shift
+            blockOrigins[i] += shift
+            # pushing following blocks origins further away
+            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+            sth_changed = True
+            continue
+        # Situation when there is filled cell just after place for the block
+        else:
+            blockOrigins[i] += 1
+            # pushing following blocks origins further away
+            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+            sth_changed = True
+            continue
+    return sth_changed, blockOrigins
