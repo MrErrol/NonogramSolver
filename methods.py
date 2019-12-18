@@ -62,3 +62,24 @@ def deduce_new_block_origins(line, hints, blockOrigins):
             sth_changed = True
             continue
     return sth_changed, blockOrigins
+
+def deduce_new_block_endings(line, hints, blockEndings):
+    """
+    Function tries to deduce lower than given block endings for a single given line.
+    
+    Returns:
+    --------
+    sth_changed - bool variable
+    blockEndings - copy of (possibly updated) block endings
+    """
+    # Reversing line (extra empty cell removed from the end and put at the end)
+    newline = copy(line[-2::-1] + [-1]) 
+    blockOrigins = [len(newline) - 2 - ending for ending in blockEndings[::-1]]
+    
+    # Solving equivalent problem with reversed line
+    sth_changed, blockOrigins = deduce_new_block_origins(newline, hints[::-1], blockOrigins)
+    
+    # Reversing back obtained solution
+    blockEndings = [len(newline) - 2 - origin for origin in blockOrigins[::-1]]
+    
+    return sth_changed, blockEndings
