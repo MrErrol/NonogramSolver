@@ -31,6 +31,8 @@ line5 = [0, 0, 0, 0, 0, 0, 1, 0, -1]
 line6 = [0, 0, 0, 0, 0, 0, 0, -1, -1]
 line7 = [0, 1, 0, 0, -1, 0, 1, 0, -1]
 line8 = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1]
+line9 = [-1, 0, 0, 1, 0, 0, 1, 0, 1, -1]
+line10 = [-1, 0, 0, 1, 0, 0, 1, 0, 1, 0, -1]
     
 # function behaviour depends on the function push_block_Origins (see tests above)
 def test_deduce_new_block_origins():
@@ -40,6 +42,8 @@ def test_deduce_new_block_origins():
     assert deduce_new_block_origins(line3, hints1, blockOrigins1) == (True,  [1, 3, 5])
     assert deduce_new_block_origins(line4, hints1, blockOrigins1) == (True,  [2, 5, 7])
     assert deduce_new_block_origins(line8, hints2, blockOrigins2) == (True,  [1, 3, 6, 8])
+    assert deduce_new_block_origins(line9, hints1, blockOrigins1) == (True,  [3, 6, 8])
+    assert deduce_new_block_origins(line10, hints1, blockOrigins1) == (True,  [3, 6, 8])
 
 blockEndings1 = [4, 4, 4]
 blockEndings2 = [0, 2, 4]

@@ -38,7 +38,8 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     blockOrigins = copy(blockOrigins)
     # Storing information whether function deduced anything new
     sth_changed = False
-
+    
+    # forward loop
     i = 0
     while i < len(hints):
         # checking if there is enough space for the block and following empty cell
@@ -61,6 +62,29 @@ def deduce_new_block_origins(line, hints, blockOrigins):
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
             continue
+    
+    # backward loop
+    i = len(hints) - 1
+    while i >= 0:
+        # checking if there is a filled cell to pull block origin
+        try:
+            if 1 in line[blockOrigins[i]+hints[i]:blockOrigins[i+1]]:
+                shift = line[blockOrigins[i]+hints[i]:blockOrigins[i+1]][::-1].index(1)
+                shift = blockOrigins[i+1] - blockOrigins[i] - hints[i] - shift
+                blockOrigins[i] += shift
+                # pushing following blocks origins further away
+                dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+                sth_changed = True
+        except:
+            # last block exception
+            if 1 in line[blockOrigins[i]+hints[i]:]:
+                shift = line[blockOrigins[i]+hints[i]:][::-1].index(1)
+                shift = len(line[blockOrigins[i]+hints[i]:]) - shift
+                blockOrigins[i] += shift
+                # pushing following blocks origins further away
+                dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+                sth_changed = True
+        i -= 1
     return sth_changed, blockOrigins
 
 def deduce_new_block_endings(line, hints, blockEndings):
