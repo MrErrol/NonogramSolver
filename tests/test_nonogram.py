@@ -10,8 +10,8 @@ def test_Nonogram_initialisation():
     nono = nonogram.Nonogram("nonograms/small_1.dat")
     assert nono.nRows == 3
     assert nono.nCols == 3
-    assert nono.rows == [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    assert nono.cols == [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    assert nono.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
+    assert nono.cols == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
     assert nono.rowHints == [[2], [2], [1, 1]]
     assert nono.colHints == [[1, 1], [2], [2]]
     assert nono.rowBlockOrigins == [[0], [0], [0, 0]]
