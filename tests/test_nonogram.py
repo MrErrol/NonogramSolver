@@ -1,8 +1,13 @@
+# This part allows to import from main directory
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname('__file__'), '..')))
+
 import pytest
 import nonogram
 
 def test_Nonogram_initialisation():
-    nono = nonogram.Nonogram("nonograms/small_1.dat")
+    nono = nonogram.Nonogram("../nonograms/small_1.dat")
     assert nono.nRows == 3
     assert nono.nCols == 3
     assert nono.rows == [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -16,5 +21,4 @@ def test_Nonogram_initialisation():
     assert nono.undetermind == 9
     assert nono.rowsChanged == []
     assert nono.colsChanged == []
-    assert nono.transposed == False
-    
+    assert nono.transposed == False    
