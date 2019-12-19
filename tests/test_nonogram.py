@@ -6,8 +6,9 @@ sys.path.insert(0, os.path.dirname('__file__'))
 import pytest
 import nonogram
 
+nono = nonogram.Nonogram("nonograms/small_1.dat")
+
 def test_Nonogram_initialisation():
-    nono = nonogram.Nonogram("nonograms/small_1.dat")
     assert nono.nRows == 3
     assert nono.nCols == 3
     assert nono.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
@@ -22,3 +23,12 @@ def test_Nonogram_initialisation():
     assert nono.rowsChanged == []
     assert nono.colsChanged == []
     assert nono.transposed == False    
+
+def test_Nonogram_fill_cell():
+    nono.fill_cell(1, 2,  1)
+    nono.fill_cell(0, 1, -1)
+    assert nono.rows == [[0, -1, 0, -1], [0, 0, 1, -1], [0, 0, 0, -1]]
+    assert nono.cols == [[0, 0, 0, -1], [-1, 0, 0, -1], [0, 1, 0, -1]]
+    assert nono.undetermind == 7
+    with pytest.raises(Exception):
+        nono.fill_cell(1, 2, -1)
