@@ -47,9 +47,16 @@ class Nonogram:
         +1 represents filled cell.
         -1 represents empty cell.
          0 represents yet unknown cell.
+        
+        Return:
+        -------
+        sth_changed - bool variable informing if cell state has been changed
         """
-        if self.rows[row][col] == self.cols[col][row] == 0:
+        if self.rows[row][col] == self.cols[col][row] == value:
+            return False
+        elif self.rows[row][col] == self.cols[col][row] == 0:
             self.rows[row][col] = self.cols[col][row] = value
             self.undetermind -= 1
+            return True
         else:
             raise Exception("Trying to overwrite filled/empty cell!")

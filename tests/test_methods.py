@@ -4,7 +4,8 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
-from methods import push_block_Origins, deduce_new_block_origins, deduce_new_block_endings
+from nonogram import Nonogram
+from methods import push_block_Origins, deduce_new_block_origins, deduce_new_block_endings, fill_row
 
 hints1 = [1, 1, 1]
 hints2 = [1, 2, 1, 3]
@@ -59,3 +60,41 @@ def test_deduce_new_block_endings():
     assert deduce_new_block_endings(line6, hints1, blockEndings3) == (True,  [2, 4, 6])
     assert deduce_new_block_endings(line7, hints1, blockEndings3) == (True,  [1, 3, 6])
     assert deduce_new_block_endings(line8, hints2, blockEndings4) == (True,  [1, 4, 6, 10])
+
+
+nono = Nonogram("nonograms/small_1.dat")
+
+# This test is implemented in test_nonogram.py
+# It is present here just to show initial values of nono
+#def test_Nonogram_initialisation():
+#    assert nono.nRows == 3
+#    assert nono.nCols == 3
+#    assert nono.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
+#    assert nono.cols == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
+#    assert nono.rowHints == [[2], [2], [1, 1]]
+#    assert nono.colHints == [[1, 1], [2], [2]]
+#    assert nono.rowBlockOrigins == [[0], [0], [0, 0]]
+#    assert nono.colBlockOrigins == [[0, 0], [0], [0]]
+#    assert nono.rowBlockEndings == [[2], [2], [2, 2]]
+#    assert nono.colBlockEndings == [[2, 2], [2], [2]]
+#    assert nono.undetermind == 9
+#    assert nono.rowsChanged == []
+#    assert nono.colsChanged == []
+#    assert nono.transposed == False  
+
+def test_fill_row():
+    fill_row(nono, 0)
+    assert nono.rows == [[0, 1, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
+    assert nono.cols == [[0, 0, 0, -1], [1, 0, 0, -1], [0, 0, 0, -1]]
+    assert nono.undetermind == 8
+    nono.rowBlockOrigins[2] = [0, 2]
+    nono.rowBlockEndings[2] = [0, 2]
+    fill_row(nono, 2)
+    assert nono.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
+    assert nono.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
+    assert nono.undetermind == 5
+    
+    
+    
+    
+    

@@ -42,7 +42,8 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     # forward loop
     i = 0
     while i < len(hints):
-        # checking if there is enough space for the block and following empty cell
+        # Situation when there is filled cell just before the block need not te be checked, due to use of push_block_Origins
+        # Checking if there is enough space for the block and following empty cell
         if not -1 in line[blockOrigins[i]:blockOrigins[i]+hints[i]] and not line[blockOrigins[i]+hints[i]] == 1:
             i += 1
             continue
@@ -62,11 +63,11 @@ def deduce_new_block_origins(line, hints, blockOrigins):
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
             continue
-    
+        
     # backward loop
     i = len(hints) - 1
     while i >= 0:
-        # checking if there is a filled cell to pull block origin
+        # Checking if there is a filled cell to pull block origin
         try:
             if 1 in line[blockOrigins[i]+hints[i]:blockOrigins[i+1]]:
                 shift = line[blockOrigins[i]+hints[i]:blockOrigins[i+1]][::-1].index(1)
@@ -107,3 +108,52 @@ def deduce_new_block_endings(line, hints, blockEndings):
     blockEndings = [len(newline) - 2 - origin for origin in blockOrigins[::-1]]
     
     return sth_changed, blockEndings
+
+def fill_row(nono, row):
+    """
+    Function tries to fill/mark as empty each cell in the pointed row based on actual knowledge.
+    Filling in columns should be done by transposing nonogram.
+    
+    Parameters:
+    -----------
+    nono - Nonogram class instance to be updated
+    row - index of a row to be checked
+    
+    Returns:
+    --------
+    sth_changed - bool variable
+    """
+    hints = nono.rowHints[row]
+    endings = nono.rowBlockEndings[row]
+    origins = nono.rowBlockOrigins[row]
+    sth_changed = False
+    
+    # Marking as empty beggining of the line
+    for j in range( origins[0] ):
+        change =  nono.fill_cell(row, j, -1)
+        sth_changed = sth_changed or change
+
+    # Marking as empty end of the line
+    for j in range( endings[-1] + 1 , nono.nCols ):
+        change = nono.fill_cell(row, j, -1)
+        sth_changed = sth_changed or change
+    
+    for i in range(len(hints)):
+        
+        # Filling inside the block
+        if endings[i] - origins[i] < 2*hints[i] - 1 :
+            for j in range( endings[i] + 1 - hints[i] , origins[i] + hints[i] ):
+                change = nono.fill_cell(row, j, 1)
+                sth_changed = sth_changed or change
+        
+        # Marking as empty area between blocks
+        if i + 1 < len(hints):
+            if endings[i] + 1 < origins[i+1] :
+                for j in range( endings[i] + 1 , origins[i+1] ):
+                    change = nono.fill_cell(row, j, -1)
+                    sth_changed = sth_changed or change
+    
+    return sth_changed
+    
+    
+    
