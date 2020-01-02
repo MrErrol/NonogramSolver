@@ -26,6 +26,28 @@ def push_block_Origins(hints, blockOrigins, index=0):
             break
     return sth_changed, blockOrigins
 
+def push_block_Endings(hints, blockEndings, index=0):
+    """
+    Function updates minimal position of block endings starting from NEXT to given block index.
+    Function uses only the simplest distance condition.
+    It does NOT check the row/column state!
+    
+    Returns
+    -------
+    sth_changed - bool variable
+    blockOrigins - copy of (possibly updated) block origins
+    """
+    # Reversing line (extra empty cell removed from the end and put at the end)
+    blockOrigins = [blockEndings[-1] - ending for ending in blockEndings[::-1]]
+    
+    # Solving equivalent problem with reversed line
+    sth_changed, blockOrigins = push_block_Origins(hints[::-1], blockOrigins, index=index)
+    
+    # Reversing back obtained solution
+    blockEndings = [blockEndings[-1] - origin for origin in blockOrigins[::-1]]
+    
+    return sth_changed, blockEndings
+
 def deduce_new_block_origins(line, hints, blockOrigins):
     """
     Function tries to deduce higher than given block origins for a single given line.
