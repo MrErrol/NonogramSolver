@@ -12,8 +12,8 @@ class Nonogram:
         self.rowBlockEndings = [[self.nCols - 1]*len(hints) for hints in self.rowHints]
         self.colBlockEndings = [[self.nRows - 1]*len(hints) for hints in self.colHints]
         self.undetermind = self.nRows*self.nCols
-        self.rowsChanged = [] # Probably will be changed
-        self.colsChanged = [] # Probably will be changed
+        self.rowsChanged = set(range(self.nRows))
+        self.colsChanged = set(range(self.nCols))
         self.transposed = False
     
     def read_nonogram_from_file(self, filename):

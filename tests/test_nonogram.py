@@ -20,8 +20,8 @@ def test_Nonogram_initialisation():
     assert nono.rowBlockEndings == [[2], [2], [2, 2]]
     assert nono.colBlockEndings == [[2, 2], [2], [2]]
     assert nono.undetermind == 9
-    assert nono.rowsChanged == []
-    assert nono.colsChanged == []
+    assert nono.rowsChanged == {0, 1, 2}
+    assert nono.colsChanged == {0, 1, 2}
     assert nono.transposed == False    
 
 def test_Nonogram_fill_cell():
