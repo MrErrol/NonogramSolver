@@ -41,6 +41,15 @@ class Nonogram:
             if line == '':
                 break
     
+    def transpose(self):
+        self.rowHints, self.colHints = self.colHints, self.rowHints
+        self.nRows, self.nCols = self.nCols, self.nRows
+        self.rows, self.cols = self.cols, self.rows
+        self.rowBlockOrigins, self.colBlockOrigins = self.colBlockOrigins, self.rowBlockOrigins
+        self.rowBlockEndings, self.colBlockEndings = self.colBlockEndings, self.rowBlockEndings
+        self.rowsChanged, self.colsChanged = self.colsChanged, self.rowsChanged
+        self.transposed = not self.transposed
+    
     def fill_cell(self, row, col, value):
         """
         Fills the cell at position [row][col] with value.
