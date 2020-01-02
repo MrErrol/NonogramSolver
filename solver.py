@@ -1,5 +1,6 @@
 from nonogram import Nonogram
 import methods
+from visualizers.simple_visualizer import just_plot_it
 from copy import copy
 from sys import argv
 
@@ -51,3 +52,5 @@ while nono.undetermind:
 
 if not nono.undetermind:
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
+
+just_plot_it(nono)
