@@ -65,6 +65,8 @@ class Nonogram:
             return False
         elif self.rows[row][col] == self.cols[col][row] == 0:
             self.rows[row][col] = self.cols[col][row] = value
+            self.rowsChanged.add(row)
+            self.colsChanged.add(col)
             self.undetermind -= 1
             return True
         else:

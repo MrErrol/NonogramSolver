@@ -43,10 +43,14 @@ def test_Nonogram_transpose():
     nono.transpose()
     
 def test_Nonogram_fill_cell():
+    nono.rowsChanged = set()
+    nono.colsChanged = set()
     nono.fill_cell(1, 2,  1)
     nono.fill_cell(0, 1, -1)
     assert nono.rows == [[0, -1, 0, -1], [0, 0, 1, -1], [0, 0, 0, -1]]
     assert nono.cols == [[0, 0, 0, -1], [-1, 0, 0, -1], [0, 1, 0, -1]]
+    assert nono.rowsChanged == {0, 1}
+    assert nono.colsChanged == {1, 2}
     assert nono.undetermind == 7
     with pytest.raises(Exception):
         nono.fill_cell(1, 2, -1)
