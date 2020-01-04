@@ -4,12 +4,12 @@ import methods
 from copy import copy
 from sys import argv
 
-if len(argv) == 1:
-    print("Usage: solver.py nonogram_filename")
-    quit()
-else:
+try:
     nono = Nonogram(argv[1])
-
+except:
+    print("Usage: solver.py nonogram_file [interactive]")
+    quit()
+    
 try:
     interactive = argv[2]
     nono.plot(interactive=interactive)
