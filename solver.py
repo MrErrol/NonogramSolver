@@ -1,6 +1,6 @@
 from nonogram import Nonogram
 import methods
-from visualizers.simple_visualizer import just_plot_it
+#from visualizers.simple_visualizer import just_plot_it
 from copy import copy
 from sys import argv
 
@@ -10,12 +10,18 @@ if len(argv) == 1:
 else:
     nono = Nonogram(argv[1])
 
+try:
+    interactive = argv[2]
+    nono.plot(interactive=interactive)
+except:
+    interactive = False
+
 # Simple beggining, gives nice block limits initialization and usually even fills some cells
 for i in range(2):
     for row in range(nono.nRows):
         sth_changed, nono.rowBlockOrigins[row] = methods.push_block_Origins(nono.rowHints[row], nono.rowBlockOrigins[row], index=0)
         sth_changed, nono.rowBlockEndings[row] = methods.push_block_Endings(nono.rowHints[row], nono.rowBlockEndings[row], index=0)
-        methods.fill_row(nono, row)
+        methods.fill_row(nono, row, interactive=interactive)
     nono.transpose()
 
 cycle = 0 
@@ -44,7 +50,7 @@ while nono.undetermind:
                 nono.rowBlockEndings[row] = endings
                 nono.rowsChanged.add(row)
             if sth_changed_1 or sth_changed_2:
-                methods.fill_row(nono, row)
+                methods.fill_row(nono, row, interactive=interactive)
         nono.transpose()
         rowsChanged, colsChanged = colsChanged, rowsChanged
         
@@ -53,4 +59,7 @@ while nono.undetermind:
 if not nono.undetermind:
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
 
-just_plot_it(nono)
+if not interactive:
+    nono.plot()
+else:
+    nono.end_iplot()

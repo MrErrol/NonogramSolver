@@ -131,7 +131,7 @@ def deduce_new_block_endings(line, hints, blockEndings):
     
     return sth_changed, blockEndings
 
-def fill_row(nono, row):
+def fill_row(nono, row, interactive=False):
     """
     Function tries to fill/mark as empty each cell in the pointed row based on actual knowledge.
     Filling in columns should be done by transposing nonogram.
@@ -174,6 +174,9 @@ def fill_row(nono, row):
                 for j in range( endings[i] + 1 , origins[i+1] ):
                     change = nono.fill_cell(row, j, -1)
                     sth_changed = sth_changed or change
+    
+    if interactive and sth_changed:
+        nono.update_plot()
     
     return sth_changed
     

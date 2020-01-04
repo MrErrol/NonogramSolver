@@ -1,3 +1,5 @@
+from visualizers.visualizers import plot, update_plot, end_iplot
+
 class Nonogram:
     def __init__(self, filename):
         self.rowHints = []
@@ -15,6 +17,8 @@ class Nonogram:
         self.rowsChanged = set(range(self.nRows))
         self.colsChanged = set(range(self.nCols))
         self.transposed = False
+        self.fig = None
+        self.im = None
     
     def read_nonogram_from_file(self, filename):
         """
@@ -49,6 +53,40 @@ class Nonogram:
         self.rowBlockEndings, self.colBlockEndings = self.colBlockEndings, self.rowBlockEndings
         self.rowsChanged, self.colsChanged = self.colsChanged, self.rowsChanged
         self.transposed = not self.transposed
+    
+    def get_picture_data(self):
+        """
+        The function does not modify Nonogram.
+        Strips empty cells from row endings and transposes obtained data if nonogram is transposed.
+        
+        Returns:
+        --------
+        data - matrix (list of lists) of nonogram cell values        
+        """
+        if not self.transposed:
+            data = [row[:-1] for row in self.rows]
+        else:
+            data = [col[:-1] for col in self.cols]
+        return data
+    
+    def plot(self, interactive=False):
+        """
+        Calls plotting function and stores obtained figure and image.
+        """
+        data = self.get_picture_data()
+        self.fig, self.im = plot(data, interactive=interactive)
+        
+    def update_plot(self):
+        """
+        Calls function that updates plot.
+        Figure and image are updated by it.
+        """
+        data = self.get_picture_data()
+        update_plot(data, self.fig, self.im)
+    
+    def end_iplot(self):
+        self.update_plot()
+        end_iplot()
     
     def fill_cell(self, row, col, value):
         """
