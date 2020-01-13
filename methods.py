@@ -1,7 +1,7 @@
 from nonogram import Nonogram
 from copy import copy
 
-def push_block_Origins(hints, blockOrigins, index=0):
+def push_block_Origins(hints, blockOrigins, index=0, exh=False):
     """
     Function updates minimal position of block origins starting from NEXT to given block index.
     Function uses only the simplest distance condition.
@@ -21,12 +21,13 @@ def push_block_Origins(hints, blockOrigins, index=0):
         if blockOrigins[i+1] < blockOrigins[i] + hints[i] + 1:
             blockOrigins[i+1] = blockOrigins[i] + hints[i] + 1
             sth_changed = True
-            i += 1
         else:
-            break
+            if not exh:
+                break
+        i += 1
     return sth_changed, blockOrigins
 
-def push_block_Endings(hints, blockEndings, index=0):
+def push_block_Endings(hints, blockEndings, index=0, exh=False):
     """
     Function updates minimal position of block endings starting from NEXT to given block index.
     Function uses only the simplest distance condition.
@@ -41,7 +42,7 @@ def push_block_Endings(hints, blockEndings, index=0):
     blockOrigins = [blockEndings[-1] - ending for ending in blockEndings[::-1]]
     
     # Solving equivalent problem with reversed line
-    sth_changed, blockOrigins = push_block_Origins(hints[::-1], blockOrigins, index=index)
+    sth_changed, blockOrigins = push_block_Origins(hints[::-1], blockOrigins, index=index, exh=exh)
     
     # Reversing back obtained solution
     blockEndings = [blockEndings[-1] - origin for origin in blockOrigins[::-1]]
@@ -276,9 +277,14 @@ def ivestigate_row_with_assumptions(nonogram, row):
     # single forward-backward loop
     for i in range(2): 
         # investigating firsts (lasts) empty cells in the row
-        for cell in empty_cells:
-            if not make_assumption(nonogram, row, cell):
-                nonogram.fill_cell(row, cell, -1)
+        for col in empty_cells:
+            if not make_assumption(nonogram, row, col):
+                nonogram.fill_cell(row, col, -1)
+                # Use of pushes after fill_cell is required by deducing functions
+                dummy, nonogram.rowBlockOrigins[row] = push_block_Origins(nonogram.rowHints[row], nonogram.rowBlockOrigins[row], exh=True)
+                dummy, nonogram.rowBlockEndings[row] = push_block_Endings(nonogram.rowHints[row], nonogram.rowBlockEndings[row], exh=True)
+                dummy, nonogram.colBlockOrigins[col] = push_block_Origins(nonogram.colHints[col], nonogram.colBlockOrigins[col], exh=True)
+                dummy, nonogram.colBlockEndings[col] = push_block_Endings(nonogram.colHints[col], nonogram.colBlockEndings[col], exh=True)
                 sth_changed = True
             else:
                 break
@@ -307,8 +313,8 @@ def search_for_assumptions(nonogram, searching_depth=1):
             # loop over rows truncated by searching_depth
             for row in rows:
                 if depth <= searching_depth:
-                    sth_changed_loc = ivestigate_row_with_assumptions(nonogram, row)
-                    sth_changed = sth_changed or sth_changed_loc
+                    if ivestigate_row_with_assumptions(nonogram, row):
+                        sth_changed = True
                     depth += 1
                 else:
                     break
