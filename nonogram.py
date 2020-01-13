@@ -47,6 +47,14 @@ class Nonogram:
                         self.colHints.append(list(map(int, line.split(' '))))
             if line == '':
                 break
+        # simple check of self-consistency
+        # usually allows to smoke-gun typing error
+        npixR = sum([sum(row) for row in self.rowHints]) # number of filled cells in rows
+        npixC = sum([sum(col) for col in self.colHints]) # number of filled cells in columns
+        if not npixR == npixC:
+            print('Input nonogram is not self consistent.')
+            print('The sum of filled cells in rows is different than in columns.')
+            quit()
     
     def transpose(self):
         self.rowHints, self.colHints = self.colHints, self.rowHints
@@ -134,4 +142,4 @@ class Nonogram:
             self.undetermind -= 1
             return True
         else:
-            raise Exception("Trying to overwrite filled/empty cell!")
+            raise Exception("Trying to overwrite filled/empty cell!"+' '+str(row)+' '+str(col))
