@@ -15,6 +15,11 @@ try:
     nono.plot(interactive=interactive)
 except:
     interactive = False
+    
+try:
+    searching_depth = argv[3]
+except:
+    searching_depth = 2
 
 # Simple beggining, gives nice block limits initialization and usually even fills some cells
 for i in range(2):
@@ -25,12 +30,15 @@ for i in range(2):
     nono.transpose()
 
 cycle = 0 
+# main loop
 while nono.undetermind:
     # Check if anything improved
     if nono.rowsChanged == set() and nono.colsChanged == set():
-        print("Failed to solve Nonogram.")
-        print("Cycle : " + str(cycle))
-        break
+        # Calling advanced, more costly function
+        if not methods.search_for_assumptions(nono, searching_depth=searching_depth):
+            print("Failed to solve Nonogram.")
+            print("Cycle : " + str(cycle))
+            break
     
     rowsChanged = copy(nono.rowsChanged)
     colsChanged = copy(nono.colsChanged)
