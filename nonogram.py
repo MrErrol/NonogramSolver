@@ -78,6 +78,7 @@ class Nonogram:
         nono.transposed = copy(self.transposed)
         nono.fig = None
         nono.im = None
+        return nono
     
     def get_picture_data(self):
         """
