@@ -257,3 +257,65 @@ def make_assumption(nonogram, row, col):
     
     # No internal discrepancy found
     return True
+
+def ivestigate_row_with_assumptions(nonogram, row):
+    """
+    Function tries to cross-out cells at the beggining and at the end of the row by making assumptions. If possible updates the state of nonogram.
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    # gives indices of empty cells in the row
+    def get_empty_cells(nonogram, row):
+        return [index for index, value in enumerate(nonogram.rows[row]) if value == 0]
+    
+    sth_changed = False
+    empty_cells = get_empty_cells(nonogram, row)
+    
+    # single forward-backward loop
+    for i in range(2): 
+        # investigating firsts (lasts) empty cells in the row
+        for cell in empty_cells:
+            if not make_assumption(nonogram, row, cell):
+                nonogram.fill_cell(row, cell, -1)
+                sth_changed = True
+            else:
+                break
+        # updating and reversing the list to make backward loop
+        empty_cells = get_empty_cells(nonogram, row)[::-1]
+    
+    return sth_changed
+
+def search_for_assumptions(nonogram, searching_depth=1):
+    """
+    Function search endings of first searching_depth lines from each border for making assumptions. If possible updates the state of nonogram.
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+    
+    # loop over nonogram dimensions (rows and columns)
+    for dim in range(2):
+        # Finding non-filled rows in nonogram
+        rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
+        # up-down loop - check first <searching_depth> rows (columns) from up and down (left and right)
+        for direction in range(2):
+            depth = 1
+            # loop over rows truncated by searching_depth
+            for row in rows:
+                if depth <= searching_depth:
+                    sth_changed_loc = ivestigate_row_with_assumptions(nonogram, row)
+                    sth_changed = sth_changed or sth_changed_loc
+                    depth += 1
+                else:
+                    break
+            # reverse rows list for up-down loop
+            rows = rows[::-1]
+        # transposing nonogram for dimension loop
+        nonogram.transpose()
+    
+    return sth_changed
+    
