@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
 from nonogram import Nonogram
-from methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row, check_if_line_is_fillable
+from methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row, check_if_line_is_fillable, make_assumption
 
 hints1 = [1, 1, 1]
 hints2 = [1, 2, 1, 3]
@@ -118,3 +118,13 @@ def test_check_if_line_is_fillable():
     assert check_if_line_is_fillable(f_line_0, [3], [1], [3]) == True
     assert check_if_line_is_fillable(f_line_0, [3], [2], [3]) == False
     assert check_if_line_is_fillable(f_line_2, [1, 1], [0, 3], [1, 4]) == False
+
+nono_assume = Nonogram("tests/nono_test_1.dat")
+    
+def test_make_assumption():
+    #make_assumption(nonogram, row, col)
+    assert make_assumption(nono_assume, 3, 0) == False
+    assert make_assumption(nono_assume, 3, 1) == False
+    assert make_assumption(nono_assume, 3, 2) == True
+    assert make_assumption(nono_assume, 3, 6) == False
+    

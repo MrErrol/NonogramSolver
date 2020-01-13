@@ -223,33 +223,35 @@ def make_assumption(nonogram, row, col):
     nono.rowsChanged = set()
     nono.colsChanged = set()
     # Our assumption
-    nono.fill_cell(row, col, -1)
+    nono.fill_cell(row, col, 1)
     
     # Loop determining the analysis depth
     for checking_depth in range(2):
         # Loop over Nonogram dimensions (rows and columns)
         for i in range(2):
             # Loop over previously changed rows (or columns)
-            for row in nono.rowsChanged():
-                sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints, nono.rowBlockOrigins[row])
-                sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints, nono.rowBlockEndings[row])
+            for row in nono.rowsChanged:
+                try:
+                    sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row])
+                    sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints[row], nono.rowBlockEndings[row])
+                except:
+                    return False
                 if sth_changed1 or sth_changed2 :
-                    if checking_depth == 0 :
+                    nono.rowBlockOrigins[row] = blockOrigins
+                    nono.rowBlockEndings[row] = blockEndings
+                    try:
                         fill_row(nono, row)
-                    else:
-                        try:
-                            fill_row(nono, row)
-                        except:
-                            return False
+                    except:
+                        return False
             nono.transpose()
     
     # Loops verifying all modified rows
-    for row in nono.rowsChanged():
+    for row in nono.rowsChanged:
         if not check_if_line_is_fillable(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row], nono.rowBlockEndings[row]):
             return False
         
     # Loops verifying all modified columns
-    for col in nono.colsChanged():
+    for col in nono.colsChanged:
         if not check_if_line_is_fillable(nono.cols[col], nono.colHints[col], nono.colBlockOrigins[col], nono.colBlockEndings[col]):
             return False
     
