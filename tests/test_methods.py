@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
 from nonogram import Nonogram
-from methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row
+from methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row, check_if_line_is_fillable
 
 hints1 = [1, 1, 1]
 hints2 = [1, 2, 1, 3]
@@ -107,8 +107,14 @@ def test_fill_row():
     assert nono.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
     assert nono.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
     assert nono.undetermind == 5
+
+f_line_0 = [0, 0, 0, 0, 0, -1]  
+f_line_1 = [1, 0, 0, 0, 1, -1]    
+f_line_2 = [0, 0, 1, 0, 0, -1]    
     
-    
-    
-    
-    
+def test_check_if_line_is_fillable():
+    assert check_if_line_is_fillable(f_line_1, [3], [0], [3]) == False
+    assert check_if_line_is_fillable(f_line_1, [3], [1], [4]) == False
+    assert check_if_line_is_fillable(f_line_0, [3], [1], [3]) == True
+    assert check_if_line_is_fillable(f_line_0, [3], [2], [3]) == False
+    assert check_if_line_is_fillable(f_line_2, [1, 1], [0, 3], [1, 4]) == False

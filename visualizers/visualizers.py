@@ -15,10 +15,10 @@ def plot(data, interactive=False):
         fig = plt.figure()
         fig.canvas.draw()
         im = plt.imshow(data, cmap='binary', origin='upper', vmin=-1, vmax=1, \
-                        extent=( 0.5 , 0.5 + len(data), 0.5 , 0.5 + len(data[0]) ) )
+                        extent=( 0.5 , 0.5 + len(data[0]), 0.5 , 0.5 + len(data) ) )
     else:
         fig = plt.figure()
         im = plt.imshow(data, cmap='binary', origin='upper', vmin=-1, vmax=1, \
-                        extent=( 0.5 , 0.5 + len(data), 0.5 , 0.5 + len(data[0]) ) )
+                        extent=( 0.5 , 0.5 + len(data[0]), 0.5 , 0.5 + len(data) ) )
         plt.show()
     return fig, im

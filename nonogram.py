@@ -1,4 +1,5 @@
 from visualizers.visualizers import plot, update_plot, end_iplot
+from copy import copy
 
 class Nonogram:
     def __init__(self, filename):
@@ -24,6 +25,8 @@ class Nonogram:
         """
         Fills the rowHints and colHints with data read from file.
         """
+        if filename == None:
+            return 0
         file = open(filename, 'r')
         while True:
             line = file.readline()
@@ -53,6 +56,28 @@ class Nonogram:
         self.rowBlockEndings, self.colBlockEndings = self.colBlockEndings, self.rowBlockEndings
         self.rowsChanged, self.colsChanged = self.colsChanged, self.rowsChanged
         self.transposed = not self.transposed
+    
+    def copy(self):
+        """
+        Method that copies Nonogram. It does not copy interactive plot references.
+        """
+        nono = Nonogram(None)
+        nono.rowHints = [[item for item in row] for row in self.rowHints]
+        nono.colHints = [[item for item in row] for row in self.colHints]
+        nono.nRows = copy(self.nRows)
+        nono.nCols = copy(self.nCols)
+        nono.rows = [[item for item in row] for row in self.rows]
+        nono.cols = [[item for item in row] for row in self.cols]
+        nono.rowBlockOrigins = [[item for item in row] for row in self.rowBlockOrigins]
+        nono.colBlockOrigins = [[item for item in row] for row in self.colBlockOrigins]
+        nono.rowBlockEndings = [[item for item in row] for row in self.rowBlockEndings]
+        nono.colBlockEndings = [[item for item in row] for row in self.colBlockEndings]
+        nono.undetermind = copy(self.undetermind)
+        nono.rowsChanged = copy(self.rowsChanged)
+        nono.colsChanged = copy(self.colsChanged)
+        nono.transposed = copy(self.transposed)
+        nono.fig = None
+        nono.im = None
     
     def get_picture_data(self):
         """

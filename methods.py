@@ -180,6 +180,36 @@ def fill_row(nono, row, interactive=False):
     
     return sth_changed
     
+def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
+    """
+    Function performs few simple checks if it is possible to fill the line according to actual knowledge. It may misclassify unfillable row as fillable, but not fillable as unfillable.
+    
+    Returns:
+    --------
+    bool - bool variable answearing the question whether line is fillable
+    """
+    # Check if there are filled cells before the first block
+    if 1 in line[:blockOrigins[0]]:
+        return False
+    # Check if there are filled cells after the last block
+    if 1 in line[blockEndings[-1]+1:]:
+        return False
+    # loop over blocks
+    for i in range(len(hints)):
+        # check if there is enough space for a block
+        if blockEndings[i] - blockOrigins[i] + 1 < hints[i] :
+            return False
+        # check if there are filled cells between blocks
+        try:
+            if blockEndings[i] + 1 < blockOrigins[i+1] :
+                if 1 in line[ blockEndings[i] + 1 : blockOrigins[i+1] ]:
+                    return False
+        except:
+            # Last block exception
+            pass
+    # No problems found
+    return True
+
 def make_assumption(nonogram, row, col):
     """
     The function makes assumption that cell at position (row, col) is filled and tries to find discrepancy.
@@ -215,12 +245,12 @@ def make_assumption(nonogram, row, col):
     
     # Loops verifying all modified rows
     for row in nono.rowsChanged():
-        if not verified(): # to be changed
+        if not check_if_line_is_fillable(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row], nono.rowBlockEndings[row]):
             return False
         
     # Loops verifying all modified columns
     for col in nono.colsChanged():
-        if not verified(): # to be changed
+        if not check_if_line_is_fillable(nono.cols[col], nono.colHints[col], nono.colBlockOrigins[col], nono.colBlockEndings[col]):
             return False
     
     # No internal discrepancy found
