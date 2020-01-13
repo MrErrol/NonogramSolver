@@ -180,5 +180,48 @@ def fill_row(nono, row, interactive=False):
     
     return sth_changed
     
+def make_assumption(nonogram, row, col):
+    """
+    The function makes assumption that cell at position (row, col) is filled and tries to find discrepancy.
+    The function does not change nonogram as it work on it's copy.
     
+    Returns:
+    --------
+    bool - bool variable answearing the question if the cell may be filled
+    """
+    nono = nonogram.copy()
+    nono.rowsChanged = set()
+    nono.colsChanged = set()
+    # Our assumption
+    nono.fill_cell(row, col, -1)
     
+    # Loop determining the analysis depth
+    for checking_depth in range(2):
+        # Loop over Nonogram dimensions (rows and columns)
+        for i in range(2):
+            # Loop over previously changed rows (or columns)
+            for row in nono.rowsChanged():
+                sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints, nono.rowBlockOrigins[row])
+                sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints, nono.rowBlockEndings[row])
+                if sth_changed1 or sth_changed2 :
+                    if checking_depth == 0 :
+                        fill_row(nono, row)
+                    else:
+                        try:
+                            fill_row(nono, row)
+                        except:
+                            return False
+            nono.transpose()
+    
+    # Loops verifying all modified rows
+    for row in nono.rowsChanged():
+        if not verified(): # to be changed
+            return False
+        
+    # Loops verifying all modified columns
+    for col in nono.colsChanged():
+        if not verified(): # to be changed
+            return False
+    
+    # No internal discrepancy found
+    return True
