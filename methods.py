@@ -180,7 +180,86 @@ def fill_row(nono, row, interactive=False):
         nono.update_plot()
     
     return sth_changed
-    
+
+def find_min_block_length(nonogram, row, cell_position):
+    """
+    Function return minimal length of the block that may cover cell at cell_position.
+
+    Returns:
+    --------
+    min_length - minimal length of the block that may cover chosen cell
+    """
+    # indices of blocks that may cover chosen position
+    indices_o = [index for index, value in enumerate(nonogram.rowBlockOrigins[row]) if value <= cell_position]
+    indices_e = [index for index, value in enumerate(nonogram.rowBlockEndings[row]) if value >= cell_position]
+    # intersection of both sets
+    indices = set(indices_o) & set(indices_e)
+    block_lengths = [nonogram.rowHints[row][index] for index in indices]
+    return min(block_lengths)
+
+def analyze_multi_block_relations_in_row(nonogram, row):
+    """
+    Function analyzes regions of overlapping blocks in the row trying to fill some cells.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+
+    # filled line case
+    if not 0 in nonogram.rows[row]:
+        return False
+
+    # loop over cells in row
+    for col in range(1, len(nonogram.rows[row]) - 1 ):
+
+        if nonogram.rows[row][col] == 1 and nonogram.rows[row][col+1] == 0:
+            # leeway stores a number of fillable cells to the left
+            try:
+                leeway = nonogram.rows[row][:col][::-1].index(-1)
+            except:
+                leeway = len(nonogram.rows[row][:col])
+            block_length = find_min_block_length(nonogram, row, col)
+            # filling cells enforced by minimal block length
+            for position in range( col + 1, col + block_length - leeway ):
+                nonogram.fill_cell(row, position, 1)
+                sth_changed = True
+
+        if nonogram.rows[row][col] == 1 and nonogram.rows[row][col-1] == 0:
+            # leeway stores a number of fillable cells to the right
+            try:
+                leeway = nonogram.rows[row][col+1:].index(-1)
+            except:
+                leeway = len(nonogram.rows[row][col+1:])
+            block_length = find_min_block_length(nonogram, row, col)
+            # filling cells enforced by minimal block length
+            for position in range(col + leeway + 1 - block_length , col ):
+                nonogram.fill_cell(row, position, 1)
+                sth_changed = True
+
+    return sth_changed
+
+def analyze_multi_block_relations(nonogram):
+    """
+    Function analyzes regions of overlapping blocks in the whole nonogram trying to fill some cells.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+
+    # loop over nonogram dimensions (rows and columns)
+    for i in range(2):
+        # loop over nonogram rows (columns)
+        for row in range(len(nonogram.rows)):
+            sth_changed_loc = analyze_multi_block_relations_in_row(nonogram, row)
+            sth_changed = sth_changed or sth_changed_loc
+        nonogram.transpose()
+
+    return sth_changed
+
 def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     """
     Function performs few simple checks if it is possible to fill the line according to actual knowledge. It may misclassify unfillable row as fillable, but not fillable as unfillable.

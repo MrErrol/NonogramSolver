@@ -35,6 +35,11 @@ while nono.undetermind:
     # Check if anything improved
     if nono.rowsChanged == set() and nono.colsChanged == set():
         # Calling advanced, more costly function
+        methods.analyze_multi_block_relations(nono)
+
+    # Check if anything improved
+    if nono.rowsChanged == set() and nono.colsChanged == set():
+        # Calling advanced, even more costly function
         if not methods.search_for_assumptions(nono, searching_depth=searching_depth):
             print("Failed to solve Nonogram.")
             print("Cycle : " + str(cycle))
