@@ -21,6 +21,9 @@ try:
 except:
     searching_depth = 2
 
+from time import time
+t0 = time()
+
 # Simple beggining, gives nice block limits initialization and usually even fills some cells
 for i in range(2):
     for row in range(nono.nRows):
@@ -71,6 +74,10 @@ while nono.undetermind:
 
 if not nono.undetermind:
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
+
+t1 = time()
+
+print("Solved in : "+str(t1-t0)+'s')
 
 if not interactive:
     nono.plot()

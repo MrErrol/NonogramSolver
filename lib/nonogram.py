@@ -1,10 +1,14 @@
-from visualizers.visualizers import plot, update_plot, end_iplot
+# This part allows to import from main directory
+import os
+import sys
+sys.path.insert(0, os.path.dirname('__file__'))
+
+from utils.visualizers import plot, update_plot, end_iplot
+from utils.read_from_file import find_beggining_of_data, read_lines
 from copy import copy
 
 class Nonogram:
     def __init__(self, filename):
-        self.rowHints = []
-        self.colHints = []
         self.read_nonogram_from_file(filename)
         self.nRows = len(self.rowHints)
         self.nCols = len(self.colHints)
@@ -25,28 +29,15 @@ class Nonogram:
         """
         Fills the rowHints and colHints with data read from file.
         """
-        if filename == None:
+        if filename == None: 
+            self.rowHints = []
+            self.colHints = []
             return 0
         file = open(filename, 'r')
-        while True:
-            line = file.readline()
-            if line[:5] == "ROWS:":
-                while True:
-                    line = file.readline()
-                    if line[:8] == "COLUMNS:":
-                        break
-                    elif line == '':
-                        raise Exception("Incorrect data file.")
-                    else:
-                        self.rowHints.append(list(map(int, line.split(' '))))
-                while True:
-                    line = file.readline()
-                    if line == '':
-                        break
-                    else:
-                        self.colHints.append(list(map(int, line.split(' '))))
-            if line == '':
-                break
+        find_beggining_of_data(file)
+        self.rowHints = read_lines(file, stop="COLUMNS:")
+        self.colHints = read_lines(file, stop="")
+        
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
         npixR = sum([sum(row) for row in self.rowHints]) # number of filled cells in rows

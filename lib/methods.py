@@ -1,4 +1,4 @@
-from nonogram import Nonogram
+from lib.nonogram import Nonogram
 from copy import copy
 
 def push_block_Origins(hints, blockOrigins, index=0, exh=False):

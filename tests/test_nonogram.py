@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
-import nonogram
+import lib.nonogram as nonogram
 
 nono = nonogram.Nonogram("nonograms/small_1.dat")
 

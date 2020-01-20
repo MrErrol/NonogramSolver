@@ -4,10 +4,10 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
-from nonogram import Nonogram
-from methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row
-from methods import find_min_block_length, analyze_multi_block_relations_in_row, analyze_multi_block_relations
-from methods import check_if_line_is_fillable, make_assumption, ivestigate_row_with_assumptions, search_for_assumptions
+from lib.nonogram import Nonogram
+from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row
+from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row, analyze_multi_block_relations
+from lib.methods import check_if_line_is_fillable, make_assumption, ivestigate_row_with_assumptions, search_for_assumptions
 
 hints1 = [1, 1, 1]
 hints2 = [1, 2, 1, 3]
