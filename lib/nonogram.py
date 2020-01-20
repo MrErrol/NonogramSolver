@@ -61,10 +61,10 @@ class Nonogram:
         Method that copies Nonogram. It does not copy interactive plot references.
         """
         nono = Nonogram(None)
-        nono.rowHints = [[item for item in row] for row in self.rowHints]
-        nono.colHints = [[item for item in row] for row in self.colHints]
-        nono.nRows = copy(self.nRows)
-        nono.nCols = copy(self.nCols)
+        nono.rowHints = self.rowHints
+        nono.colHints = self.colHints
+        nono.nRows = self.nRows
+        nono.nCols = self.nCols
         nono.rows = [[item for item in row] for row in self.rows]
         nono.cols = [[item for item in row] for row in self.cols]
         nono.rowBlockOrigins = [[item for item in row] for row in self.rowBlockOrigins]
