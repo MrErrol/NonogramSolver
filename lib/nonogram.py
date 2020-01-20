@@ -29,14 +29,18 @@ class Nonogram:
         """
         Fills the rowHints and colHints with data read from file.
         """
+        # This part of code is used by method copy()
         if filename == None: 
             self.rowHints = []
             self.colHints = []
             return 0
+        
+        # Reading datafile
         file = open(filename, 'r')
         find_beggining_of_data(file)
         self.rowHints = read_lines(file, stop="COLUMNS:")
         self.colHints = read_lines(file, stop="")
+        file.close()
         
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
