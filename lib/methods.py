@@ -386,19 +386,20 @@ def search_for_assumptions(nonogram, searching_depth=1):
     for dim in range(2):
         # Finding non-filled rows in nonogram
         rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
-        # up-down loop - check first <searching_depth> rows (columns) from up and down (left and right)
-        for direction in range(2):
-            depth = 1
-            # loop over rows truncated by searching_depth
-            for row in rows:
-                if depth <= searching_depth:
-                    if ivestigate_row_with_assumptions(nonogram, row):
-                        sth_changed = True
-                    depth += 1
-                else:
-                    break
-            # reverse rows list for up-down loop
-            rows = rows[::-1]
+        depth = 1 # number of lines from edge to be checked 
+        
+        # loop over rows truncated by searching_depth
+        for depth in range(searching_depth):
+            sth_changed_1 = ivestigate_row_with_assumptions(nonogram, rows[0])
+            sth_changed_2 = ivestigate_row_with_assumptions(nonogram, rows[-1])
+            sth_changed = sth_changed_1 or sth_changed_2 or sth_changed
+            rows.remove(rows[0])
+            # to prevent calling last element of empty list
+            try:
+                rows.remove(rows[-1])
+            except:
+                break
+        
         # transposing nonogram for dimension loop
         nonogram.transpose()
     
