@@ -49,6 +49,42 @@ def push_block_Endings(hints, blockEndings, index=0, exh=False):
     
     return sth_changed, blockEndings
 
+def pull_block_origins(line, hints, blockOrigins):
+    """
+    Function tries to pull further blockOrigins by filled cells that do not belong to the next block.
+    Function should be used only by function deduce_new_block_origins as it performs more complete analysis.
+    
+    WARNING!
+    Function will modify provided blockOrigins.
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether anything new has been deduced
+    blockOrigins - updated blockOrigins
+    """
+    sth_changed = False
+    i = len(hints) - 1
+    
+    # Adding virtual block for sake of simplicity of procedure that measures distance
+    blockOrigins += [len(line)]
+    
+    # backward loop
+    while i >= 0:
+        # Checking if there is a filled cell to pull block origin
+        if 1 in line[blockOrigins[i]+hints[i]:blockOrigins[i+1]]:
+            shift = line[blockOrigins[i]+hints[i]:blockOrigins[i+1]][::-1].index(1)
+            shift = blockOrigins[i+1] - blockOrigins[i] - hints[i] - shift
+            blockOrigins[i] += shift
+            # pushing following blocks origins further away
+            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+            sth_changed = True
+        i -= 1
+    
+    # removing virtual block
+    del blockOrigins[-1]
+    
+    return sth_changed, blockOrigins
+
 def deduce_new_block_origins(line, hints, blockOrigins):
     """
     Function tries to deduce higher than given block origins for a single given line.
@@ -61,54 +97,35 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     blockOrigins = copy(blockOrigins)
     # Storing information whether function deduced anything new
     sth_changed = False
-    
+        
     # forward loop
     i = 0
     while i < len(hints):
         # Situation when there is filled cell just before the block need not te be checked, due to use of push_block_Origins
-        # Checking if there is enough space for the block and following empty cell
-        if not -1 in line[blockOrigins[i]:blockOrigins[i]+hints[i]] and not line[blockOrigins[i]+hints[i]] == 1:
-            i += 1
-            continue
+        required_cells = line[blockOrigins[i]:blockOrigins[i]+hints[i]]
         # Situation when there is empty cell blocking place
-        elif -1 in line[blockOrigins[i]:blockOrigins[i]+hints[i]]:
-            shift = line[blockOrigins[i]:blockOrigins[i]+hints[i]][::-1].index(-1)
-            shift = hints[i] - shift
-            blockOrigins[i] += shift
+        if -1 in required_cells:
+            blockOrigins[i] += hints[i] - required_cells[::-1].index(-1)
             # pushing following blocks origins further away
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
             continue
         # Situation when there is filled cell just after place for the block
-        else:
+        if line[blockOrigins[i]+hints[i]] == 1:
             blockOrigins[i] += 1
             # pushing following blocks origins further away
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
             continue
+        # Situation when there is enough space for the block and following empty cell
+        else:
+            i += 1
+            continue
         
-    # backward loop
-    i = len(hints) - 1
-    while i >= 0:
-        # Checking if there is a filled cell to pull block origin
-        try:
-            if 1 in line[blockOrigins[i]+hints[i]:blockOrigins[i+1]]:
-                shift = line[blockOrigins[i]+hints[i]:blockOrigins[i+1]][::-1].index(1)
-                shift = blockOrigins[i+1] - blockOrigins[i] - hints[i] - shift
-                blockOrigins[i] += shift
-                # pushing following blocks origins further away
-                dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
-                sth_changed = True
-        except:
-            # last block exception
-            if 1 in line[blockOrigins[i]+hints[i]:]:
-                shift = line[blockOrigins[i]+hints[i]:][::-1].index(1)
-                shift = len(line[blockOrigins[i]+hints[i]:]) - shift
-                blockOrigins[i] += shift
-                # pushing following blocks origins further away
-                dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
-                sth_changed = True
-        i -= 1
+    # backward loop analysis
+    changed, blockOrigins = pull_block_origins(line, hints, blockOrigins)
+    sth_changed = sth_changed or changed
+    
     return sth_changed, blockOrigins
 
 def deduce_new_block_endings(line, hints, blockEndings):
