@@ -6,9 +6,9 @@ def find_beggining_of_data(file):
         line = file.readline()
         if line[:5] == 'ROWS:':
             break
-        elif line[:8] == 'COLUMNS:':
+        if line[:8] == 'COLUMNS:':
             raise Exception('Lack of data in input file.')
-        elif line == '':
+        if line == '':
             raise Exception('Incorrect data file.')
 
 def read_lines(file, stop=None):
@@ -22,12 +22,13 @@ def read_lines(file, stop=None):
     read_list = []
     while True:
         line = file.readline()
-        if line[:len(stop)] == stop and stop != '':
+        stop_cond_1 = line[:len(stop)] == stop and stop != ''
+        stop_cond_2 = line == stop == ''
+        if stop_cond_1 or stop_cond_2:
             break
-        elif line == stop == '':
-            break
-        elif line == '':
+        if line == '':
             raise Exception('Incorrect data file.')
-        else:
-            read_list.append(list(map(int, line.split(' '))))
+        # appending read hints
+        read_list.append(list(map(int, line.split(' '))))
+    
     return read_list
