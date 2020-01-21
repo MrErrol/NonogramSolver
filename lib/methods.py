@@ -306,6 +306,29 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     # No problems found
     return True
 
+def safe_deduce(nono, row):
+    """
+    Function used while making assumptions to find discrepancy in considered nonogram.
+    Function being safe means that it will not raise Exception while handling incorrect nonogram.
+    
+    Returns:
+    --------
+    found_discrepancy - bool variable informing whether discrepancy has been found
+    """
+    try:
+        sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row])
+        sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints[row], nono.rowBlockEndings[row])
+    except:
+        return True
+    if sth_changed1 or sth_changed2 :
+        nono.rowBlockOrigins[row] = blockOrigins
+        nono.rowBlockEndings[row] = blockEndings
+        try:
+            fill_row(nono, row)
+        except:
+            return True
+    return False
+
 def make_assumption(nonogram, row, col):
     """
     The function makes assumption that cell at position (row, col) is filled and tries to find discrepancy.
@@ -322,24 +345,15 @@ def make_assumption(nonogram, row, col):
     nono.fill_cell(row, col, 1)
     
     # Loop determining the analysis depth
-    for checking_depth in range(2):
-        # Loop over Nonogram dimensions (rows and columns)
-        for i in range(2):
-            # Loop over previously changed rows (or columns)
-            for row in nono.rowsChanged:
-                try:
-                    sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row])
-                    sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints[row], nono.rowBlockEndings[row])
-                except:
-                    return False
-                if sth_changed1 or sth_changed2 :
-                    nono.rowBlockOrigins[row] = blockOrigins
-                    nono.rowBlockEndings[row] = blockEndings
-                    try:
-                        fill_row(nono, row)
-                    except:
-                        return False
-            nono.transpose()
+    # Range - 2*depth, 2 stands for transposition - going for rows and columns separately
+    for checking_depth in range(2*2):
+        # Loop over previously changed rows (or columns)
+        for row in nono.rowsChanged:
+            found_discr = safe_deduce(nono, row)
+            if found_discr:
+                return False
+            
+        nono.transpose()
     
     # Loops verifying all modified rows
     for row in nono.rowsChanged:
