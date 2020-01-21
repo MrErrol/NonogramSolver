@@ -132,6 +132,29 @@ def deduce_new_block_endings(line, hints, blockEndings):
     
     return sth_changed, blockEndings
 
+def fill_range_in_row(nonogram, row, cols, value):
+    """
+    Fills range of cells in given row with value.
+    
+    Parameters:
+    -----------
+    nonogram - Nonogram to be updated
+    row - index of row to be updated
+    cols - iterable indices of cells in row to be updated
+    value - value to be written into cells
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has changed
+    """
+    sth_changed = False
+    
+    for col in cols:
+        change =  nonogram.fill_cell(row, col, value)
+        sth_changed = sth_changed or change
+    
+    return sth_changed
+
 def fill_row(nono, row, interactive=False):
     """
     Function tries to fill/mark as empty each cell in the pointed row based on actual knowledge.
@@ -149,32 +172,25 @@ def fill_row(nono, row, interactive=False):
     hints = nono.rowHints[row]
     endings = nono.rowBlockEndings[row]
     origins = nono.rowBlockOrigins[row]
-    sth_changed = False
     
     # Marking as empty beggining of the line
-    for j in range( origins[0] ):
-        change =  nono.fill_cell(row, j, -1)
-        sth_changed = sth_changed or change
-
+    changed_1 = fill_range_in_row(nono, row, range( origins[0] ), -1)
     # Marking as empty end of the line
-    for j in range( endings[-1] + 1 , nono.nCols ):
-        change = nono.fill_cell(row, j, -1)
-        sth_changed = sth_changed or change
+    changed_2 = fill_range_in_row(nono, row, range( endings[-1] + 1 , nono.nCols ), -1)
+    # bool variable to be returned
+    sth_changed = changed_1 or changed_2 
     
+    # Filling inside the block
     for i in range(len(hints)):
-        
-        # Filling inside the block
-        if endings[i] - origins[i] < 2*hints[i] - 1 :
-            for j in range( endings[i] + 1 - hints[i] , origins[i] + hints[i] ):
-                change = nono.fill_cell(row, j, 1)
-                sth_changed = sth_changed or change
-        
-        # Marking as empty area between blocks
-        if i + 1 < len(hints):
-            if endings[i] + 1 < origins[i+1] :
-                for j in range( endings[i] + 1 , origins[i+1] ):
-                    change = nono.fill_cell(row, j, -1)
-                    sth_changed = sth_changed or change
+        cols = range( endings[i] + 1 - hints[i] , origins[i] + hints[i] )
+        changed = fill_range_in_row(nono, row, cols, 1)
+        sth_changed = sth_changed or changed
+    
+    # Marking as empty area between blocks
+    for i in range(len(hints) - 1):
+        cols = range( endings[i] + 1 , origins[i+1] )
+        changed = fill_range_in_row(nono, row, cols, -1)
+        sth_changed = sth_changed or changed
     
     if interactive and sth_changed:
         nono.update_plot()
