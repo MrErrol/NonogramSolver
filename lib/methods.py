@@ -230,6 +230,60 @@ def find_min_block_length(nonogram, row, cell_position):
     block_lengths = [nonogram.rowHints[row][index] for index in indices]
     return min(block_lengths)
 
+def fill_cells_to_the_right(nonogram, row, col):
+    """
+    Function used by analyze_multi_block_relations_in_row(). 
+    It tries to fill cells to the right from filled cell, when structures like:
+    [ ... , -1 , ... , 1 , 0 , ...] 
+    appear.
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+    
+    # leeway stores a number of fillable cells to the left
+    # -1 at the end returns length of line, when there is no true empty cell
+    left_cells = nonogram.rows[row][:col]
+    leeway = (left_cells[::-1]+[-1]).index(-1)
+    
+    block_length = find_min_block_length(nonogram, row, col)
+    
+    # filling cells enforced by minimal block length
+    for position in range( col + 1, col + block_length - leeway ):
+        nonogram.fill_cell(row, position, 1)
+        sth_changed = True
+    
+    return sth_changed
+
+def fill_cells_to_the_left(nonogram, row, col):
+    """
+    Function used by analyze_multi_block_relations_in_row(). 
+    It tries to fill cells to the left from filled cell, when structures like:
+    [ ... , 0 , 1 , ... , -1 , ...] 
+    appear.
+    
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+    
+    # leeway stores a number of fillable cells to the right
+    # -1 at the end returns length of line, when there is no true empty cell
+    right_cells = nonogram.rows[row][col+1:]
+    leeway = (right_cells + [-1]).index(-1)
+    
+    block_length = find_min_block_length(nonogram, row, col)
+    
+    # filling cells enforced by minimal block length
+    for position in range(col + leeway + 1 - block_length , col ):
+        nonogram.fill_cell(row, position, 1)
+        sth_changed = True
+        
+    return sth_changed
+
 def analyze_multi_block_relations_in_row(nonogram, row):
     """
     Function analyzes regions of overlapping blocks in the row trying to fill some cells.
@@ -246,30 +300,15 @@ def analyze_multi_block_relations_in_row(nonogram, row):
 
     # loop over cells in row
     for col in range(1, len(nonogram.rows[row]) - 1 ):
-
+        # filling in right direction
         if nonogram.rows[row][col] == 1 and nonogram.rows[row][col+1] == 0:
-            # leeway stores a number of fillable cells to the left
-            try:
-                leeway = nonogram.rows[row][:col][::-1].index(-1)
-            except:
-                leeway = len(nonogram.rows[row][:col])
-            block_length = find_min_block_length(nonogram, row, col)
-            # filling cells enforced by minimal block length
-            for position in range( col + 1, col + block_length - leeway ):
-                nonogram.fill_cell(row, position, 1)
-                sth_changed = True
-
+            changed = fill_cells_to_the_right(nonogram, row, col)
+            sth_changed = sth_changed or changed
+            
+        # filling in left direction
         if nonogram.rows[row][col] == 1 and nonogram.rows[row][col-1] == 0:
-            # leeway stores a number of fillable cells to the right
-            try:
-                leeway = nonogram.rows[row][col+1:].index(-1)
-            except:
-                leeway = len(nonogram.rows[row][col+1:])
-            block_length = find_min_block_length(nonogram, row, col)
-            # filling cells enforced by minimal block length
-            for position in range(col + leeway + 1 - block_length , col ):
-                nonogram.fill_cell(row, position, 1)
-                sth_changed = True
+            changed = fill_cells_to_the_left(nonogram, row, col)
+            sth_changed = sth_changed or changed
 
     return sth_changed
 
