@@ -32,3 +32,20 @@ def read_lines(file, stop=None):
         read_list.append(list(map(int, line.split(' '))))
     
     return read_list
+
+def read_datafile(filename):
+    """
+    Function reads from datafile hints (lengths of blocks) for rows and columns of nonogram.
+    
+    Returns:
+    --------
+    rowHints - list of list of hints for rows for nonogram
+    colHints - list of list of hints for columns for nonogram
+    """
+    file = open(filename, 'r')
+    find_beggining_of_data(file)
+    rowHints = read_lines(file, stop="COLUMNS:")
+    colHints = read_lines(file, stop="")
+    file.close()
+    
+    return rowHints, colHints

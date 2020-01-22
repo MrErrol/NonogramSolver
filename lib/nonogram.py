@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.read_from_file import find_beggining_of_data, read_lines
+from utils.read_from_file import read_datafile
 from copy import copy
 
 class Nonogram:
@@ -25,6 +25,23 @@ class Nonogram:
         self.fig = None
         self.im = None
     
+    def self_consistency_check(self):
+        """
+        Checks if sum of filled cell according to hints on rows and columns is the same.
+        Usually allows to smoke-gun typing error.
+        
+        Return:
+        bool - bool variable informing if nonogram seems to be self-consistet
+        """
+        npixR = sum([sum(row) for row in self.rowHints]) # number of filled cells in rows
+        npixC = sum([sum(col) for col in self.colHints]) # number of filled cells in columns
+        if not npixR == npixC:
+            print('Input nonogram is not self consistent.')
+            print('The sum of filled cells in rows is different than in columns.')
+            return False
+        
+        return True
+        
     def read_nonogram_from_file(self, filename):
         """
         Fills the rowHints and colHints with data read from file.
@@ -36,19 +53,11 @@ class Nonogram:
             return 0
         
         # Reading datafile
-        file = open(filename, 'r')
-        find_beggining_of_data(file)
-        self.rowHints = read_lines(file, stop="COLUMNS:")
-        self.colHints = read_lines(file, stop="")
-        file.close()
+        self.rowHints, self.colHints = read_datafile(filename)
         
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
-        npixR = sum([sum(row) for row in self.rowHints]) # number of filled cells in rows
-        npixC = sum([sum(col) for col in self.colHints]) # number of filled cells in columns
-        if not npixR == npixC:
-            print('Input nonogram is not self consistent.')
-            print('The sum of filled cells in rows is different than in columns.')
+        if not self.self_consistency_check():
             quit()
     
     def transpose(self):
