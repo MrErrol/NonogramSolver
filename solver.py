@@ -1,5 +1,5 @@
-from nonogram import Nonogram
-import methods
+from lib.nonogram import Nonogram
+import lib.methods as methods
 #from visualizers.simple_visualizer import just_plot_it
 from copy import copy
 from sys import argv
