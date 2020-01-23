@@ -18,13 +18,15 @@ def push_block_Origins(hints, blockOrigins, index=0, exh=False):
     
     i = index
     while i+1 < len(hints):
-        if blockOrigins[i+1] < blockOrigins[i] + hints[i] + 1:
-            blockOrigins[i+1] = blockOrigins[i] + hints[i] + 1
-            sth_changed = True
-        else:
-            if not exh:
-                break
         i += 1
+        if  blockOrigins[i] < blockOrigins[i-1] + hints[i-1] + 1:
+            blockOrigins[i] = blockOrigins[i-1] + hints[i-1] + 1
+            sth_changed = True 
+            continue
+            
+        if not exh:
+            break
+    
     return sth_changed, blockOrigins
 
 def push_block_Endings(hints, blockEndings, index=0, exh=False):
