@@ -516,10 +516,10 @@ def search_for_assumptions(nonogram, searching_depth=1):
             sth_changed_1 = ivestigate_row_with_assumptions(nonogram, rows[0])
             sth_changed_2 = ivestigate_row_with_assumptions(nonogram, rows[-1])
             sth_changed = sth_changed_1 or sth_changed_2 or sth_changed
-            rows.remove(rows[0])
+            del rows[0]
             # to prevent calling last element of empty list
             try:
-                rows.remove(rows[-1])
+                del rows[-1]
             except:
                 break
         
