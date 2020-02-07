@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
 from lib.nonogram import Nonogram
-from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_row
+from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks, fill_inside_of_the_blocks, fill_row
 from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row, analyze_multi_block_relations
 
 hints1 = [1, 1, 1]
@@ -76,8 +76,9 @@ def test_deduce_new_block_endings():
     assert deduce_new_block_endings(line7, hints1, blockEndings3) == (True,  [1, 3, 6])
     assert deduce_new_block_endings(line8, hints2, blockEndings4) == (True,  [1, 4, 6, 10])
 
-
-nono = Nonogram("nonograms/small_1.dat")
+nono_1 = Nonogram("nonograms/small_1.dat")
+nono_2 = Nonogram("nonograms/small_1.dat")
+nono_3 = Nonogram("nonograms/small_1.dat")
 
 # This test is implemented in test_nonogram.py
 # It is present here just to show initial values of nono
@@ -97,17 +98,31 @@ nono = Nonogram("nonograms/small_1.dat")
 #    assert nono.colsChanged == []
 #    assert nono.transposed == False  
 
+def test_fill_between_the_blocks():
+    nono_1.rowBlockOrigins[2] = [0, 2]
+    nono_1.rowBlockEndings[2] = [0, 2]
+    fill_between_the_blocks(nono_1, 2)
+    assert nono_1.rows[2] == [0, -1, 0, -1]
+    
+def test_fill_inside_of_the_blocks():
+    nono_2.rowBlockOrigins[2] = [0, 2]
+    nono_2.rowBlockEndings[2] = [0, 2]
+    fill_inside_of_the_blocks(nono_2, 0)
+    fill_inside_of_the_blocks(nono_2, 2)
+    assert nono_2.rows[0] == [0, 1, 0, -1]
+    assert nono_2.rows[2] == [1, 0, 1, -1]
+    
 def test_fill_row():
-    fill_row(nono, 0)
-    assert nono.rows == [[0, 1, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
-    assert nono.cols == [[0, 0, 0, -1], [1, 0, 0, -1], [0, 0, 0, -1]]
-    assert nono.undetermind == 8
-    nono.rowBlockOrigins[2] = [0, 2]
-    nono.rowBlockEndings[2] = [0, 2]
-    fill_row(nono, 2)
-    assert nono.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
-    assert nono.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
-    assert nono.undetermind == 5
+    fill_row(nono_3, 0)
+    assert nono_3.rows == [[0, 1, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
+    assert nono_3.cols == [[0, 0, 0, -1], [1, 0, 0, -1], [0, 0, 0, -1]]
+    assert nono_3.undetermind == 8
+    nono_3.rowBlockOrigins[2] = [0, 2]
+    nono_3.rowBlockEndings[2] = [0, 2]
+    fill_row(nono_3, 2)
+    assert nono_3.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
+    assert nono_3.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
+    assert nono_3.undetermind == 5
 
 nono_multi_1 = Nonogram("tests/nono_test_1.dat")
 nono_multi_2 = Nonogram("tests/nono_test_1.dat")

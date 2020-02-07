@@ -7,8 +7,6 @@ import pytest
 from lib.nonogram import Nonogram
 from lib.methods_advanced import check_if_line_is_fillable, make_assumption, ivestigate_row_with_assumptions, search_for_assumptions
 
-nono = Nonogram("nonograms/small_1.dat")
-
 f_line_0 = [0, 0, 0, 0, 0, -1]  
 f_line_1 = [1, 0, 0, 0, 1, -1]    
 f_line_2 = [0, 0, 1, 0, 0, -1]    
@@ -23,7 +21,6 @@ def test_check_if_line_is_fillable():
 nono_assume_1 = Nonogram("tests/nono_test_1.dat")
 nono_assume_2 = Nonogram("tests/nono_test_1.dat")
 nono_assume_3 = Nonogram("tests/nono_test_1.dat")
-
 
 def test_make_assumption():
     assert make_assumption(nono_assume_1, 3, 0) == False
@@ -44,5 +41,3 @@ def test_search_for_assumptions():
     assert search_for_assumptions(nono_assume_3, searching_depth=2) == True
     assert nono_assume_2.rows[1] == [ 0,  0,  0,  0,  0,  0,  0, -1]
     assert nono_assume_3.rows[2] == [-1, -1,  0, -1, -1, -1, -1, -1] # cause we already know all about row 3
-
-
