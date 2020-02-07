@@ -120,3 +120,4 @@ def test_find_min_block_length():
     assert find_min_block_length(nono_multi_1, 0, 2) == 2
     assert find_min_block_length(nono_multi_1, 0, 4) == 4
     assert find_min_block_length(nono_multi_1, 0, 5) == 1
+    

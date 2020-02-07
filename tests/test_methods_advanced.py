@@ -9,24 +9,6 @@ from lib.methods_advanced import check_if_line_is_fillable, make_assumption, ive
 
 nono = Nonogram("nonograms/small_1.dat")
 
-# This test is implemented in test_nonogram.py
-# It is present here just to show initial values of nono
-#def test_Nonogram_initialisation():
-#    assert nono.nRows == 3
-#    assert nono.nCols == 3
-#    assert nono.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
-#    assert nono.cols == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
-#    assert nono.rowHints == [[2], [2], [1, 1]]
-#    assert nono.colHints == [[1, 1], [2], [2]]
-#    assert nono.rowBlockOrigins == [[0], [0], [0, 0]]
-#    assert nono.colBlockOrigins == [[0, 0], [0], [0]]
-#    assert nono.rowBlockEndings == [[2], [2], [2, 2]]
-#    assert nono.colBlockEndings == [[2, 2], [2], [2]]
-#    assert nono.undetermind == 9
-#    assert nono.rowsChanged == []
-#    assert nono.colsChanged == []
-#    assert nono.transposed == False  
-
 f_line_0 = [0, 0, 0, 0, 0, -1]  
 f_line_1 = [1, 0, 0, 0, 1, -1]    
 f_line_2 = [0, 0, 1, 0, 0, -1]    
@@ -44,8 +26,8 @@ nono_assume_3 = Nonogram("tests/nono_test_1.dat")
 
 
 def test_make_assumption():
-    #assert make_assumption(nono_assume_1, 3, 0) == False
-    #assert make_assumption(nono_assume_1, 3, 1) == False
+    assert make_assumption(nono_assume_1, 3, 0) == False
+    assert make_assumption(nono_assume_1, 3, 1) == False
     assert make_assumption(nono_assume_1, 3, 2) == True
     assert make_assumption(nono_assume_1, 3, 6) == False
 
