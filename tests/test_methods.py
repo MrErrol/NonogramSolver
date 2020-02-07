@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
 from lib.nonogram import Nonogram
-from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks, fill_inside_of_the_blocks, fill_row
+from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks, fill_inside_of_the_blocks, fill_cells_to_the_right, fill_cells_to_the_left, fill_row
 from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row, analyze_multi_block_relations
 
 hints1 = [1, 1, 1]
@@ -126,6 +126,8 @@ def test_fill_row():
 
 nono_multi_1 = Nonogram("tests/nono_test_1.dat")
 nono_multi_2 = Nonogram("tests/nono_test_1.dat")
+nono_multi_3 = Nonogram("tests/nono_test_1.dat")
+nono_multi_4 = Nonogram("tests/nono_test_1.dat")
 
 def test_find_min_block_length():
     nono_multi_1.rowBlockOrigins[0] = [0, 2, 4, 5]
@@ -135,6 +137,24 @@ def test_find_min_block_length():
     assert find_min_block_length(nono_multi_1, 0, 2) == 2
     assert find_min_block_length(nono_multi_1, 0, 4) == 4
     assert find_min_block_length(nono_multi_1, 0, 5) == 1
+
+def test_fill_cells_to_the_right():
+    nono_multi_2.rowHints[1]        = [3, 3]
+    nono_multi_2.rowBlockOrigins[1] = [0, 4]
+    nono_multi_2.rowBlockEndings[1] = [6, 10]
+    nono_multi_2.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
+
+    assert fill_cells_to_the_right(nono_multi_2, 1, 5) == True
+    assert nono_multi_2.rows[1] == [0, 0, 0, -1, 0, 1, 1, -1, 0, 0, 0, -1]
+    
+def test_fill_cells_to_the_left():
+    nono_multi_3.rowHints[1]        = [3, 3]
+    nono_multi_3.rowBlockOrigins[1] = [0, 4]
+    nono_multi_3.rowBlockEndings[1] = [6, 10]
+    nono_multi_3.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
+
+    assert fill_cells_to_the_left(nono_multi_3, 1, 5) == True
+    assert nono_multi_3.rows[1] == [0, 0, 0, -1, 1, 1, 0, -1, 0, 0, 0, -1]
     
 def test_analyze_multi_block_relations_in_row():
     nono_multi_1.rowHints[1]        = [3, 3]
@@ -162,17 +182,17 @@ def test_analyze_multi_block_relations_in_row():
     assert nono_multi_1.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
 def test_analyze_multi_block_relations():
-    nono_multi_2.rowHints        = [[3, 3]]*4
-    nono_multi_2.rowBlockOrigins = [[0, 4 ]]*4
-    nono_multi_2.rowBlockEndings = [[6, 10]]*4
-    nono_multi_2.rows = [[0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1],
+    nono_multi_4.rowHints        = [[3, 3]]*4
+    nono_multi_4.rowBlockOrigins = [[0, 4 ]]*4
+    nono_multi_4.rowBlockEndings = [[6, 10]]*4
+    nono_multi_4.rows = [[0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1],
                          [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1],
                          [0, 0, 0, -1, 1, 0, 0, -1, 0, 0, 0, -1],
                          [0, 0, 0, -1, 0, 0, 1, -1, 0, 0, 0, -1]]
 
-    assert analyze_multi_block_relations(nono_multi_2) == True
-    assert nono_multi_2.rows[0] == [0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1]
-    assert nono_multi_2.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
-    assert nono_multi_2.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
-    assert nono_multi_2.rows[3] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+    assert analyze_multi_block_relations(nono_multi_4) == True
+    assert nono_multi_4.rows[0] == [0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1]
+    assert nono_multi_4.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+    assert nono_multi_4.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+    assert nono_multi_4.rows[3] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
                                                                                
