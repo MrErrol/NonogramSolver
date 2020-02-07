@@ -1,5 +1,6 @@
 from lib.nonogram import Nonogram
 import lib.methods as methods
+import lib.methods_advanced as advanced
 #from visualizers.simple_visualizer import just_plot_it
 from copy import copy
 from sys import argv
@@ -43,7 +44,7 @@ while nono.undetermind:
     # Check if anything improved
     if nono.rowsChanged == set() and nono.colsChanged == set():
         # Calling advanced, even more costly function
-        if not methods.search_for_assumptions(nono, searching_depth=searching_depth):
+        if not advanced.search_for_assumptions(nono, searching_depth=searching_depth):
             print("Failed to solve Nonogram.")
             print("Cycle : " + str(cycle))
             break
