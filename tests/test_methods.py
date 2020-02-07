@@ -136,3 +136,43 @@ def test_find_min_block_length():
     assert find_min_block_length(nono_multi_1, 0, 4) == 4
     assert find_min_block_length(nono_multi_1, 0, 5) == 1
     
+def test_analyze_multi_block_relations_in_row():
+    nono_multi_1.rowHints[1]        = [3, 3]
+    nono_multi_1.rowBlockOrigins[1] = [0, 4]
+    nono_multi_1.rowBlockEndings[1] = [6, 10]
+    nono_multi_1.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
+
+    assert analyze_multi_block_relations_in_row(nono_multi_1, 1) == True
+    assert nono_multi_1.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+
+    nono_multi_1.rowHints[2]        = [3, 3]
+    nono_multi_1.rowBlockOrigins[2] = [0, 4]
+    nono_multi_1.rowBlockEndings[2] = [6, 10]
+    nono_multi_1.rows[2] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
+
+    assert analyze_multi_block_relations_in_row(nono_multi_1, 2) == True
+    assert nono_multi_1.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+
+    nono_multi_1.rowHints[3]        = [3, 3]
+    nono_multi_1.rowBlockOrigins[3] = [0, 4]
+    nono_multi_1.rowBlockEndings[3] = [6, 10]
+    nono_multi_1.rows[3] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
+
+    assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == True
+    assert nono_multi_1.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+
+def test_analyze_multi_block_relations():
+    nono_multi_2.rowHints        = [[3, 3]]*4
+    nono_multi_2.rowBlockOrigins = [[0, 4 ]]*4
+    nono_multi_2.rowBlockEndings = [[6, 10]]*4
+    nono_multi_2.rows = [[0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1],
+                         [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1],
+                         [0, 0, 0, -1, 1, 0, 0, -1, 0, 0, 0, -1],
+                         [0, 0, 0, -1, 0, 0, 1, -1, 0, 0, 0, -1]]
+
+    assert analyze_multi_block_relations(nono_multi_2) == True
+    assert nono_multi_2.rows[0] == [0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1]
+    assert nono_multi_2.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+    assert nono_multi_2.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+    assert nono_multi_2.rows[3] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+                                                                               
