@@ -36,8 +36,6 @@ class Nonogram:
         npixR = sum([sum(row) for row in self.rowHints]) # number of filled cells in rows
         npixC = sum([sum(col) for col in self.colHints]) # number of filled cells in columns
         if not npixR == npixC:
-            print('Input nonogram is not self consistent.')
-            print('The sum of filled cells in rows is different than in columns.')
             return False
         
         return True
@@ -58,6 +56,8 @@ class Nonogram:
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
         if not self.self_consistency_check():
+            print('Input nonogram is not self consistent.')
+            print('The sum of filled cells in rows is different than in columns.')
             quit()
     
     def transpose(self):
