@@ -1,4 +1,3 @@
-from lib.nonogram import Nonogram
 from lib.methods import deduce_new_block_origins, deduce_new_block_endings, push_block_Origins, push_block_Endings, fill_row
 
 def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
