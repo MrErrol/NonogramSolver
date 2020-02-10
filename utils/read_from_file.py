@@ -1,6 +1,7 @@
 def find_beggining_of_data(file):
     """
-    This function is used to find beggining of the data in the data file effectively discarding beggining lines.
+    This function is used to find beggining of the data in the data file effectively discarding first comment lines.
+    No empty lines are allowed.
     """
     while True:
         line = file.readline()
@@ -22,12 +23,12 @@ def read_lines(file, stop=None):
     read_list = []
     while True:
         line = file.readline()
+        if line == '' and stop != '':
+            raise Exception('Incorrect data file.')
         stop_cond_1 = line[:len(stop)] == stop and stop != ''
         stop_cond_2 = line == stop == ''
         if stop_cond_1 or stop_cond_2:
             break
-        if line == '':
-            raise Exception('Incorrect data file.')
         # appending read hints
         read_list.append(list(map(int, line.split(' '))))
     
