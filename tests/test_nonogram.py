@@ -5,8 +5,11 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
 import lib.nonogram as nonogram
+from lib.solver import solver
 
-nono = nonogram.Nonogram("nonograms/small_1.dat")
+nono  = nonogram.Nonogram("nonograms/small_1.dat")
+nono1 = nonogram.Nonogram("nonograms/small_1.dat")
+nono2 = nonogram.Nonogram("nonograms/small_1.dat")
 
 def test_Nonogram_initialisation():
     assert nono.nRows == 3
@@ -54,3 +57,14 @@ def test_Nonogram_fill_cell():
     assert nono.undetermind == 7
     with pytest.raises(Exception):
         nono.fill_cell(1, 2, -1)
+        
+def test_Nonogram_self_consistency_check():
+    assert nono1.self_consistency_check() == True
+    nono1.rowHints[0][0] += 1
+    assert nono1.self_consistency_check() == False
+    
+def test_Nonogram_get_picture_data():
+    solver(nono2)
+    assert nono2.get_picture_data() == [[1, 1, -1], [-1, 1, 1], [1, -1, 1]]
+    nono2.transpose()
+    assert nono2.get_picture_data() == [[1, 1, -1], [-1, 1, 1], [1, -1, 1]]
