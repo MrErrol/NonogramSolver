@@ -1,40 +1,58 @@
-def find_beggining_of_data(file):
-    """
-    This function is used to find beggining of the data in the data file effectively discarding first comment lines.
-    No empty lines are allowed.
-    """
+def is_beggining_of_row_hints(line):
+    return line[:5] == 'ROWS:'
+
+def is_beggining_of_col_hints(line):
+    return line[:8] == 'COLUMNS:'
+
+def is_beggining_of_cells(line):
+    return line[:6] == 'CELLS:'
+
+def default_mapping():
+    return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1, '+':1, '-':-1, '0':0, '1':1}
+
+def read_presolved_nonogram_representation(file, mapping=default_mapping()):
+    read_list = []
     while True:
         line = file.readline()
-        if line[:5] == 'ROWS:':
+        
+        # End of file
+        cond1 = line == ''
+        # Smoke-gun of a new block
+        cond2 = ':' in line
+        # Empty line
+        cond3 = line.isspace()
+        
+        if cond1 or cond2 or cond3:
             break
-        if line[:8] == 'COLUMNS:':
-            raise Exception('Lack of data in input file.')
-        if line == '':
-            raise Exception('Incorrect data file.')
+        
+        read_list.append(line)
+    
+    return [[mapping[letter] for letter in row] for row in read_list], line
 
-def read_lines(file, stop=None):
+def read_numeric_lines(file):
     """
-    This function read hints (rowHints or colHints) from a datafile and returns them.
+    Function read block of numbers (developed for reading hints) as a list of lists of numbers.
     
     Returns:
     --------
-    read_list = list of list of hints read from datafile
+    read_list - list of list of numbers read from datafile
+    line - line following the block of numbers
     """
     read_list = []
     while True:
         line = file.readline()
-        if line == '' and stop != '':
-            raise Exception('Incorrect data file.')
-        stop_cond_1 = line[:len(stop)] == stop and stop != ''
-        stop_cond_2 = line == stop == ''
-        if stop_cond_1 or stop_cond_2:
+        # End of file
+        if line == '':
+            break
+        # Not integer-only line
+        if not ''.join(line.split()) in digits:
             break
         # appending read hints
         read_list.append(list(map(int, line.split(' '))))
     
-    return read_list
+    return read_list, line
 
-def read_datafile(filename):
+def read_datafile(filename, presolved=False):
     """
     Function reads from datafile hints (lengths of blocks) for rows and columns of nonogram.
     
@@ -43,10 +61,26 @@ def read_datafile(filename):
     rowHints - list of list of hints for rows for nonogram
     colHints - list of list of hints for columns for nonogram
     """
+    
+    rowHints = []
+    colHints = []
+    cells = not presolved
+    
     file = open(filename, 'r')
-    find_beggining_of_data(file)
-    rowHints = read_lines(file, stop="COLUMNS:")
-    colHints = read_lines(file, stop="")
+    line = file.readline(file)
+    
+    while not (rowHints and colHints and cells):
+        if is_beggining_of_row_hints(line):
+            rowHints, line = read_numeric_lines(file)
+            continue
+        if is_beggining_of_col_hints(line):
+            colHints, line = read_numeric_lines(file)
+            continue
+        if is_beggining_of_cells(line) and presolved:
+            cells, line = read_presolved_nonogram_representation(file)
+            continue
+        line = file.readline(file)
+            
     file.close()
     
-    return rowHints, colHints
+    return rowHints, colHints, cells
