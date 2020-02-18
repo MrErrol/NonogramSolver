@@ -8,6 +8,7 @@ from utils.read_from_file import read_datafile, read_numeric_lines, read_presolv
 
 file_1 = open('tests/broken_nono_1.dat', 'r')
 file_2 = open('tests/test_nono_2.dat', 'r')
+filename_3 = 'tests/test_nono_3.dat'
 
 filename_small_1 = 'nonograms/small_1.dat'
 file_small_1 = open(filename_small_1, 'r')
@@ -43,4 +44,7 @@ def test_read_numeric_lines():
     file_small_1.close()
 
 def test_read_datafile():
-    assert read_datafile(filename_small_1) == ([[2], [2], [1, 1]], [[1, 1], [2], [2]])
+    assert read_datafile(filename_small_1) == ([[2], [2], [1, 1]], [[1, 1], [2], [2]], True)
+    assert read_datafile(filename_3, presolved=True) == ([[2], [2], [1, 1]],\
+                                                         [[1, 1], [2], [2]],\
+                                                         [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])

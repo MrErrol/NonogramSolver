@@ -8,12 +8,11 @@ from utils.read_from_file import read_datafile
 from copy import copy
 
 class Nonogram:
-    def __init__(self, filename):
-        self.read_nonogram_from_file(filename)
+    def __init__(self, filename, presolved=False):
+        rows = self.read_nonogram_from_file(filename, presolved=presolved)
         self.nRows = len(self.rowHints)
         self.nCols = len(self.colHints)
-        self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
-        self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
+        self.fill_presolved_cells(rows, presolved=presolved)
         self.rowBlockOrigins = [[0]*len(hints) for hints in self.rowHints]
         self.colBlockOrigins = [[0]*len(hints) for hints in self.colHints]
         self.rowBlockEndings = [[self.nCols - 1]*len(hints) for hints in self.rowHints]
@@ -40,7 +39,7 @@ class Nonogram:
         
         return True
         
-    def read_nonogram_from_file(self, filename):
+    def read_nonogram_from_file(self, filename, presolved=False):
         """
         Fills the rowHints and colHints with data read from file.
         """
@@ -51,7 +50,7 @@ class Nonogram:
             return 0
         
         # Reading datafile
-        self.rowHints, self.colHints = read_datafile(filename)
+        self.rowHints, self.colHints, rows = read_datafile(filename)
         
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
@@ -59,6 +58,17 @@ class Nonogram:
             print('Input nonogram is not self consistent.')
             print('The sum of filled cells in rows is different than in columns.')
             quit()
+        
+        return rows
+    
+    def fill_presolved_cells(self, rows, presolved=False):
+        if presolved:
+            self.rows = rows
+            self.cols = [[rows[j][i] for j in range(len(rows[i])-1)] for i in range(len(rows))]
+            self.cols = [col+['-1'] for col in self.cols]
+        else:
+            self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
+            self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
     
     def transpose(self):
         self.rowHints, self.colHints = self.colHints, self.rowHints

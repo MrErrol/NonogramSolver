@@ -30,7 +30,7 @@ def read_presolved_nonogram_representation(file, mapping=default_mapping()):
         if cond1 or cond2 or cond3:
             break
         
-        read_list.append(line)
+        read_list.append(line.rstrip())
     
     return [[mapping[letter] for letter in row] for row in read_list], line
 
@@ -97,4 +97,4 @@ def read_datafile(filename, presolved=False):
             
     file.close()
     
-    return rowHints, colHints#, cells
+    return rowHints, colHints, cells

@@ -15,7 +15,7 @@ def getOptions(args=argv[1:]):
 
 options = getOptions()
 
-nono = Nonogram(options.input)
+nono = Nonogram(options.input, presolved=False)
 
 if options.interactive:
     nono.plot(interactive=options.interactive)
