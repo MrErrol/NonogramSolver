@@ -1,3 +1,5 @@
+from string import digits
+
 def is_beggining_of_row_hints(line):
     return line[:5] == 'ROWS:'
 
@@ -9,6 +11,9 @@ def is_beggining_of_cells(line):
 
 def default_mapping():
     return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1, '+':1, '-':-1, '0':0, '1':1}
+
+def does_it_contain_only_numbers(text):
+    return all([letter in digits for letter in text])
 
 def read_presolved_nonogram_representation(file, mapping=default_mapping()):
     read_list = []
@@ -39,16 +44,20 @@ def read_numeric_lines(file):
     line - line following the block of numbers
     """
     read_list = []
+    
+    import pdb
+    #pdb.set_trace()
+    
     while True:
         line = file.readline()
         # End of file
         if line == '':
             break
         # Not integer-only line
-        if not ''.join(line.split()) in digits:
+        if not does_it_contain_only_numbers(line.split()):
             break
         # appending read hints
-        read_list.append(list(map(int, line.split(' '))))
+        read_list.append(list(map(int, line.split())))
     
     return read_list, line
 
@@ -67,9 +76,14 @@ def read_datafile(filename, presolved=False):
     cells = not presolved
     
     file = open(filename, 'r')
-    line = file.readline(file)
+    line = file.readline()
+    
+    import pdb
+    #pdb.set_trace()
     
     while not (rowHints and colHints and cells):
+        if line == '':
+            break
         if is_beggining_of_row_hints(line):
             rowHints, line = read_numeric_lines(file)
             continue
@@ -79,8 +93,8 @@ def read_datafile(filename, presolved=False):
         if is_beggining_of_cells(line) and presolved:
             cells, line = read_presolved_nonogram_representation(file)
             continue
-        line = file.readline(file)
+        line = file.readline()
             
     file.close()
     
-    return rowHints, colHints, cells
+    return rowHints, colHints#, cells
