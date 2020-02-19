@@ -126,7 +126,7 @@ def ivestigate_row_with_assumptions(nonogram, row):
     
     return sth_changed
 
-def search_for_assumptions(nonogram, searching_depth=1):
+def search_for_assumptions(nonogram, searching_depth=2):
     """
     Function search endings of first searching_depth lines from each border for making assumptions. If possible updates the state of nonogram.
     
@@ -140,7 +140,6 @@ def search_for_assumptions(nonogram, searching_depth=1):
     for dim in range(2):
         # Finding non-filled rows in nonogram
         rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
-        depth = 1 # number of lines from edge to be checked 
         
         # loop over rows truncated by searching_depth
         for depth in range(searching_depth):

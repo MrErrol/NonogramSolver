@@ -23,6 +23,8 @@ class Nonogram:
         self.transposed = False
         self.fig = None
         self.im = None
+        self.hinter = 'simple'
+        self.verbose = 0
     
     def self_consistency_check(self):
         """
@@ -157,3 +159,20 @@ class Nonogram:
             return True
         else:
             raise Exception("Trying to overwrite filled/empty cell!"+' '+str(row)+' '+str(col))
+    
+    def show_hint(self, row, col, value):
+        """
+        Print information about next cell to be filled. Adds small hint how to deduce it.
+        """
+        if self.hinter == 'simple':
+            if self.transposed:
+                print('Analyze column ' + str(col) + '.')
+            else:
+                print('Analyze row ' + str(row) + '.')
+        else:
+            print("Assume the cell at row=" + str(row) + " and col=" + str(col) + "to be filled and try to deduce consequences.")
+          
+        if self.verbose:
+            values = {-1:'empty.', 1:'filled.'}
+            print("Cell at row=" + str(row) + " and col=" + str(col) + " may be deduced to be " + values[value])
+        quit()
