@@ -6,9 +6,9 @@ sys.path.insert(0, os.path.dirname('__file__'))
 import pytest
 from utils.read_from_file import read_datafile, read_numeric_lines, read_presolved_nonogram_representation, is_beggining_of_row_hints, is_beggining_of_col_hints, is_beggining_of_cells, does_it_contain_only_numbers
 
-file_1 = open('tests/broken_nono_1.dat', 'r')
-file_2 = open('tests/test_nono_2.dat', 'r')
-filename_3 = 'tests/test_nono_3.dat'
+file_1 = open('tests/data/broken_nono_1.dat', 'r')
+file_2 = open('tests/data/nono_test_2.dat', 'r')
+filename_3 = 'tests/data/nono_test_3.dat'
 
 filename_small_1 = 'nonograms/small_1.dat'
 file_small_1 = open(filename_small_1, 'r')
@@ -16,6 +16,7 @@ file_small_1 = open(filename_small_1, 'r')
 def test_does_it_contain_only_numbers():
     assert does_it_contain_only_numbers('1234214963483') == True
     assert does_it_contain_only_numbers('123a483') == False
+    assert does_it_contain_only_numbers('1 24 3a 4b 83\n') == False
     assert does_it_contain_only_numbers(['1','4','6']) == True
     assert does_it_contain_only_numbers(['1','a','6']) == False
     assert does_it_contain_only_numbers(['1','5','\n']) == False

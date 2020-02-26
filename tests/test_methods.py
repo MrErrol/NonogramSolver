@@ -124,10 +124,10 @@ def test_fill_row():
     assert nono_3.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
     assert nono_3.undetermind == 5
 
-nono_multi_1 = Nonogram("tests/nono_test_1.dat")
-nono_multi_2 = Nonogram("tests/nono_test_1.dat")
-nono_multi_3 = Nonogram("tests/nono_test_1.dat")
-nono_multi_4 = Nonogram("tests/nono_test_1.dat")
+nono_multi_1 = Nonogram("tests/data/nono_test_1.dat")
+nono_multi_2 = Nonogram("tests/data/nono_test_1.dat")
+nono_multi_3 = Nonogram("tests/data/nono_test_1.dat")
+nono_multi_4 = Nonogram("tests/data/nono_test_1.dat")
 
 def test_find_min_block_length():
     nono_multi_1.rowBlockOrigins[0] = [0, 2, 4, 5]

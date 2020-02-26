@@ -18,9 +18,9 @@ def test_check_if_line_is_fillable():
     assert check_if_line_is_fillable(f_line_0, [3], [2], [3]) == False
     assert check_if_line_is_fillable(f_line_2, [1, 1], [0, 3], [1, 4]) == False
 
-nono_assume_1 = Nonogram("tests/nono_test_1.dat")
-nono_assume_2 = Nonogram("tests/nono_test_1.dat")
-nono_assume_3 = Nonogram("tests/nono_test_1.dat")
+nono_assume_1 = Nonogram("tests/data/nono_test_1.dat")
+nono_assume_2 = Nonogram("tests/data/nono_test_1.dat")
+nono_assume_3 = Nonogram("tests/data/nono_test_1.dat")
 
 def test_make_assumption():
     assert make_assumption(nono_assume_1, 3, 0) == False

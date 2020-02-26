@@ -13,7 +13,7 @@ def default_mapping():
     return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1, '+':1, '-':-1, '0':0, '1':1}
 
 def does_it_contain_only_numbers(text):
-    return all([letter in digits for letter in text])
+    return all([[letter in digits for letter in word][0] for word in text])
 
 def read_presolved_nonogram_representation(file, mapping=default_mapping()):
     read_list = []
@@ -45,9 +45,6 @@ def read_numeric_lines(file):
     """
     read_list = []
     
-    import pdb
-    #pdb.set_trace()
-    
     while True:
         line = file.readline()
         # End of file
@@ -77,9 +74,6 @@ def read_datafile(filename, presolved=False):
     
     file = open(filename, 'r')
     line = file.readline()
-    
-    import pdb
-    #pdb.set_trace()
     
     while not (rowHints and colHints and cells):
         if line == '':
