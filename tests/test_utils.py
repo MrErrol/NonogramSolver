@@ -4,10 +4,11 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
-from utils.read_from_file import read_datafile, read_numeric_lines, read_presolved_nonogram_representation, is_beggining_of_row_hints, is_beggining_of_col_hints, is_beggining_of_cells, does_it_contain_only_numbers
+from utils.read_from_file import read_datafile, read_numeric_lines, read_presolved_nonogram_representation, is_beggining_of_row_hints, is_beggining_of_col_hints, is_beggining_of_cells, does_it_contain_only_numbers, read_presolved_nonogram_representation
 
 file_1 = open('tests/data/broken_nono_1.dat', 'r')
 file_2 = open('tests/data/nono_test_2.dat', 'r')
+file_3 = open('tests/data/nono_test_3.dat', 'r')
 filename_3 = 'tests/data/nono_test_3.dat'
 
 filename_small_1 = 'nonograms/small_1.dat'
@@ -44,6 +45,11 @@ def test_read_numeric_lines():
     file_1.close()
     file_small_1.close()
 
+def test_read_presolved_nonogram_representation():
+    [file_3.readline() for i in range(9)] # discarding fisrt 9 lines
+    assert read_presolved_nonogram_representation(file_3) == ([[1, 1, -1], [-1, 1, 0], [0, -1, 1]], "")
+    file_3.close()
+    
 def test_read_datafile():
     assert read_datafile(filename_small_1) == ([[2], [2], [1, 1]], [[1, 1], [2], [2]], True)
     assert read_datafile(filename_3, presolved=True) == ([[2], [2], [1, 1]],\
