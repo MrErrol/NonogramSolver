@@ -11,6 +11,10 @@ nono  = nonogram.Nonogram("nonograms/small_1.dat")
 nono1 = nonogram.Nonogram("nonograms/small_1.dat")
 nono2 = nonogram.Nonogram("nonograms/small_1.dat")
 
+def test_transpose_rows():
+    rows = [[1, 2, 3, -1], [4, 5, 6, -1], [7, 8, 9, -1]]
+    assert nonogram.transpose_rows(rows) == [[1, 4, 7, -1], [2, 5, 8, -1], [3, 6, 9, -1]]
+
 def test_Nonogram_initialisation():
     assert nono.nRows == 3
     assert nono.nCols == 3

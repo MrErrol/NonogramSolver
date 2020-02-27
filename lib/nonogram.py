@@ -5,7 +5,12 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile
-from copy import copy
+from copy import copy, deepcopy
+
+def transpose_rows(rows):
+    cols = [[rows[j][i] for j in range(len(rows[i])-1)] for i in range(len(rows))]
+    cols = [col+[-1] for col in cols]
+    return cols
 
 class Nonogram:
     def __init__(self, filename, presolved=False):
@@ -66,8 +71,7 @@ class Nonogram:
     def fill_presolved_cells(self, rows, presolved=False):
         if presolved:
             self.rows = rows
-            self.cols = [[rows[j][i] for j in range(len(rows[i])-1)] for i in range(len(rows))]
-            self.cols = [col+['-1'] for col in self.cols]
+            self.cols = transpose_rows(rows)
         else:
             self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
             self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
@@ -90,18 +94,20 @@ class Nonogram:
         nono.colHints = self.colHints
         nono.nRows = self.nRows
         nono.nCols = self.nCols
-        nono.rows = [[item for item in row] for row in self.rows]
-        nono.cols = [[item for item in row] for row in self.cols]
-        nono.rowBlockOrigins = [[item for item in row] for row in self.rowBlockOrigins]
-        nono.colBlockOrigins = [[item for item in row] for row in self.colBlockOrigins]
-        nono.rowBlockEndings = [[item for item in row] for row in self.rowBlockEndings]
-        nono.colBlockEndings = [[item for item in row] for row in self.colBlockEndings]
+        nono.rows = deepcopy(self.rows)
+        nono.cols = deepcopy(self.cols)
+        nono.rowBlockOrigins = deepcopy(self.rowBlockOrigins)
+        nono.colBlockOrigins = deepcopy(self.colBlockOrigins)
+        nono.rowBlockEndings = deepcopy(self.rowBlockEndings)
+        nono.colBlockEndings = deepcopy(self.colBlockEndings)
         nono.undetermind = copy(self.undetermind)
         nono.rowsChanged = copy(self.rowsChanged)
         nono.colsChanged = copy(self.colsChanged)
         nono.transposed = copy(self.transposed)
         nono.fig = None
         nono.im = None
+        nono.hinter = self.hinter
+        nono.verbose = self.verbose
         return nono
     
     def get_picture_data(self):
@@ -160,9 +166,9 @@ class Nonogram:
         else:
             raise Exception("Trying to overwrite filled/empty cell!"+' '+str(row)+' '+str(col))
     
-    def show_hint(self, row, col, value):
+    def show_basic_hint(self, row, col, value):
         """
-        Print information about next cell to be filled. Adds small hint how to deduce it.
+        Prints basic hint about next cell to be filled.
         """
         if self.hinter == 'simple':
             if self.transposed:
@@ -171,6 +177,12 @@ class Nonogram:
                 print('Analyze row ' + str(row) + '.')
         else:
             print("Assume the cell at row=" + str(row) + " and col=" + str(col) + "to be filled and try to deduce consequences.")
+    
+    def show_hint(self, row, col, value):
+        """
+        Prints information about next cell to be filled. Adds small hint how to deduce it.
+        """
+        self.show_basic_hint(row, col, value)
           
         if self.verbose:
             values = {-1:'empty.', 1:'filled.'}
