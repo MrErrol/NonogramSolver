@@ -1,12 +1,13 @@
-def print_mistakes(mistakes):
+def print_mistakes(mistakes, verbose):
     """
     Prints misclassified cells.
     """
     print("Whoops! You have made a mistake!")
-    print("List of misclassified cells:")
-    print("(row_index, column_index)")
-    for pair in mistakes:
-        print(pair)    
+    if verbose:
+        print("List of misclassified cells:")
+        print("(row_index, column_index)")
+        for pair in mistakes:
+            print(pair)    
 
 def compare_values(value1, value2):
     """
@@ -81,6 +82,6 @@ def compare_nonograms(nono1, nono2, verbose=verbose):
     mistakes = compare_tables(rows1, rows2)
     
     if verbose and mistakes:
-        print_mistakes(mistakes)
+        print_mistakes(mistakes, verbose)
     
     return bool(mistakes)
