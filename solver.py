@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 
 from lib.nonogram import Nonogram
 from lib.solver import solver
+from lib.tools import compare_nonograms
 
 def getOptions(args=argv[1:]):
     parser = ArgumentParser(description="Parses command.")
@@ -18,10 +19,7 @@ def getOptions(args=argv[1:]):
 
 options = getOptions()
 
-if just_check:
-    nono = Nonogram(options.input, presolved=True)
-else:
-    nono = Nonogram(options.input, presolved=False)
+nono = Nonogram(options.input, presolved=False)
 
 if options.interactive:
     nono.plot(interactive=options.interactive)
@@ -40,8 +38,12 @@ if not nono.undetermind:
 t1 = time()
 
 if just_check:
-    pass
-    #quit()
+    user_nono = Nonogram(options.input, presolved=True)
+    ok = compare_nonograms(nono, user_nono, verbose=verbose)
+    if ok:
+        print("So far, so good!")
+        print("No mistakes found.")
+    quit()
 
 print("Solved in : "+str(t1-t0)+'s')
 
