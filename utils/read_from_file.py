@@ -15,6 +15,11 @@ def default_mapping():
 def does_it_contain_only_numbers(text):
     return all([[letter in digits for letter in word][0] for word in text])
 
+def transpose_rows(rows):
+    cols = [[rows[j][i] for j in range(len(rows[i])-1)] for i in range(len(rows))]
+    cols = [col+[-1] for col in cols]
+    return cols
+
 def read_presolved_nonogram_representation(file, mapping=default_mapping()):
     read_list = []
     while True:

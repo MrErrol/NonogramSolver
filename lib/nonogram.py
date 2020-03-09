@@ -4,20 +4,12 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.read_from_file import read_datafile
+from utils.read_from_file import read_datafile, transpose_rows
 from copy import copy, deepcopy
-
-def transpose_rows(rows):
-    cols = [[rows[j][i] for j in range(len(rows[i])-1)] for i in range(len(rows))]
-    cols = [col+[-1] for col in cols]
-    return cols
 
 class Nonogram:
     def __init__(self, filename, presolved=False):
         rows = self.read_nonogram_from_file(filename, presolved=presolved)
-        self.nRows = len(self.rowHints)
-        self.nCols = len(self.colHints)
-        self.fill_presolved_cells(rows, presolved=presolved)
         self.rowBlockOrigins = [[0]*len(hints) for hints in self.rowHints]
         self.colBlockOrigins = [[0]*len(hints) for hints in self.colHints]
         self.rowBlockEndings = [[self.nCols - 1]*len(hints) for hints in self.rowHints]
@@ -54,10 +46,15 @@ class Nonogram:
         if filename == None: 
             self.rowHints = []
             self.colHints = []
+            self.nRows = 0
+            self.nCols = 0
             return 0
         
         # Reading datafile
         self.rowHints, self.colHints, rows = read_datafile(filename)
+        self.nRows = len(self.rowHints)
+        self.nCols = len(self.colHints)
+        self.fill_presolved_cells(rows, presolved=presolved)
         
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
