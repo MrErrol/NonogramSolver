@@ -3,8 +3,10 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
+from unittest.mock import patch, call
 import pytest
 from utils.read_from_file import read_datafile, read_numeric_lines, read_presolved_nonogram_representation, is_beggining_of_row_hints, is_beggining_of_col_hints, is_beggining_of_cells, does_it_contain_only_numbers, read_presolved_nonogram_representation
+from utils.tools import print_mistakes, compare_values, compare_tables, compare_nonograms
 
 file_1 = open('tests/data/broken_nono_1.dat', 'r')
 file_2 = open('tests/data/nono_test_2.dat', 'r')
@@ -55,3 +57,15 @@ def test_read_datafile():
     assert read_datafile(filename_3, presolved=True) == ([[2], [2], [1, 1]],\
                                                          [[1, 1], [2], [2]],\
                                                          [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])
+
+@patch('builtins.print')
+def test_print_mistakes(mocked_print):
+    print_mistakes([(1,2), (3,5)], 0)
+    assert mocked_print.mock_calls == [call("Whoops! You have made a mistake!")]
+    mocked_print.reset_mock()
+    print_mistakes([(1,2), (3,5)], 1)
+    assert mocked_print.mock_calls == [call("Whoops! You have made a mistake!"),
+                                      call("List of misclassified cells:"),
+                                      call("(row_index, column_index)"),
+                                      call((1,2)),
+                                      call((3,5))]
