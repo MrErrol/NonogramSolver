@@ -51,7 +51,7 @@ class Nonogram:
             return 0
         
         # Reading datafile
-        self.rowHints, self.colHints, rows = read_datafile(filename)
+        self.rowHints, self.colHints, rows = read_datafile(filename, presolved=presolved)
         self.nRows = len(self.rowHints)
         self.nCols = len(self.colHints)
         self.fill_presolved_cells(rows, presolved=presolved)
