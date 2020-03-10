@@ -32,9 +32,6 @@ t0 = time()
 
 cycle = solver(nono, searching_depth=options.searching_depth, interactive=options.interactive)
 
-if not nono.undetermind:
-    print("Solved Nonogram in cycle: " + str(cycle) + ".")
-
 t1 = time()
 
 if options.just_check:
@@ -44,6 +41,9 @@ if options.just_check:
         print("So far, so good!")
         print("No mistakes found.")
     quit()
+
+if not nono.undetermind:
+    print("Solved Nonogram in cycle: " + str(cycle) + ".")
 
 print("Solved in : "+str(t1-t0)+'s')
 
