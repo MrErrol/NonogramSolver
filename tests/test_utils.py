@@ -96,9 +96,10 @@ def test_print_mistakes(mocked_print):
     print_mistakes([(1,2), (3,5)], 1)
     assert mocked_print.mock_calls == [call("Whoops! You have made a mistake!"),
                                       call("List of misclassified cells:"),
-                                      call("(row_index, column_index)"),
-                                      call((1,2)),
-                                      call((3,5))]
+                                      call("Counting from 1."),
+                                      call("(row number, column number)"),
+                                      call((2,3)),
+                                      call((4,6))]
 
 @patch('builtins.print')
 def test_compare_nonograms(mocked_print):
@@ -109,5 +110,6 @@ def test_compare_nonograms(mocked_print):
     assert compare_nonograms(nono_1b, nono_2a, verbose=1) == False
     assert mocked_print.mock_calls == [call("Whoops! You have made a mistake!"),
                                       call("List of misclassified cells:"),
-                                      call("(row_index, column_index)"),
-                                      call((0,2))]
+                                      call("Counting from 1."),
+                                      call("(row number, column number)"),
+                                      call((1,3))]

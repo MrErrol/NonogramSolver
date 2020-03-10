@@ -5,9 +5,11 @@ def print_mistakes(mistakes, verbose):
     print("Whoops! You have made a mistake!")
     if verbose:
         print("List of misclassified cells:")
-        print("(row_index, column_index)")
+        print("Counting from 1.")
+        print("(row number, column number)")
         for pair in mistakes:
-            print(pair)    
+            shifted_pair = (pair[0]+1, pair[1]+1)
+            print(shifted_pair)
 
 def compare_values(value1, value2):
     """
