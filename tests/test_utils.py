@@ -16,6 +16,13 @@ filename_3 = 'tests/data/nono_test_3.dat'
 filename_small_1 = 'nonograms/small_1.dat'
 file_small_1 = open(filename_small_1, 'r')
 
+table_1a = [[ 0,  1, -1, -1],
+            [ 0,  1, -1, -1]]
+table_1b = [[ 0,  1, -1, -1],
+            [ 0,  0,  0, -1]]
+table_2a = [[ 0,  1,  1, -1],
+            [ 0, -1, -1, -1]]
+
 def test_does_it_contain_only_numbers():
     assert does_it_contain_only_numbers('1234214963483') == True
     assert does_it_contain_only_numbers('123a483') == False
@@ -66,6 +73,11 @@ def test_compare_values():
     assert compare_values(-1, -1) == True
     assert compare_values(1, -1) == False
     assert compare_values(-1, 1) == False
+
+def test_compare_tables():
+    assert compare_tables(table_1a, table_1b) == []
+    assert compare_tables(table_1a, table_2a) == [(0,2), (1,1)]
+    assert compare_tables(table_1b, table_2a) == [(0,2)]
 
 @patch('builtins.print')
 def test_print_mistakes(mocked_print):
