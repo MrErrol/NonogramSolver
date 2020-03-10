@@ -75,13 +75,13 @@ def compare_nonograms(nono1, nono2, verbose=0):
 
     # Correction for possible nonogram transposition
     if nono2.transposed:
-        rows2 = nono1.cols
+        rows2 = nono2.cols
     else:
-        rows2 = nono1.rows
+        rows2 = nono2.rows
 
     mistakes = compare_tables(rows1, rows2)
     
-    if verbose and mistakes:
+    if mistakes:
         print_mistakes(mistakes, verbose)
     
-    return bool(mistakes)
+    return not bool(mistakes)
