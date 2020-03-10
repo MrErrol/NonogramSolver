@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 
 from lib.nonogram import Nonogram
 from lib.solver import solver
-from lib.tools import compare_nonograms
+from utils.tools import compare_nonograms
 
 def getOptions(args=argv[1:]):
     parser = ArgumentParser(description="Parses command.")
