@@ -51,7 +51,7 @@ def compare_tables(rows1, rows2):
 
     return mistakes
     
-def compare_nonograms(nono1, nono2, verbose=verbose):
+def compare_nonograms(nono1, nono2, verbose=0):
     """
     Compares two Nonograms, checking whether there is a discrepancy between their solved cells.
     
@@ -70,13 +70,13 @@ def compare_nonograms(nono1, nono2, verbose=verbose):
     # Correction for possible nonogram transposition
     if nono1.transposed:
         rows1 = nono1.cols
-    else
+    else:
         rows1 = nono1.rows
 
     # Correction for possible nonogram transposition
     if nono2.transposed:
         rows2 = nono1.cols
-    else
+    else:
         rows2 = nono1.rows
 
     mistakes = compare_tables(rows1, rows2)

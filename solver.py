@@ -37,7 +37,7 @@ if not nono.undetermind:
 
 t1 = time()
 
-if just_check:
+if options.just_check:
     user_nono = Nonogram(options.input, presolved=True)
     ok = compare_nonograms(nono, user_nono, verbose=verbose)
     if ok:
