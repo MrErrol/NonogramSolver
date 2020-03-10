@@ -8,7 +8,7 @@ from utils.tools import compare_nonograms
 
 def getOptions(args=argv[1:]):
     parser = ArgumentParser(description="Parses command.")
-    parser.add_argument("-i", "--input", help="Input file with nonogram.")
+    parser.add_argument("input", help="Input file with nonogram.")
     parser.add_argument("-l", "--live", dest='interactive', default=False, action='store_true', help="Live plotting mode.")
     parser.add_argument("--hint", dest='hinter', default=False, action='store_true', help="Hinter mode.")
     parser.add_argument("-v", "--verbose", dest='verbose', type=int, default=1, action='store', help="Sets verbosity for hinter mode. (0-1)")
