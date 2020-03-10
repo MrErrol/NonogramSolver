@@ -58,6 +58,15 @@ def test_read_datafile():
                                                          [[1, 1], [2], [2]],\
                                                          [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])
 
+def test_compare_values():
+    assert compare_values(0, 1) == True
+    assert compare_values(0, -1) == True
+    assert compare_values(0, 0) == True
+    assert compare_values(1, 1) == True
+    assert compare_values(-1, -1) == True
+    assert compare_values(1, -1) == False
+    assert compare_values(-1, 1) == False
+
 @patch('builtins.print')
 def test_print_mistakes(mocked_print):
     print_mistakes([(1,2), (3,5)], 0)
