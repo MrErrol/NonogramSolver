@@ -183,5 +183,5 @@ class Nonogram:
           
         if self.verbose:
             values = {-1:'empty.', 1:'filled.'}
-            print("Cell at row=" + str(row) + " and col=" + str(col) + " may be deduced to be " + values[value])
+            print("Cell at row=" + str(row+1) + " and col=" + str(col+1) + " may be deduced to be " + values[value])
         quit()
