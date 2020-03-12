@@ -10,7 +10,7 @@ def is_beggining_of_cells(line):
     return line[:6] == 'CELLS:'
 
 def default_mapping():
-    return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1, '+':1, '-':-1, '0':0, '1':1}
+    return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1, '+':1, '-':-1, '0':0, '1':1, '2':-1}
 
 def does_it_contain_only_numbers(text):
     return all([[letter in digits for letter in word][0] for word in text])
