@@ -15,18 +15,19 @@ def push_block_Origins(hints, blockOrigins, index=0, exh=False):
     blockOrigins = copy(blockOrigins)
     # Storing information whether function deduced anything new
     sth_changed = False
-    
+
     i = index
     while i+1 < len(hints):
+        minimalNextBlockPosition =  blockOrigins[i] + hints[i] + 1
         i += 1
-        if  blockOrigins[i] < blockOrigins[i-1] + hints[i-1] + 1:
-            blockOrigins[i] = blockOrigins[i-1] + hints[i-1] + 1
-            sth_changed = True 
+        if  blockOrigins[i] < minimalNextBlockPosition:
+            blockOrigins[i] = minimalNextBlockPosition
+            sth_changed = True
             continue
-            
+
         if not exh:
             break
-    
+
     return sth_changed, blockOrigins
 
 def push_block_Endings(hints, blockEndings, index=0, exh=False):
