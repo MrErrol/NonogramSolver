@@ -105,6 +105,15 @@ def make_assumption(nonogram, row, col):
     # No internal discrepancy found
     return True
 
+def push_everything_from_cell(nono, row, col):
+    """
+    Function pushes all block endings that might be affected be change of (row, col) cell state.
+    """
+    dummy, nono.rowBlockOrigins[row] = push_block_Origins(nono.rowHints[row], nono.rowBlockOrigins[row], exh=True)
+    dummy, nono.rowBlockEndings[row] = push_block_Endings(nono.rowHints[row], nono.rowBlockEndings[row], exh=True)
+    dummy, nono.colBlockOrigins[col] = push_block_Origins(nono.colHints[col], nono.colBlockOrigins[col], exh=True)
+    dummy, nono.colBlockEndings[col] = push_block_Endings(nono.colHints[col], nono.colBlockEndings[col], exh=True)
+
 def ivestigate_row_with_assumptions(nonogram, row):
     """
     Function tries to cross-out cells at the beggining and at the end of the row by making assumptions. If possible updates the state of nonogram.
@@ -127,10 +136,7 @@ def ivestigate_row_with_assumptions(nonogram, row):
             if not make_assumption(nonogram, row, col):
                 nonogram.fill_cell(row, col, -1)
                 # Use of pushes after fill_cell is required by deducing functions
-                dummy, nonogram.rowBlockOrigins[row] = push_block_Origins(nonogram.rowHints[row], nonogram.rowBlockOrigins[row], exh=True)
-                dummy, nonogram.rowBlockEndings[row] = push_block_Endings(nonogram.rowHints[row], nonogram.rowBlockEndings[row], exh=True)
-                dummy, nonogram.colBlockOrigins[col] = push_block_Origins(nonogram.colHints[col], nonogram.colBlockOrigins[col], exh=True)
-                dummy, nonogram.colBlockEndings[col] = push_block_Endings(nonogram.colHints[col], nonogram.colBlockEndings[col], exh=True)
+                push_everything_from_cell(nonogram, row, col)
                 sth_changed = True
             else:
                 break
