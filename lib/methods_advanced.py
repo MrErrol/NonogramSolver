@@ -53,11 +53,32 @@ def safe_deduce(nono, row):
             return True
     return False
 
+def make_deduction(nono):
+    """
+    Function deduces new information about cells for 2 iterations.
+    Designed to be used after making assumption, not for casual solving.
+
+    Returns:
+    --------
+    bool - bool variable informing whether discrepancy has been found
+    """
+    # Loop determining the analysis depth
+    # Range - 2*depth, 2 stands for transposition - going for rows and columns separately
+    for checking_depth in range(2*2):
+        # Loop over previously changed rows (or columns)
+        for row in nono.rowsChanged:
+            found_discr = safe_deduce(nono, row)
+            if found_discr:
+                return True
+        nono.transpose()
+    # no discrepancy found
+    return False
+
 def make_assumption(nonogram, row, col):
     """
     The function makes assumption that cell at position (row, col) is filled and tries to find discrepancy.
     The function does not change nonogram as it work on it's copy.
-    
+
     Returns:
     --------
     bool - bool variable answearing the question if the cell may be filled
@@ -68,16 +89,8 @@ def make_assumption(nonogram, row, col):
     # Our assumption
     nono.fill_cell(row, col, 1)
     
-    # Loop determining the analysis depth
-    # Range - 2*depth, 2 stands for transposition - going for rows and columns separately
-    for checking_depth in range(2*2):
-        # Loop over previously changed rows (or columns)
-        for row in nono.rowsChanged:
-            found_discr = safe_deduce(nono, row)
-            if found_discr:
-                return False
-            
-        nono.transpose()
+    if make_deduction(nono):
+        return False
     
     # Loops verifying all modified rows
     for row in nono.rowsChanged:
