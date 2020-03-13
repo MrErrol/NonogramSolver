@@ -238,31 +238,50 @@ def fill_between_the_blocks(nonogram, row):
     
     return sth_changed
 
+def fill_beggining_of_the_row(nono, row):
+    """
+    Function marks as empty area before first block.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has changed
+    """
+    origins = nono.rowBlockOrigins[row]
+    sth_changed = fill_range_in_row(nono, row, range( origins[0] ), -1)
+    return sth_changed
+
+def fill_end_of_the_row(nono, row):
+    """
+    Function marks as empty area after last block.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has changed
+    """
+    endings = nono.rowBlockEndings[row]
+    sth_changed = fill_range_in_row(nono, row, range( endings[-1] + 1 , nono.nCols ), -1)
+    return sth_changed
 
 def fill_row(nono, row, interactive=False):
     """
     Function tries to fill/mark as empty each cell in the pointed row based on actual knowledge.
     Filling in columns should be done by transposing nonogram.
-    
+
     Parameters:
     -----------
     nono - Nonogram class instance to be updated
     row - index of a row to be checked
-    
+
     Returns:
     --------
     sth_changed - bool variable
     """
-    hints = nono.rowHints[row]
-    endings = nono.rowBlockEndings[row]
-    origins = nono.rowBlockOrigins[row]
-    
     # Filling inside the blocks
     changed_1 = fill_inside_of_the_blocks(nono, row)
     # Marking as empty beggining of the line
-    changed_2 = fill_range_in_row(nono, row, range( origins[0] ), -1)
+    changed_2 = fill_beggining_of_the_row(nono, row)
     # Marking as empty end of the line
-    changed_3 = fill_range_in_row(nono, row, range( endings[-1] + 1 , nono.nCols ), -1)
+    changed_3 = fill_end_of_the_row(nono, row)
     # Marking as empty area between blocks
     changed_4 = fill_between_the_blocks(nono, row)
     
