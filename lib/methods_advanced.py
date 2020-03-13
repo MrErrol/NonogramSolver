@@ -114,10 +114,33 @@ def push_everything_from_cell(nono, row, col):
     dummy, nono.colBlockOrigins[col] = push_block_Origins(nono.colHints[col], nono.colBlockOrigins[col], exh=True)
     dummy, nono.colBlockEndings[col] = push_block_Endings(nono.colHints[col], nono.colBlockEndings[col], exh=True)
 
+def investigate_empty_cells_from_left(nono, row, empty_cells):
+    """
+    Function tries to fill empty_cells in row from the left trying to find discrepancy.
+    On succes emptifies the cell and proceeds.
+    On failure stops.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether nonogram state has been changed
+    """
+    sth_changed = False
+
+    for col in empty_cells:
+        if not make_assumption(nono, row, col):
+            nono.fill_cell(row, col, -1)
+            # Use of pushes after fill_cell is required by deducing functions
+            push_everything_from_cell(nono, row, col)
+            sth_changed = True
+        else:
+            break
+
+    return sth_changed
+
 def ivestigate_row_with_assumptions(nonogram, row):
     """
     Function tries to cross-out cells at the beggining and at the end of the row by making assumptions. If possible updates the state of nonogram.
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
@@ -125,25 +148,18 @@ def ivestigate_row_with_assumptions(nonogram, row):
     # gives indices of empty cells in the row
     def get_empty_cells(nonogram, row):
         return [index for index, value in enumerate(nonogram.rows[row]) if value == 0]
-    
-    sth_changed = False
+
+    sth_changed = []
     empty_cells = get_empty_cells(nonogram, row)
-    
+
     # single forward-backward loop
-    for i in range(2): 
-        # investigating firsts (lasts) empty cells in the row
-        for col in empty_cells:
-            if not make_assumption(nonogram, row, col):
-                nonogram.fill_cell(row, col, -1)
-                # Use of pushes after fill_cell is required by deducing functions
-                push_everything_from_cell(nonogram, row, col)
-                sth_changed = True
-            else:
-                break
+    for i in range(2):
+        change = investigate_empty_cells_from_left(nonogram, row, empty_cells)
+        sth_changed.append(change)
         # updating and reversing the list to make backward loop
         empty_cells = get_empty_cells(nonogram, row)[::-1]
-    
-    return sth_changed
+
+    return any(sth_changed)
 
 def search_for_assumptions(nonogram, searching_depth=2):
     """
