@@ -52,14 +52,36 @@ def push_block_Endings(hints, blockEndings, index=0, exh=False):
     
     return sth_changed, blockEndings
 
-def pull_block_origins(line, hints, blockOrigins):
+def pull_single_block_origin(line, hints, blockOrigins, blockIndex):
     """
-    Function tries to pull further blockOrigins by filled cells that do not belong to the next block.
-    Function should be used only by function deduce_new_block_origins as it performs more complete analysis.
+    Function pulls given block by a filled cell.
+    Does not check whether such a cell exists.
     
     WARNING!
     Function will modify provided blockOrigins.
     
+    Returns:
+    blockOrigins - updated blockOrigins
+    """
+    # renamed to make code more clear
+    i = blockIndex
+    # shift stores distance of pulling cell from the next block origin
+    shift = line[blockOrigins[i] + hints[i] : blockOrigins[i + 1]][::-1].index(1)
+    # blockOrigins[i + 1] - blockOrigins[i] is a free space
+    # hints[i] + shift is the maximal distance of the block origin from nex block origin
+    # difference of the two above gives desired shift of the block origin
+    shift = blockOrigins[i + 1] - blockOrigins[i] - hints[i] - shift
+    blockOrigins[i] += shift
+    return blockOrigins
+
+def pull_block_origins(line, hints, blockOrigins):
+    """
+    Function tries to pull further blockOrigins by filled cells that do not belong to the next block.
+    Function should be used only by the function deduce_new_block_origins as it performs more complete analysis.
+
+    WARNING!
+    Function will modify provided blockOrigins.
+
     Returns:
     --------
     sth_changed - bool variable informing whether anything new has been deduced
@@ -74,10 +96,9 @@ def pull_block_origins(line, hints, blockOrigins):
     # backward loop
     while i >= 0:
         # Checking if there is a filled cell to pull block origin
-        if 1 in line[blockOrigins[i]+hints[i]:blockOrigins[i+1]]:
-            shift = line[blockOrigins[i]+hints[i]:blockOrigins[i+1]][::-1].index(1)
-            shift = blockOrigins[i+1] - blockOrigins[i] - hints[i] - shift
-            blockOrigins[i] += shift
+        if 1 in line[blockOrigins[i] + hints[i] : blockOrigins[i + 1]]:
+            # pulling the block
+            blockOrigins = pull_single_block_origin(line, hints, blockOrigins, i)
             # pushing following blocks origins further away
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
