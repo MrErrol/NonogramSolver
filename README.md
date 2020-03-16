@@ -9,7 +9,7 @@ Got bored while solving nonogram and want a short cut? Made mistake just before 
 
 Summing up: *I want to see the solution!*
 
-Clone, type `python3 solver.py nonograms/heart.dat` and thats all you need to get this
+Clone, type `python3 nonogeek.py nonograms/heart.dat` and thats all you need to get this
 
 ![alt text][heart]
 
