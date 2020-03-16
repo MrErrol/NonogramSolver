@@ -104,6 +104,9 @@ def test_print_mistakes(mocked_print):
 @patch('builtins.print')
 def test_compare_nonograms(mocked_print):
     assert compare_nonograms(nono_1a, nono_1b) == True
+    assert mocked_print.mock_calls == [call("So far, so good!"),
+                                       call("No mistakes found.")]
+    mocked_print.reset_mock()
     assert compare_nonograms(nono_1a, nono_2a) == False
     assert mocked_print.mock_calls == [call("Whoops! You have made a mistake!")]
     mocked_print.reset_mock()

@@ -1,3 +1,10 @@
+def print_congrats():
+    """
+    Prints congratulations to raise up spirit when no mistakes were found.
+    """
+    print("So far, so good!")
+    print("No mistakes found.")
+
 def print_mistakes(mistakes, verbose):
     """
     Prints misclassified cells.
@@ -85,5 +92,7 @@ def compare_nonograms(nono1, nono2, verbose=0):
     
     if mistakes:
         print_mistakes(mistakes, verbose)
+    else:
+        print_congrats()
     
     return not bool(mistakes)
