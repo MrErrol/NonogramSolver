@@ -188,7 +188,7 @@ class Nonogram:
                             )
 
 
-    def show_basic_hint(self, row, col, value):
+    def show_basic_hint(self, row, col):
         """
         Prints basic hint about next cell to be filled.
         """
@@ -207,7 +207,7 @@ class Nonogram:
         Prints information about next cell to be filled. Adds small hint
         how to deduce it.
         """
-        self.show_basic_hint(row, col, value)
+        self.show_basic_hint(row, col)
           
         if self.verbose:
             values = {-1:'empty.', 1:'filled.'}
