@@ -5,8 +5,12 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 from unittest.mock import patch, call
 import pytest
-from utils.read_from_file import read_datafile, read_numeric_lines, read_presolved_nonogram_representation, is_beggining_of_row_hints, is_beggining_of_col_hints, is_beggining_of_cells, does_it_contain_only_numbers, read_presolved_nonogram_representation
-from utils.tools import print_mistakes, compare_values, compare_tables, compare_nonograms
+from utils.read_from_file import read_datafile, read_numeric_lines,\
+    read_presolved_nonogram_representation, is_beggining_of_row_hints,\
+    is_beggining_of_col_hints, is_beggining_of_cells,\
+    does_it_contain_only_numbers, read_presolved_nonogram_representation
+from utils.tools import print_mistakes, compare_values, compare_tables,\
+    compare_nonograms
 from lib.nonogram import Nonogram
 
 file_1 = open('tests/data/broken_nono_1.dat', 'r')
@@ -65,7 +69,10 @@ def test_read_numeric_lines():
 
 def test_read_presolved_nonogram_representation():
     [file_3.readline() for i in range(9)] # discarding fisrt 9 lines
-    assert read_presolved_nonogram_representation(file_3) == ([[1, 1, -1], [-1, 1, 0], [0, -1, 1]], "")
+    assert read_presolved_nonogram_representation(file_3) == ([[1, 1, -1],\
+                                                               [-1, 1, 0],\
+                                                               [0, -1, 1]],\
+                                                              "")
     file_3.close()
     
 def test_read_datafile():

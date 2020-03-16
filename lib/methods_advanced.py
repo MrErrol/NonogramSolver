@@ -1,8 +1,12 @@
-from lib.methods import deduce_new_block_origins, deduce_new_block_endings, push_block_Origins, push_block_Endings, fill_row
+from lib.methods import deduce_new_block_origins, deduce_new_block_endings,\
+    push_block_Origins, push_block_Endings, fill_row
+
 
 def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     """
-    Function performs few simple checks if it is possible to fill the line according to actual knowledge. It may misclassify unfillable row as fillable, but not fillable as unfillable.
+    Function performs few simple checks if it is possible to fill the line
+    according to actual knowledge. It may misclassify unfillable row
+    as fillable, but not fillable as unfillable.
     
     Returns:
     --------
@@ -30,18 +34,29 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     # No problems found
     return True
 
+
 def safe_deduce(nono, row):
     """
-    Function used while making assumptions to find discrepancy in considered nonogram.
-    Function being safe means that it will not raise Exception while handling incorrect nonogram.
-    
+    Function used while making assumptions to find discrepancy in considered
+    nonogram.
+    Function being safe means that it will not raise Exception while handling
+    incorrect nonogram.
+
     Returns:
     --------
     found_discrepancy - bool variable informing whether discrepancy has been found
     """
     try:
-        sth_changed1, blockOrigins = deduce_new_block_origins(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row])
-        sth_changed2, blockEndings = deduce_new_block_endings(nono.rows[row], nono.rowHints[row], nono.rowBlockEndings[row])
+        sth_changed1, blockOrigins = deduce_new_block_origins(
+            nono.rows[row],
+            nono.rowHints[row],
+            nono.rowBlockOrigins[row],
+            )
+        sth_changed2, blockEndings = deduce_new_block_endings(
+            nono.rows[row],
+            nono.rowHints[row],
+            nono.rowBlockEndings[row],
+            )
     except:
         return True
     if sth_changed1 or sth_changed2 :
@@ -53,6 +68,7 @@ def safe_deduce(nono, row):
             return True
     return False
 
+
 def make_deduction(nono):
     """
     Function deduces new information about cells for 2 iterations.
@@ -63,7 +79,8 @@ def make_deduction(nono):
     bool - bool variable informing whether discrepancy has been found
     """
     # Loop determining the analysis depth
-    # Range - 2*depth, 2 stands for transposition - going for rows and columns separately
+    # Range - 2*depth, where 2 stands for transposition that is going
+    # through rows and columns separately
     for checking_depth in range(2*2):
         # Loop over previously changed rows (or columns)
         for row in nono.rowsChanged:
@@ -74,9 +91,11 @@ def make_deduction(nono):
     # no discrepancy found
     return False
 
+
 def make_assumption(nonogram, row, col):
     """
-    The function makes assumption that cell at position (row, col) is filled and tries to find discrepancy.
+    The function makes assumption that cell at position (row, col) is filled
+    and tries to find discrepancy.
     The function does not change nonogram as it work on it's copy.
 
     Returns:
@@ -88,35 +107,63 @@ def make_assumption(nonogram, row, col):
     nono.colsChanged = set()
     # Our assumption
     nono.fill_cell(row, col, 1)
-    
+
     if make_deduction(nono):
         return False
-    
+
     # Loops verifying all modified rows
     for row in nono.rowsChanged:
-        if not check_if_line_is_fillable(nono.rows[row], nono.rowHints[row], nono.rowBlockOrigins[row], nono.rowBlockEndings[row]):
+        if not check_if_line_is_fillable(nono.rows[row],
+                                         nono.rowHints[row],
+                                         nono.rowBlockOrigins[row],
+                                         nono.rowBlockEndings[row],
+                                         ):
             return False
-        
+
     # Loops verifying all modified columns
     for col in nono.colsChanged:
-        if not check_if_line_is_fillable(nono.cols[col], nono.colHints[col], nono.colBlockOrigins[col], nono.colBlockEndings[col]):
+        if not check_if_line_is_fillable(nono.cols[col],
+                                         nono.colHints[col],
+                                         nono.colBlockOrigins[col],
+                                         nono.colBlockEndings[col],
+                                         ):
             return False
-    
+
     # No internal discrepancy found
     return True
 
+
 def push_everything_from_this_cell(nono, row, col):
     """
-    Function pushes all block endings that might be affected be change of (row, col) cell state.
+    Function pushes all block endings that might be affected be change of
+    (row, col) cell state.
     """
-    dummy, nono.rowBlockOrigins[row] = push_block_Origins(nono.rowHints[row], nono.rowBlockOrigins[row], exh=True)
-    dummy, nono.rowBlockEndings[row] = push_block_Endings(nono.rowHints[row], nono.rowBlockEndings[row], exh=True)
-    dummy, nono.colBlockOrigins[col] = push_block_Origins(nono.colHints[col], nono.colBlockOrigins[col], exh=True)
-    dummy, nono.colBlockEndings[col] = push_block_Endings(nono.colHints[col], nono.colBlockEndings[col], exh=True)
+    dummy, nono.rowBlockOrigins[row] = push_block_Origins(
+        nono.rowHints[row],
+        nono.rowBlockOrigins[row],
+        exh=True,
+        )
+    dummy, nono.rowBlockEndings[row] = push_block_Endings(
+        nono.rowHints[row],
+        nono.rowBlockEndings[row],
+        exh=True,
+        )
+    dummy, nono.colBlockOrigins[col] = push_block_Origins(
+        nono.colHints[col],
+        nono.colBlockOrigins[col],
+        exh=True,
+        )
+    dummy, nono.colBlockEndings[col] = push_block_Endings(
+        nono.colHints[col],
+        nono.colBlockEndings[col],
+        exh=True,
+        )
+
 
 def investigate_empty_cells_from_left(nono, row, empty_cells):
     """
-    Function tries to fill empty_cells in row from the left trying to find discrepancy.
+    Function tries to fill empty_cells in row from the left trying to find
+    discrepancy.
     On succes emptifies the cell and proceeds.
     On failure stops.
 
@@ -137,9 +184,11 @@ def investigate_empty_cells_from_left(nono, row, empty_cells):
 
     return sth_changed
 
+
 def ivestigate_row_with_assumptions(nonogram, row):
     """
-    Function tries to cross-out cells at the beggining and at the end of the row by making assumptions. If possible updates the state of nonogram.
+    Function tries to cross-out cells at the beggining and at the end of the row
+    by making assumptions. If possible updates the state of nonogram.
 
     Returns:
     --------
@@ -161,21 +210,23 @@ def ivestigate_row_with_assumptions(nonogram, row):
 
     return any(sth_changed)
 
+
 def search_for_assumptions(nonogram, searching_depth=2):
     """
-    Function search endings of first searching_depth lines from each border for making assumptions. If possible updates the state of nonogram.
-    
+    Function search endings of first searching_depth lines from each border
+    for making assumptions. If possible updates the state of nonogram.
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
     """
     sth_changed = False
-    
+
     # loop over nonogram dimensions (rows and columns)
     for dim in range(2):
         # Finding non-filled rows in nonogram
         rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
-        
+
         # loop over rows truncated by searching_depth
         for depth in range(searching_depth):
             sth_changed_1 = ivestigate_row_with_assumptions(nonogram, rows[0])
@@ -187,9 +238,8 @@ def search_for_assumptions(nonogram, searching_depth=2):
                 del rows[-1]
             except:
                 break
-        
+
         # transposing nonogram for dimension loop
         nonogram.transpose()
-    
+
     return sth_changed
-    

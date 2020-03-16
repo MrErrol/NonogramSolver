@@ -5,6 +5,7 @@ def print_congrats():
     print("So far, so good!")
     print("No mistakes found.")
 
+
 def print_mistakes(mistakes, verbose):
     """
     Prints misclassified cells.
@@ -17,6 +18,7 @@ def print_mistakes(mistakes, verbose):
         for pair in mistakes:
             shifted_pair = (pair[0]+1, pair[1]+1)
             print(shifted_pair)
+
 
 def compare_values(value1, value2):
     """
@@ -35,11 +37,14 @@ def compare_values(value1, value2):
     else:
         return False
 
+
 def compare_tables(rows1, rows2):
     """
-    Compares two nonogram cell tables, checking whether there is a discrepancy between their solved cells.
+    Compares two nonogram cell tables, checking whether there is a discrepancy
+    between their solved cells.
 
-    Function is used to verify whether user has made a mistake while (at least) partially solving Nonogram.
+    Function is used to verify whether user has made a mistake while (at least)
+    partially solving Nonogram.
 
     Parameters:
     -----------
@@ -60,11 +65,14 @@ def compare_tables(rows1, rows2):
 
     return mistakes
 
+
 def compare_nonograms(nono1, nono2, verbose=0):
     """
-    Compares two Nonograms, checking whether there is a discrepancy between their solved cells.
+    Compares two Nonograms, checking whether there is a discrepancy between
+    their solved cells.
 
-    Function is used to verify whether user has made a mistake while (at least) partially solving Nonogram.
+    Function is used to verify whether user has made a mistake while (at
+    least) partially solving Nonogram.
 
     Parameters:
     -----------
