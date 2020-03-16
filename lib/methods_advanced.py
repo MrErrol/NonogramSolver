@@ -105,7 +105,7 @@ def make_assumption(nonogram, row, col):
     # No internal discrepancy found
     return True
 
-def push_everything_from_cell(nono, row, col):
+def push_everything_from_this_cell(nono, row, col):
     """
     Function pushes all block endings that might be affected be change of (row, col) cell state.
     """
@@ -130,7 +130,7 @@ def investigate_empty_cells_from_left(nono, row, empty_cells):
         if not make_assumption(nono, row, col):
             nono.fill_cell(row, col, -1)
             # Use of pushes after fill_cell is required by deducing functions
-            push_everything_from_cell(nono, row, col)
+            push_everything_from_this_cell(nono, row, col)
             sth_changed = True
         else:
             break
