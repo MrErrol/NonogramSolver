@@ -9,7 +9,7 @@ from copy import copy, deepcopy
 
 
 class Nonogram:
-    def __init__(self, filename, presolved=False):
+    def __init__(self, filename, presolved=False, wait=0.0):
         rows = self.read_nonogram_from_file(filename, presolved=presolved)
         self.rowBlockOrigins = [[0]*len(hints) for hints in self.rowHints]
         self.colBlockOrigins = [[0]*len(hints) for hints in self.colHints]
@@ -23,6 +23,7 @@ class Nonogram:
         self.transposed = False
         self.fig = None
         self.im = None
+        self.wait = wait
         self.hinter = 'simple'
         self.verbose = 0
 
@@ -119,6 +120,7 @@ class Nonogram:
         nono.transposed = copy(self.transposed)
         nono.fig = None
         nono.im = None
+        nono.wait = self.wait
         nono.hinter = self.hinter
         nono.verbose = self.verbose
         return nono
@@ -155,7 +157,7 @@ class Nonogram:
         Figure and image are updated by it.
         """
         data = self.get_picture_data()
-        update_plot(data, self.fig, self.im)
+        update_plot(data, self.fig, self.im, self.wait)
 
 
     def end_iplot(self):

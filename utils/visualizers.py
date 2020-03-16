@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+from time import sleep
 
 
 def end_iplot():
@@ -6,10 +7,11 @@ def end_iplot():
     plt.show()
 
 
-def update_plot(data, fig, im):
+def update_plot(data, fig, im, wait):
     im.set_data(data)
     fig.canvas.draw()
     fig.canvas.flush_events()
+    sleep(wait)
 
 
 def call_imshow(data):

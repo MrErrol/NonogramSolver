@@ -15,6 +15,11 @@ def getOptions(args=argv[1:]):
                         dest='interactive', default=False, action='store_true',
                         help="Live plotting mode.",
                         )
+    parser.add_argument('-w', '--wait',
+                        dest='wait', default=0.0, action='store', type=float,
+                        help="Additional waiting time after each plot update in \
+                        live plotting mode. Given in sec.",
+                        )
     parser.add_argument("--hint",
                         dest='hinter', default=False, action='store_true',
                         help="Hinter mode.",
@@ -37,7 +42,7 @@ def getOptions(args=argv[1:]):
 
 options = getOptions()
 
-nono = Nonogram(options.input, presolved=False)
+nono = Nonogram(options.input, presolved=False, wait=options.wait)
 
 if options.interactive:
     nono.plot(interactive=options.interactive)
