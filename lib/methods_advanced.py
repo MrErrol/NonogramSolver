@@ -105,6 +105,7 @@ def make_assumption(nonogram, row, col):
     nono = nonogram.copy()
     nono.rowsChanged = set()
     nono.colsChanged = set()
+    nono.hinter = 'assumption_making'
     # Our assumption
     nono.fill_cell(row, col, 1)
 
