@@ -21,9 +21,9 @@ def print_mistakes(mistakes, verbose):
 def compare_values(value1, value2):
     """
     Checks whether two values of cells are consistent.
-    
+
     Treats unsolved cell (value = 0) as consistent with any other.
-    
+
     Returns:
     --------
     bool - bool variable informing whether provided values are consistent
@@ -34,18 +34,18 @@ def compare_values(value1, value2):
         return True
     else:
         return False
-        
+
 def compare_tables(rows1, rows2):
     """
     Compares two nonogram cell tables, checking whether there is a discrepancy between their solved cells.
-    
+
     Function is used to verify whether user has made a mistake while (at least) partially solving Nonogram.
-    
+
     Parameters:
     -----------
     nono1 - one of two cell tables to be compared
     nono2 - one of two cell tables to be compared
-    
+
     Returns:
     --------
     mistakes - list of pairs of coordinates of misclassified cells
@@ -59,19 +59,19 @@ def compare_tables(rows1, rows2):
                 mistakes.append((row, col))
 
     return mistakes
-    
+
 def compare_nonograms(nono1, nono2, verbose=0):
     """
     Compares two Nonograms, checking whether there is a discrepancy between their solved cells.
-    
+
     Function is used to verify whether user has made a mistake while (at least) partially solving Nonogram.
-    
+
     Parameters:
     -----------
     nono1 - one of two Nonograms to be compared
     nono2 - one of two Nonograms to be compared
     verbosity - for value != 0 prints misclassified cells
-    
+
     Returns:
     --------
     bool - bool variable informing whether nonograms are consistent
@@ -89,7 +89,7 @@ def compare_nonograms(nono1, nono2, verbose=0):
         rows2 = nono2.rows
 
     mistakes = compare_tables(rows1, rows2)
-    
+
     if mistakes:
         print_mistakes(mistakes, verbose)
     else:
