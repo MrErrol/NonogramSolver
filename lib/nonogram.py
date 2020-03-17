@@ -3,9 +3,10 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
+from copy import copy, deepcopy
+
 from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile, transpose_rows
-from copy import copy, deepcopy
 
 
 class Nonogram:
