@@ -127,6 +127,22 @@ class Nonogram:
         return nono
 
 
+    def get_true_rows(self):
+        """
+        The function returns copy of true rows of the nonogram effectively
+        canceling potential nonogram transposition.
+
+        Returns:
+        --------
+        data - matrix (list of lists) of nonogram cell values (including
+               trailing -1)
+        """
+        if nono.transposed:
+            return copy(self.cols)
+        else:
+            return copy(self.rows)
+
+
     def get_picture_data(self):
         """
         The function does not modify Nonogram.
@@ -135,13 +151,10 @@ class Nonogram:
 
         Returns:
         --------
-        data - matrix (list of lists) of nonogram cell values        
+        data - matrix (list of lists) of nonogram cell values
         """
-        if not self.transposed:
-            data = [row[:-1] for row in self.rows]
-        else:
-            data = [col[:-1] for col in self.cols]
-        return data
+        rows = self.get_true_rows()
+        return [row[:-1] for row in rows]
 
 
     def plot(self, interactive=False):

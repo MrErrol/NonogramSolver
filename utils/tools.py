@@ -85,16 +85,8 @@ def compare_nonograms(nono1, nono2, verbose=0):
     bool - bool variable informing whether nonograms are consistent
     """
     # Correction for possible nonogram transposition
-    if nono1.transposed:
-        rows1 = nono1.cols
-    else:
-        rows1 = nono1.rows
-
-    # Correction for possible nonogram transposition
-    if nono2.transposed:
-        rows2 = nono2.cols
-    else:
-        rows2 = nono2.rows
+    rows1 = nono1.get_true_rows()
+    rows2 = nono2.get_true_rows()
 
     mistakes = compare_tables(rows1, rows2)
 
@@ -102,5 +94,5 @@ def compare_nonograms(nono1, nono2, verbose=0):
         print_mistakes(mistakes, verbose)
     else:
         print_congrats()
-    
+
     return not bool(mistakes)
