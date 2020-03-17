@@ -216,5 +216,5 @@ class Nonogram:
             print("Cell at row=" + str(row+1) + " and col=" + str(col+1) +
                   " may be deduced to be " + values[value])
             if self.hinter == 'assumption_making':
-                print('You will need to analyze more than just single row or column')
+                print('You will need to analyze more than just single row or column.')
         quit()
