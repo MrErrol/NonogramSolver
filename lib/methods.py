@@ -100,10 +100,10 @@ def pull_block_origins(line, hints, blockOrigins):
     """
     sth_changed = False
     i = len(hints) - 1
-    
+
     # Adding virtual block for sake of simplicity of procedure that measures distance
     blockOrigins += [len(line)]
-    
+
     # backward loop
     while i >= 0:
         # Checking if there is a filled cell to pull block origin
@@ -114,10 +114,10 @@ def pull_block_origins(line, hints, blockOrigins):
             dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
             sth_changed = True
         i -= 1
-    
+
     # removing virtual block
     del blockOrigins[-1]
-    
+
     return sth_changed, blockOrigins
 
 
@@ -134,7 +134,7 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     blockOrigins = copy(blockOrigins)
     # Storing information whether function deduced anything new
     sth_changed = False
-        
+
     # forward loop
     i = 0
     while i < len(hints):
@@ -159,11 +159,11 @@ def deduce_new_block_origins(line, hints, blockOrigins):
         else:
             i += 1
             continue
-        
+
     # backward loop analysis
     changed, blockOrigins = pull_block_origins(line, hints, blockOrigins)
     sth_changed = sth_changed or changed
-    
+
     return sth_changed, blockOrigins
 
 
@@ -179,14 +179,14 @@ def deduce_new_block_endings(line, hints, blockEndings):
     # Reversing line (extra empty cell removed from the end and put at the end)
     newline = copy(line[-2::-1] + [-1]) 
     blockOrigins = [len(newline) - 2 - ending for ending in blockEndings[::-1]]
-    
+
     # Solving equivalent problem with reversed line
     sth_changed, blockOrigins = deduce_new_block_origins(newline, hints[::-1],
                                                          blockOrigins)
-    
+
     # Reversing back obtained solution
     blockEndings = [len(newline) - 2 - origin for origin in blockOrigins[::-1]]
-    
+
     return sth_changed, blockEndings
 
 
@@ -206,11 +206,11 @@ def fill_range_in_row(nonogram, row, cols, value):
     sth_changed - bool variable informing whether nonogram state has changed
     """
     sth_changed = False
-    
+
     for col in cols:
         change =  nonogram.fill_cell(row, col, value)
         sth_changed = sth_changed or change
-    
+
     return sth_changed
 
 
@@ -226,14 +226,14 @@ def fill_inside_of_the_blocks(nonogram, row):
     hints = nonogram.rowHints[row]
     endings = nonogram.rowBlockEndings[row]
     origins = nonogram.rowBlockOrigins[row]
-    
+
     sth_changed = False
-    
+
     for i in range(len(hints)):
         cols = range( endings[i] + 1 - hints[i] , origins[i] + hints[i] )
         changed = fill_range_in_row(nonogram, row, cols, 1)
         sth_changed = sth_changed or changed
-    
+
     return sth_changed
 
 
@@ -248,14 +248,14 @@ def fill_between_the_blocks(nonogram, row):
     hints = nonogram.rowHints[row]
     endings = nonogram.rowBlockEndings[row]
     origins = nonogram.rowBlockOrigins[row]
-    
+
     sth_changed = False
-    
+
     for i in range(len(hints) - 1):
         cols = range( endings[i] + 1 , origins[i+1] )
         changed = fill_range_in_row(nonogram, row, cols, -1)
         sth_changed = sth_changed or changed
-    
+
     return sth_changed
 
 
@@ -310,12 +310,12 @@ def fill_row(nono, row, interactive=False):
     changed_3 = fill_end_of_the_row(nono, row)
     # Marking as empty area between blocks
     changed_4 = fill_between_the_blocks(nono, row)
-    
+
     sth_changed = changed_1 or changed_2 or changed_3 or changed_4
-    
+
     if interactive and sth_changed:
         nono.update_plot()
-    
+
     return sth_changed
 
 
@@ -348,25 +348,25 @@ def fill_cells_to_the_right(nonogram, row, col):
     It tries to fill cells to the right from filled cell, when structures like:
     [ ... , -1 , ... , 1 , 0 , ...] 
     appear.
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
     """
     sth_changed = False
-    
+
     # leeway stores a number of fillable cells to the left
     # -1 at the end returns length of line, when there is no true empty cell
     left_cells = nonogram.rows[row][:col]
     leeway = (left_cells[::-1]+[-1]).index(-1)
-    
+
     block_length = find_min_block_length(nonogram, row, col)
-    
+
     # filling cells enforced by minimal block length
     for position in range( col + 1, col + block_length - leeway ):
         nonogram.fill_cell(row, position, 1)
         sth_changed = True
-    
+
     return sth_changed
 
 
@@ -376,25 +376,25 @@ def fill_cells_to_the_left(nonogram, row, col):
     It tries to fill cells to the left from filled cell, when structures like:
     [ ... , 0 , 1 , ... , -1 , ...] 
     appear.
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
     """
     sth_changed = False
-    
+
     # leeway stores a number of fillable cells to the right
     # -1 at the end returns length of line, when there is no true empty cell
     right_cells = nonogram.rows[row][col+1:]
     leeway = (right_cells + [-1]).index(-1)
-    
+
     block_length = find_min_block_length(nonogram, row, col)
-    
+
     # filling cells enforced by minimal block length
     for position in range(col + leeway + 1 - block_length , col ):
         nonogram.fill_cell(row, position, 1)
         sth_changed = True
-        
+
     return sth_changed
 
 
@@ -419,7 +419,7 @@ def analyze_multi_block_relations_in_row(nonogram, row):
         if nonogram.rows[row][col] == 1 and nonogram.rows[row][col+1] == 0:
             changed = fill_cells_to_the_right(nonogram, row, col)
             sth_changed = sth_changed or changed
-            
+
         # filling in left direction
         if nonogram.rows[row][col] == 1 and nonogram.rows[row][col-1] == 0:
             changed = fill_cells_to_the_left(nonogram, row, col)
