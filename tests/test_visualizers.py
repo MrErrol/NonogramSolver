@@ -42,3 +42,24 @@ def test_call_imshow(mocked_axis, mocked_imshow):
       [[0],[1]], cmap='binary', origin='upper', vmin=-1, vmax=1,
       extent=(0.5, 1.5, 0.5, 2.5),
     )]
+
+
+@patch('utils.visualizers.plt.show')
+@patch('utils.visualizers.call_imshow')
+@patch('utils.visualizers.plt.figure')
+@patch('utils.visualizers.plt.ion')
+def test_plot(mocked_ion, mocked_figure, mocked_imshow, mocked_show):
+    plot([[0]])
+
+    assert mocked_show.mock_calls == [call()]
+    assert mocked_figure.mock_calls == [call()]
+    assert mocked_imshow.mock_calls == [call([[0]])]
+
+    mocked_figure.reset_mock()
+    mocked_imshow.reset_mock()
+
+    plot([[0]], interactive=True)
+
+    assert mocked_ion.mock_calls == [call()]
+    assert mocked_figure.mock_calls == [call(), call().canvas.draw()]
+    assert mocked_imshow.mock_calls == [call([[0]])]
