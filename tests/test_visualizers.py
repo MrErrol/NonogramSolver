@@ -30,3 +30,15 @@ def test_update_plot(mocked_sleep):
     assert fig.canvas.draw.mock_calls == [call()]
     assert fig.canvas.draw.flush_events == [call()]
     assert mocked_sleep.mock_calls == [call(1.2)]
+
+
+@patch('utils.visualizers.plt.imshow')
+@patch('utils.visualizers.plt.axis')
+def test_call_imshow(mocked_axis, mocked_imshow):
+    call_imshow([[0],[1]])
+
+    assert mocked_axis.mock_calls == [call('off')]
+    assert mocked_imshow.mock_calls == [call(
+      [[0],[1]], cmap='binary', origin='upper', vmin=-1, vmax=1,
+      extent=(0.5, 1.5, 0.5, 2.5),
+    )]
