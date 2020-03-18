@@ -227,9 +227,10 @@ class Nonogram:
         """
         Prints information about next cell to be filled. Adds small hint
         how to deduce it.
+        Shifts index to counting from 1.
         """
-        self.show_basic_hint(row, col)
-          
+        self.show_basic_hint(row + 1, col + 1)
+
         if self.verbose:
             values = {-1:'empty.', 1:'filled.'}
             print("Cell at row=" + str(row+1) + " and col=" + str(col+1) +

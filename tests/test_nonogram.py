@@ -15,6 +15,7 @@ nono3 = nonogram.Nonogram("nonograms/small_1.dat")
 nono4 = nonogram.Nonogram("nonograms/small_1.dat")
 nono5 = nonogram.Nonogram("nonograms/small_1.dat")
 nono6 = nonogram.Nonogram("nonograms/small_1.dat")
+nono7 = nonogram.Nonogram("nonograms/small_1.dat")
 nono_pre = nonogram.Nonogram("tests/data/nono_test_3.dat", presolved=True)
 
 
@@ -170,3 +171,35 @@ def test_Nonogram_show_basic_hint(mocked_print):
         call("Assume the cell at row=1 and col=0 to be filled " +\
              "and try to deduce consequences.")
     ]
+
+
+@patch('builtins.quit')
+@patch('builtins.print')
+def test_Nonogram_show_hint(mocked_print, mocked_quit):
+    nono7.show_basic_hint = Mock()
+    nono7.hinter = 'assumption_making'
+    nono7.verbose = 1
+
+    nono7.show_hint(0, 1, -1)
+
+    assert nono7.show_basic_hint.mock_calls == [call(1, 2)]
+    assert mocked_print.mock_calls == [
+        call("Cell at row=1 and col=2 may be deduced to be empty."),
+        call('You will need to analyze more than just single row or column.'),
+    ]
+    assert mocked_quit.mock_calls == [call()]
+
+    nono7.show_basic_hint.reset_mock()
+    mocked_print.reset_mock()
+    mocked_quit.reset_mock()
+
+    nono7.hinter = 'simple'
+    nono7.verbose = 1
+
+    nono7.show_hint(0, 1, -1)
+
+    assert nono7.show_basic_hint.mock_calls == [call(1, 2)]
+    assert mocked_print.mock_calls == [
+        call("Cell at row=1 and col=2 may be deduced to be empty."),
+    ]
+    assert mocked_quit.mock_calls == [call()]
