@@ -210,12 +210,17 @@ class Nonogram:
         """
         if self.hinter == 'simple':
             if self.transposed:
-                print('Analyze column ' + str(col) + '.')
+                print('Analyze column ' + str(row) + '.')
             else:
                 print('Analyze row ' + str(row) + '.')
         else:
-            print("Assume the cell at row=" + str(row) + " and col=" + str(col)\
-                  + "to be filled and try to deduce consequences.")
+            if self.transposed:
+                print("Assume the cell at row=" + str(col) + " and col=" + \
+                      str(row) + " to be filled and try to deduce consequences.")
+            else:
+                print("Assume the cell at row=" + str(row) + " and col=" + \
+                      str(col) + " to be filled and try to deduce consequences.")
+
 
 
     def show_hint(self, row, col, value):

@@ -14,6 +14,7 @@ nono2 = nonogram.Nonogram("nonograms/small_1.dat")
 nono3 = nonogram.Nonogram("nonograms/small_1.dat")
 nono4 = nonogram.Nonogram("nonograms/small_1.dat")
 nono5 = nonogram.Nonogram("nonograms/small_1.dat")
+nono6 = nonogram.Nonogram("nonograms/small_1.dat")
 nono_pre = nonogram.Nonogram("tests/data/nono_test_3.dat", presolved=True)
 
 
@@ -139,3 +140,33 @@ def test_Nonogram_end_iplot(mocked_eiplot):
 
     assert nono5.update_plot.mock_calls == [call()]
     assert mocked_eiplot.mock_calls == [call()]
+
+
+@patch('builtins.print')
+def test_Nonogram_show_basic_hint(mocked_print):
+    nono6.transposed = False
+    nono6.show_basic_hint(0, 1)
+    assert mocked_print.mock_calls == [call('Analyze row 0.')]
+    mocked_print.reset_mock()
+
+    nono6.transposed = True
+    nono6.show_basic_hint(0, 1)
+    assert mocked_print.mock_calls == [call('Analyze column 0.')]
+    mocked_print.reset_mock()
+
+    nono6.transposed = False
+    nono6.hinter = 'advanced'
+    nono6.show_basic_hint(0, 1)
+    assert mocked_print.mock_calls == [
+        call("Assume the cell at row=0 and col=1 to be filled " +\
+         "and try to deduce consequences.")
+    ]
+    mocked_print.reset_mock()
+
+    nono6.transposed = True
+    nono6.hinter = 'advanced'
+    nono6.show_basic_hint(0, 1)
+    assert mocked_print.mock_calls == [
+        call("Assume the cell at row=1 and col=0 to be filled " +\
+             "and try to deduce consequences.")
+    ]
