@@ -28,7 +28,7 @@ def test_update_plot(mocked_sleep):
 
     assert im.set_data.mock_calls == [call('data')]
     assert fig.canvas.draw.mock_calls == [call()]
-    assert fig.canvas.draw.flush_events == [call()]
+    assert fig.canvas.flush_events.mock_calls == [call()]
     assert mocked_sleep.mock_calls == [call(1.2)]
 
 
