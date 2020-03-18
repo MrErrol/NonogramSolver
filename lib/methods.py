@@ -1,4 +1,3 @@
-from lib.nonogram import Nonogram
 from copy import copy
 
 
