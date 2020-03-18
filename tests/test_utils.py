@@ -4,7 +4,6 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from unittest.mock import patch, call
-import pytest
 from utils.read_from_file import read_datafile, read_numeric_lines,\
     read_presolved_nonogram_representation, is_beggining_of_row_hints,\
     is_beggining_of_col_hints, is_beggining_of_cells,\
