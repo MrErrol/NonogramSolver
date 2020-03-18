@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
-from unittest.mock import patch, call
+from unittest.mock import patch
 from lib.nonogram import Nonogram
 from lib.methods_advanced import check_if_line_is_fillable, make_assumption,\
     ivestigate_row_with_assumptions, search_for_assumptions
