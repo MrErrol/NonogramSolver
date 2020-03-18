@@ -13,6 +13,7 @@ nono1 = nonogram.Nonogram("nonograms/small_1.dat")
 nono2 = nonogram.Nonogram("nonograms/small_1.dat")
 nono3 = nonogram.Nonogram("nonograms/small_1.dat")
 nono4 = nonogram.Nonogram("nonograms/small_1.dat")
+nono5 = nonogram.Nonogram("nonograms/small_1.dat")
 nono_pre = nonogram.Nonogram("tests/data/nono_test_3.dat", presolved=True)
 
 
@@ -128,3 +129,13 @@ def test_Nonogram_update_plot(mocked_plot):
     assert mocked_plot.mock_calls == [
         call('data', None, None, 0.0)
     ]
+
+
+@patch('lib.nonogram.end_iplot')
+def test_Nonogram_end_iplot(mocked_eiplot):
+    nono5.update_plot = Mock()
+
+    nono5.end_iplot()
+
+    assert nono5.update_plot.mock_calls == [call()]
+    assert mocked_eiplot.mock_calls == [call()]
