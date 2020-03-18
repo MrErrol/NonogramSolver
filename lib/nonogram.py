@@ -80,8 +80,8 @@ class Nonogram:
 
     def fill_presolved_cells(self, rows, presolved=False):
         if presolved:
-            self.rows = rows
-            self.cols = transpose_rows(rows)
+            self.rows = [row + [-1] for row in rows]
+            self.cols = transpose_rows(self.rows)
         else:
             self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
             self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
