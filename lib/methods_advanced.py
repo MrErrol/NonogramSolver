@@ -221,7 +221,7 @@ def search_for_assumptions(nonogram, searching_depth=2):
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
     """
-    sth_changed = False
+    sth_changed = []
 
     # loop over nonogram dimensions (rows and columns)
     for dim in range(2):
@@ -230,17 +230,17 @@ def search_for_assumptions(nonogram, searching_depth=2):
 
         # loop over rows truncated by searching_depth
         for depth in range(searching_depth):
-            sth_changed_1 = ivestigate_row_with_assumptions(nonogram, rows[0])
-            sth_changed_2 = ivestigate_row_with_assumptions(nonogram, rows[-1])
-            sth_changed = sth_changed_1 or sth_changed_2 or sth_changed
+            sth_changed.append(ivestigate_row_with_assumptions(nonogram, rows[0]))
+            sth_changed.append(ivestigate_row_with_assumptions(nonogram, rows[-1]))
             del rows[0]
             # to prevent calling last element of empty list
             try:
                 del rows[-1]
+                rows[0]
             except:
                 break
 
         # transposing nonogram for dimension loop
         nonogram.transpose()
 
-    return sth_changed
+    return any(sth_changed)
