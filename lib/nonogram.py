@@ -137,7 +137,7 @@ class Nonogram:
         data - matrix (list of lists) of nonogram cell values (including
                trailing -1)
         """
-        if nono.transposed:
+        if self.transposed:
             return copy(self.cols)
         else:
             return copy(self.rows)
