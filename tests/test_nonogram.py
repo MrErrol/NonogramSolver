@@ -4,13 +4,14 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 import pytest
-from unittest.mock import patch, call
+from unittest.mock import patch, Mock, call
 import lib.nonogram as nonogram
 from lib.solver import solver
 
 nono  = nonogram.Nonogram("nonograms/small_1.dat")
 nono1 = nonogram.Nonogram("nonograms/small_1.dat")
 nono2 = nonogram.Nonogram("nonograms/small_1.dat")
+nono3 = nonogram.Nonogram("nonograms/small_1.dat")
 nono_pre = nonogram.Nonogram("tests/data/nono_test_3.dat", presolved=True)
 
 
@@ -102,3 +103,16 @@ def test_Nonogram_get_picture_data():
     assert nono2.get_picture_data() == [[1, 1, -1], [-1, 1, 1], [1, -1, 1]]
     nono2.transpose()
     assert nono2.get_picture_data() == [[1, 1, -1], [-1, 1, 1], [1, -1, 1]]
+
+
+@patch('lib.nonogram.plot')
+def test_Nonogram_plot(mocked_plot):
+    mocked_plot.return_value = ('fig', 'im')
+    nono3.get_picture_data = Mock(return_value='data')
+
+    nono3.plot()
+
+    assert mocked_plot.mock_calls == [call('data', interactive=False)]
+    assert nono3.get_picture_data.mock_calls == [call()]
+    assert nono3.im == 'im'
+    assert nono3.fig == 'fig'
