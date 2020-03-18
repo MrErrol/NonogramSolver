@@ -3,10 +3,14 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
-import pytest
+from unittest.mock import Mock, call
 from lib.nonogram import Nonogram
-from lib.methods import push_block_Origins, push_block_Endings, deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks, fill_inside_of_the_blocks, fill_cells_to_the_right, fill_cells_to_the_left, fill_row
-from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row, analyze_multi_block_relations
+from lib.methods import push_block_Origins, push_block_Endings,\
+    deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks,\
+    fill_inside_of_the_blocks, fill_cells_to_the_right, fill_cells_to_the_left,\
+    fill_row
+from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row,\
+    analyze_multi_block_relations
 
 hints1 = [1, 1, 1]
 hints2 = [1, 2, 1, 3]
@@ -111,7 +115,7 @@ def test_fill_inside_of_the_blocks():
     fill_inside_of_the_blocks(nono_2, 2)
     assert nono_2.rows[0] == [0, 1, 0, -1]
     assert nono_2.rows[2] == [1, 0, 1, -1]
-    
+
 def test_fill_row():
     fill_row(nono_3, 0)
     assert nono_3.rows == [[0, 1, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
@@ -119,10 +123,12 @@ def test_fill_row():
     assert nono_3.undetermind == 8
     nono_3.rowBlockOrigins[2] = [0, 2]
     nono_3.rowBlockEndings[2] = [0, 2]
-    fill_row(nono_3, 2)
+    nono_3.update_plot = Mock()
+    fill_row(nono_3, 2, interactive=True)
     assert nono_3.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
     assert nono_3.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
     assert nono_3.undetermind == 5
+    assert nono_3.update_plot.mock_calls == [call()]
 
 nono_multi_1 = Nonogram("tests/data/nono_test_1.dat")
 nono_multi_2 = Nonogram("tests/data/nono_test_1.dat")
@@ -180,6 +186,10 @@ def test_analyze_multi_block_relations_in_row():
 
     assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == True
     assert nono_multi_1.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
+
+    nono_multi_1.rows[3] = [1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1]
+
+    assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == False
 
 def test_analyze_multi_block_relations():
     nono_multi_4.rowHints        = [[3, 3]]*4
