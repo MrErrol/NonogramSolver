@@ -222,7 +222,6 @@ class Nonogram:
                       str(col) + " to be filled and try to deduce consequences.")
 
 
-
     def show_hint(self, row, col, value):
         """
         Prints information about next cell to be filled. Adds small hint

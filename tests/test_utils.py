@@ -12,9 +12,11 @@ from utils.tools import print_mistakes, compare_values, compare_tables,\
     compare_nonograms
 from lib.nonogram import Nonogram
 
+
 file_1 = open('tests/data/broken_nono_1.dat', 'r')
 file_2 = open('tests/data/nono_test_2.dat', 'r')
 file_3 = open('tests/data/nono_test_3.dat', 'r')
+filename_2_broken = 'tests/data/nono_test_2_broken.dat'
 filename_3 = 'tests/data/nono_test_3.dat'
 
 filename_small_1 = 'nonograms/small_1.dat'
@@ -35,6 +37,7 @@ nono_1a.rows = table_1a
 nono_1b.rows = table_1b
 nono_2a.rows = table_2a
 
+
 def test_does_it_contain_only_numbers():
     assert does_it_contain_only_numbers('1234214963483') == True
     assert does_it_contain_only_numbers('123a483') == False
@@ -42,6 +45,7 @@ def test_does_it_contain_only_numbers():
     assert does_it_contain_only_numbers(['1','4','6']) == True
     assert does_it_contain_only_numbers(['1','a','6']) == False
     assert does_it_contain_only_numbers(['1','5','\n']) == False
+
 
 def test_is_functions():
     line = file_2.readline()
@@ -58,6 +62,7 @@ def test_is_functions():
     assert is_beggining_of_cells(line) == True
     file_2.close()
 
+
 def test_read_numeric_lines():
     file_1.readline()
     assert read_numeric_lines(file_1) == ([[1], [1, 2]], '')
@@ -66,6 +71,7 @@ def test_read_numeric_lines():
     file_1.close()
     file_small_1.close()
 
+
 def test_read_presolved_nonogram_representation():
     [file_3.readline() for i in range(9)] # discarding fisrt 9 lines
     assert read_presolved_nonogram_representation(file_3) == ([[1, 1, -1],\
@@ -73,12 +79,17 @@ def test_read_presolved_nonogram_representation():
                                                                [0, -1, 1]],\
                                                               "")
     file_3.close()
-    
+
+
 def test_read_datafile():
-    assert read_datafile(filename_small_1) == ([[2], [2], [1, 1]], [[1, 1], [2], [2]], True)
-    assert read_datafile(filename_3, presolved=True) == ([[2], [2], [1, 1]],\
-                                                         [[1, 1], [2], [2]],\
-                                                         [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])
+    assert read_datafile(filename_small_1) ==\
+           ([[2], [2], [1, 1]], [[1, 1], [2], [2]], True)
+    assert read_datafile(filename_3, presolved=True) ==\
+           ([[2], [2], [1, 1]],\
+           [[1, 1], [2], [2]],\
+           [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])
+    assert read_datafile(filename_2_broken) == ([], [], True)
+
 
 def test_compare_values():
     assert compare_values(0, 1) == True
@@ -89,10 +100,12 @@ def test_compare_values():
     assert compare_values(1, -1) == False
     assert compare_values(-1, 1) == False
 
+
 def test_compare_tables():
     assert compare_tables(table_1a, table_1b) == []
     assert compare_tables(table_1a, table_2a) == [(0,2), (1,1)]
     assert compare_tables(table_1b, table_2a) == [(0,2)]
+
 
 @patch('builtins.print')
 def test_print_mistakes(mocked_print):
@@ -106,6 +119,7 @@ def test_print_mistakes(mocked_print):
                                       call("(row number, column number)"),
                                       call((2,3)),
                                       call((4,6))]
+
 
 @patch('builtins.print')
 def test_compare_nonograms(mocked_print):
