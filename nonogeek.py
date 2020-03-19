@@ -55,8 +55,7 @@ if options.hinter:
 timeBeforeSolving = time()
 
 cycle = solver(nono,
-               searching_depth=options.searching_depth,
-               interactive=options.interactive,
+               searching_depth=options.searching_depth
                )
 
 timeAfterSolving = time()

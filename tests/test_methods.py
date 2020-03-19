@@ -124,7 +124,9 @@ def test_fill_row():
     nono_3.rowBlockOrigins[2] = [0, 2]
     nono_3.rowBlockEndings[2] = [0, 2]
     nono_3.update_plot = Mock()
-    fill_row(nono_3, 2, interactive=True)
+    # fake figure to fake interactive mode on
+    nono_3.fig = True
+    fill_row(nono_3, 2)
     assert nono_3.rows == [[0, 1, 0, -1], [0, 0,  0, -1], [1, -1, 1, -1]]
     assert nono_3.cols == [[0, 0, 1, -1], [1, 0, -1, -1], [0,  0, 1, -1]]
     assert nono_3.undetermind == 5

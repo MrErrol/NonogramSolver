@@ -331,7 +331,7 @@ def fill_end_of_the_row(nono, row):
     return sth_changed
 
 
-def fill_row(nono, row, interactive=False):
+def fill_row(nono, row):
     """
     Function tries to fill/mark as empty each cell in the pointed row based on
     actual knowledge.
@@ -357,7 +357,8 @@ def fill_row(nono, row, interactive=False):
 
     sth_changed = changed_1 or changed_2 or changed_3 or changed_4
 
-    if interactive and sth_changed:
+    # if figure is present, nonogram is in the interactive mode
+    if nono.fig and sth_changed:
         nono.update_plot()
 
     return sth_changed
