@@ -120,6 +120,55 @@ def pull_block_origins(line, hints, blockOrigins):
     return sth_changed, blockOrigins
 
 
+def check_no_empty_cell_inside(line, hints, blockOrigins, blockIndex):
+    """
+    Functions check whether there are empty cells inside the most left available
+    position for the i-th block and shifts the block origin if there is at least
+    one.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether block Origins has been changed
+    blockOrigins - (possibly updated) block Origins
+    """
+    sth_changed = False
+    # for compactness
+    i = blockIndex
+
+    required_cells = line[blockOrigins[i]:blockOrigins[i] + hints[i]]
+    if -1 in required_cells:
+        blockOrigins[i] += hints[i] - required_cells[::-1].index(-1)
+        # pushing following blocks origins further away
+        dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+        sth_changed = True
+
+    return sth_changed, blockOrigins
+
+
+def check_no_filled_cell_just_after_block(line, hints, blockOrigins, blockIndex):
+    """
+    Functions check whether there is filled cell just after the most left
+    available position for the i-th block and shifts the block origin by 1
+    if there is at least one.
+
+    Returns:
+    --------
+    sth_changed - bool variable informing whether block Origins has been changed
+    blockOrigins - (possibly updated) block Origins
+    """
+    sth_changed = False
+    # for compactness
+    i = blockIndex
+
+    if line[blockOrigins[i] + hints[i]] == 1:
+        blockOrigins[i] += 1
+        # pushing following blocks origins further away
+        dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+        sth_changed = True
+
+    return sth_changed, blockOrigins
+
+
 def deduce_new_block_origins(line, hints, blockOrigins):
     """
     Function tries to deduce higher than given block origins for a single given
@@ -139,25 +188,21 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     while i < len(hints):
         # Situation when there is filled cell just before the block need not to
         # be checked, due to use of push_block_Origins
-        required_cells = line[blockOrigins[i]:blockOrigins[i]+hints[i]]
-        # Situation when there is empty cell blocking place
-        if -1 in required_cells:
-            blockOrigins[i] += hints[i] - required_cells[::-1].index(-1)
-            # pushing following blocks origins further away
-            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+
+        # check for empty space blocking placing
+        changed1, blockOrigins = check_no_empty_cell_inside(
+            line, hints, blockOrigins, i,
+        )
+
+        # check for filled space enforcing push of block origin
+        changed2, blockOrigins = check_no_filled_cell_just_after_block(
+            line, hints, blockOrigins, i,
+        )
+
+        if changed1 or changed2:
             sth_changed = True
-            continue
-        # Situation when there is filled cell just after place for the block
-        if line[blockOrigins[i]+hints[i]] == 1:
-            blockOrigins[i] += 1
-            # pushing following blocks origins further away
-            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
-            sth_changed = True
-            continue
-        # Situation when there is enough space for the block and following empty cell
         else:
             i += 1
-            continue
 
     # backward loop analysis
     changed, blockOrigins = pull_block_origins(line, hints, blockOrigins)
