@@ -1,3 +1,4 @@
+from copy import copy
 from lib.methods import deduce_new_block_origins, deduce_new_block_endings,\
     push_block_Origins, push_block_Endings, fill_row
 
@@ -12,25 +13,24 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     --------
     bool - bool variable answearing the question whether line is fillable
     """
+    # add virtual block at the end, just to simplify comparison
+    blockOrigins = copy(blockOrigins)
+    blockOrigins.append(len(line) + 1)
+
     # Check if there are filled cells before the first block
     if 1 in line[:blockOrigins[0]]:
         return False
-    # Check if there are filled cells after the last block
-    if 1 in line[blockEndings[-1]+1:]:
-        return False
+
     # loop over blocks
     for i in range(len(hints)):
         # check if there is enough space for a block
-        if blockEndings[i] - blockOrigins[i] + 1 < hints[i] :
+        if blockEndings[i] - blockOrigins[i] + 1 < hints[i]:
             return False
-        # check if there are filled cells between blocks
-        try:
-            if blockEndings[i] + 1 < blockOrigins[i+1] :
-                if 1 in line[ blockEndings[i] + 1 : blockOrigins[i+1] ]:
-                    return False
-        except:
-            # Last block exception
-            pass
+
+        # check if there are filled cells between blocks (or after last block)
+        if 1 in line[blockEndings[i] + 1 : blockOrigins[i+1]]:
+            return False
+
     # No problems found
     return True
 
