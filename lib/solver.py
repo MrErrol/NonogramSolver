@@ -47,6 +47,12 @@ def perform_simple_deducing_for_single_row(nono, row, interactive):
 
 def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input,
                             interactive=False):
+    """
+    Function performs simple deducing over rows and columns of nonogram provided
+    as the arguments of the function. Deduction is simple in the sens that:
+    - it treats every row/column separately
+    - it includes block relations only between neighbouring blocks
+    """
     rowsChanged = rowsChanged_input
     colsChanged = colsChanged_input
     # Loop over Nonogram dimensions (rows and columns)
