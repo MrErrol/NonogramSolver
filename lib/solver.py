@@ -65,8 +65,7 @@ def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input):
 
 
 def make_single_iteration_of_deduction(nono, rowsChanged, colsChanged,
-                                       searching_depth=2,
-                                       interactive=False,
+                                       searching_depth,
                                        ):
     """
     Performs single iteration of deduction. May use all implemented methods,
@@ -108,8 +107,7 @@ def solver(nono, searching_depth=2):
 
         # Performs cheapest deduction possible
         make_single_iteration_of_deduction(
-            nono, rowsChanged, colsChanged,
-            searching_depth=searching_depth,
+            nono, rowsChanged, colsChanged, searching_depth,
         )
 
         # Check if anything improved
