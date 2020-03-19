@@ -23,6 +23,28 @@ def perform_good_start(nono, interactive=False):
         nono.transpose()
 
 
+def perform_simple_deducing_for_single_row(nono, row, interactive):
+    """
+    Function tries to deduce new block limits for a single row of nonogram.
+    If succeeded it appropriately updates them in the nonogram class.
+    """
+    sth_changed_1, origins = methods.deduce_new_block_origins(
+        nono.rows[row],
+        nono.rowHints[row],
+        nono.rowBlockOrigins[row],
+    )
+    sth_changed_2, endings = methods.deduce_new_block_endings(
+        nono.rows[row],
+        nono.rowHints[row],
+        nono.rowBlockEndings[row],
+    )
+    if sth_changed_1 or sth_changed_2:
+        nono.rowBlockOrigins[row] = origins
+        nono.rowBlockEndings[row] = endings
+        nono.rowsChanged.add(row)
+        methods.fill_row(nono, row, interactive=interactive)
+
+
 def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input,
                             interactive=False):
     rowsChanged = rowsChanged_input
@@ -31,24 +53,8 @@ def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input,
     for i in range(2):
         # Loop over Nonogram rows (columns if transposed)
         for row in rowsChanged:
-            sth_changed_1, origins = methods.deduce_new_block_origins(
-                nono.rows[row],
-                nono.rowHints[row],
-                nono.rowBlockOrigins[row],
-                )
-            sth_changed_2, endings = methods.deduce_new_block_endings(
-                nono.rows[row],
-                nono.rowHints[row],
-                nono.rowBlockEndings[row],
-                )
-            if sth_changed_1:
-                nono.rowBlockOrigins[row] = origins
-                nono.rowsChanged.add(row)
-            if sth_changed_2:
-                nono.rowBlockEndings[row] = endings
-                nono.rowsChanged.add(row)
-            if sth_changed_1 or sth_changed_2:
-                methods.fill_row(nono, row, interactive=interactive)
+            # Deduction over single row
+            perform_simple_deducing_for_single_row(nono, row, interactive)
         nono.transpose()
         rowsChanged, colsChanged = colsChanged, rowsChanged
 
