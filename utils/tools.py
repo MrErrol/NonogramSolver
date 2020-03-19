@@ -6,6 +6,14 @@ def print_congrats():
     print("No mistakes found.")
 
 
+def print_failure_statement(cycle):
+    """
+    Prints information that solver failed to solve nonogram.
+    """
+    print("Failed to solve Nonogram.")
+    print("Cycle : " + str(cycle))
+
+
 def print_mistakes(mistakes, verbose):
     """
     Prints misclassified cells.

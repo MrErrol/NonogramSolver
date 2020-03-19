@@ -1,7 +1,8 @@
+from copy import copy
 from lib.nonogram import Nonogram
 import lib.methods as methods
 import lib.methods_advanced as advanced
-from copy import copy
+from utils.tools import print_failure_statement
 
 
 def perform_good_start(nono, interactive=False):
@@ -65,7 +66,37 @@ def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input,
         rowsChanged, colsChanged = colsChanged, rowsChanged
 
 
+def make_single_iteration_of_deduction(nono, rowsChanged, colsChanged,
+                                       searching_depth=2,
+                                       interactive=False,
+                                       ):
+    """
+    Performs single iteration of deduction. May use all implemented methods,
+    yet stops after the cheapest finds solution.
+    """
+    # Simple and cheap deduction - does most of the work
+    perform_simple_deducing(nono, rowsChanged, colsChanged,
+                            interactive=interactive)
+
+    # Check if anything improved
+    if nono.rowsChanged == set() and nono.colsChanged == set():
+        # Calling advanced, more costly function
+        methods.analyze_multi_block_relations(nono)
+
+    # Check if anything improved
+    if nono.rowsChanged == set() and nono.colsChanged == set():
+        # Calling advanced, even more costly function
+        advanced.search_for_assumptions(nono, searching_depth=searching_depth)
+
+
 def solver(nono, searching_depth=2, interactive=False):
+    """
+    Main solver of the nonogram. Uses all implemented methods iteratively until
+    nonogram is solved or there is no improvement.
+
+    Returns:
+    cycle - number of cycles spent to solve nonogram
+    """
     # Gives nice block limits initialization
     perform_good_start(nono, interactive=interactive)
 
@@ -78,23 +109,17 @@ def solver(nono, searching_depth=2, interactive=False):
         nono.rowsChanged = set()
         nono.colsChanged = set()
 
-        # Simple and cheap deduction - does most of the work
-        perform_simple_deducing(nono, rowsChanged, colsChanged,
-                                interactive=interactive)
+        # Performs cheapest deduction possible
+        make_single_iteration_of_deduction(
+            nono, rowsChanged, colsChanged,
+            searching_depth=searching_depth,
+            interactive=interactive,
+        )
 
         # Check if anything improved
         if nono.rowsChanged == set() and nono.colsChanged == set():
-            # Calling advanced, more costly function
-            methods.analyze_multi_block_relations(nono)
-
-        # Check if anything improved
-        if nono.rowsChanged == set() and nono.colsChanged == set():
-            # Calling advanced, even more costly function
-            if not advanced.search_for_assumptions(nono,
-                                                   searching_depth=searching_depth):
-                print("Failed to solve Nonogram.")
-                print("Cycle : " + str(cycle))
-                return cycle
+            print_failure_statement(cycle)
+            return cycle
 
         cycle += 1
 
