@@ -84,11 +84,12 @@ def make_deduction(nono):
     for checking_depth in range(2*2):
         # Loop over previously changed rows (or columns)
         for row in nono.rowsChanged:
-            found_discr = safe_deduce(nono, row)
-            if found_discr:
+            # perform deduction and report possible problems
+            if safe_deduce(nono, row):
+                # discrepancy found
                 return True
         nono.transpose()
-    # no discrepancy found
+    # no discrepancy found yet
     return False
 
 
