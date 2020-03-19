@@ -59,8 +59,8 @@ def compare_tables(rows1, rows2):
 
     for row in range(len(rows1)):
         for col in range(len(rows1[0])-1):
-            ok = compare_values(rows1[row][col], rows2[row][col])
-            if not ok:
+            # checks whether values are consistent
+            if not compare_values(rows1[row][col], rows2[row][col]):
                 mistakes.append((row, col))
 
     return mistakes
