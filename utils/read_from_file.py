@@ -46,7 +46,7 @@ def read_presolved_nonogram_representation(file, mapping=default_mapping()):
             break
 
         read_list.append(line.rstrip())
-    
+
     return [[mapping[letter] for letter in row] for row in read_list], line
 
 
@@ -54,7 +54,7 @@ def read_numeric_lines(file):
     """
     Function read block of numbers (developed for reading hints) as a list of
     lists of numbers.
-    
+
     Returns:
     --------
     read_list - list of list of numbers read from datafile

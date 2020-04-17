@@ -65,7 +65,7 @@ def compare_tables(rows1, rows2):
     """
     mistakes = []
 
-    for row in range(len(rows1)):
+    for row, dummy_row_list in enumerate(rows1):
         for col in range(len(rows1[0])-1):
             # checks whether values are consistent
             if not compare_values(rows1[row][col], rows2[row][col]):

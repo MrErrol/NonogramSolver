@@ -7,7 +7,7 @@ def push_block_Origins(hints, blockOrigins, index=0, exh=False):
     given block index.
     Function uses only the simplest distance condition.
     It does NOT check the row/column state!
-    
+
     Returns
     -------
     sth_changed - bool variable
@@ -19,7 +19,7 @@ def push_block_Origins(hints, blockOrigins, index=0, exh=False):
 
     i = index
     while i+1 < len(hints):
-        minimalNextBlockPosition =  blockOrigins[i] + hints[i] + 1
+        minimalNextBlockPosition = blockOrigins[i] + hints[i] + 1
         i += 1
         if  blockOrigins[i] < minimalNextBlockPosition:
             blockOrigins[i] = minimalNextBlockPosition
@@ -38,7 +38,7 @@ def push_block_Endings(hints, blockEndings, index=0, exh=False):
     given block index.
     Function uses only the simplest distance condition.
     It does NOT check the row/column state!
-    
+
     Returns
     -------
     sth_changed - bool variable
@@ -46,14 +46,14 @@ def push_block_Endings(hints, blockEndings, index=0, exh=False):
     """
     # Reversing line (extra empty cell removed from the end and put at the end)
     blockOrigins = [blockEndings[-1] - ending for ending in blockEndings[::-1]]
-    
+
     # Solving equivalent problem with reversed line
     sth_changed, blockOrigins = push_block_Origins(hints[::-1], blockOrigins,
                                                    index=index, exh=exh)
-    
+
     # Reversing back obtained solution
     blockEndings = [blockEndings[-1] - origin for origin in blockOrigins[::-1]]
-    
+
     return sth_changed, blockEndings
 
 
@@ -61,10 +61,10 @@ def pull_single_block_origin(line, hints, blockOrigins, blockIndex):
     """
     Function pulls given block by a filled cell.
     Does not check whether such a cell exists.
-    
+
     WARNING!
     Function will modify provided blockOrigins.
-    
+
     Returns:
     blockOrigins - updated blockOrigins
     """
@@ -173,7 +173,7 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     """
     Function tries to deduce higher than given block origins for a single given
     line.
-    
+
     Returns:
     --------
     sth_changed - bool variable
@@ -214,14 +214,14 @@ def deduce_new_block_origins(line, hints, blockOrigins):
 def deduce_new_block_endings(line, hints, blockEndings):
     """
     Function tries to deduce lower than given block endings for a single given line.
-    
+
     Returns:
     --------
     sth_changed - bool variable
     blockEndings - copy of (possibly updated) block endings
     """
     # Reversing line (extra empty cell removed from the end and put at the end)
-    newline = copy(line[-2::-1] + [-1]) 
+    newline = copy(line[-2::-1] + [-1])
     blockOrigins = [len(newline) - 2 - ending for ending in blockEndings[::-1]]
 
     # Solving equivalent problem with reversed line
@@ -237,14 +237,14 @@ def deduce_new_block_endings(line, hints, blockEndings):
 def fill_range_in_row(nonogram, row, cols, value):
     """
     Fills range of cells in given row with value.
-    
+
     Parameters:
     -----------
     nonogram - Nonogram to be updated
     row - index of row to be updated
     cols - iterable indices of cells in row to be updated
     value - value to be written into cells
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has changed
@@ -252,7 +252,7 @@ def fill_range_in_row(nonogram, row, cols, value):
     sth_changed = False
 
     for col in cols:
-        change =  nonogram.fill_cell(row, col, value)
+        change = nonogram.fill_cell(row, col, value)
         sth_changed = sth_changed or change
 
     return sth_changed
@@ -262,7 +262,7 @@ def fill_inside_of_the_blocks(nonogram, row):
     """
     Function fills inside the blocks that are limited to area smaller than
     twice their size.
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has changed
@@ -273,8 +273,8 @@ def fill_inside_of_the_blocks(nonogram, row):
 
     sth_changed = False
 
-    for i in range(len(hints)):
-        cols = range( endings[i] + 1 - hints[i] , origins[i] + hints[i] )
+    for i, hint in enumerate(hints):
+        cols = range(endings[i] + 1 - hint, origins[i] + hint)
         changed = fill_range_in_row(nonogram, row, cols, 1)
         sth_changed = sth_changed or changed
 
@@ -284,7 +284,7 @@ def fill_inside_of_the_blocks(nonogram, row):
 def fill_between_the_blocks(nonogram, row):
     """
     Function marks as empty area between two blocks.
-    
+
     Returns:
     --------
     sth_changed - bool variable informing whether nonogram state has changed
@@ -296,7 +296,7 @@ def fill_between_the_blocks(nonogram, row):
     sth_changed = False
 
     for i in range(len(hints) - 1):
-        cols = range( endings[i] + 1 , origins[i+1] )
+        cols = range(endings[i] + 1, origins[i+1])
         changed = fill_range_in_row(nonogram, row, cols, -1)
         sth_changed = sth_changed or changed
 
@@ -312,7 +312,7 @@ def fill_beggining_of_the_row(nono, row):
     sth_changed - bool variable informing whether nonogram state has changed
     """
     origins = nono.rowBlockOrigins[row]
-    sth_changed = fill_range_in_row(nono, row, range( origins[0] ), -1)
+    sth_changed = fill_range_in_row(nono, row, range(origins[0]), -1)
     return sth_changed
 
 
@@ -326,7 +326,7 @@ def fill_end_of_the_row(nono, row):
     """
     endings = nono.rowBlockEndings[row]
     sth_changed = fill_range_in_row(nono, row,
-                                    range( endings[-1] + 1 , nono.nCols ),
+                                    range(endings[-1] + 1, nono.nCols),
                                     -1)
     return sth_changed
 
@@ -376,11 +376,11 @@ def find_min_block_length(nonogram, row, cell_position):
     indices_o = [index for index, value \
                  in enumerate(nonogram.rowBlockOrigins[row]) \
                  if value <= cell_position
-                 ]
+                ]
     indices_e = [index for index, value \
                  in enumerate(nonogram.rowBlockEndings[row]) \
                  if value >= cell_position
-                 ]
+                ]
     # intersection of both sets
     indices = set(indices_o) & set(indices_e)
     block_lengths = [nonogram.rowHints[row][index] for index in indices]
@@ -389,9 +389,9 @@ def find_min_block_length(nonogram, row, cell_position):
 
 def fill_cells_to_the_right(nonogram, row, col):
     """
-    Function used by analyze_multi_block_relations_in_row(). 
+    Function used by analyze_multi_block_relations_in_row().
     It tries to fill cells to the right from filled cell, when structures like:
-    [ ... , -1 , ... , 1 , 0 , ...] 
+    [ ... , -1 , ... , 1 , 0 , ...]
     appear.
 
     Returns:
@@ -408,7 +408,7 @@ def fill_cells_to_the_right(nonogram, row, col):
     block_length = find_min_block_length(nonogram, row, col)
 
     # filling cells enforced by minimal block length
-    for position in range( col + 1, col + block_length - leeway ):
+    for position in range(col + 1, col + block_length - leeway):
         nonogram.fill_cell(row, position, 1)
         sth_changed = True
 
@@ -417,9 +417,9 @@ def fill_cells_to_the_right(nonogram, row, col):
 
 def fill_cells_to_the_left(nonogram, row, col):
     """
-    Function used by analyze_multi_block_relations_in_row(). 
+    Function used by analyze_multi_block_relations_in_row().
     It tries to fill cells to the left from filled cell, when structures like:
-    [ ... , 0 , 1 , ... , -1 , ...] 
+    [ ... , 0 , 1 , ... , -1 , ...]
     appear.
 
     Returns:
@@ -436,7 +436,7 @@ def fill_cells_to_the_left(nonogram, row, col):
     block_length = find_min_block_length(nonogram, row, col)
 
     # filling cells enforced by minimal block length
-    for position in range(col + leeway + 1 - block_length , col ):
+    for position in range(col + leeway + 1 - block_length, col):
         nonogram.fill_cell(row, position, 1)
         sth_changed = True
 
@@ -459,7 +459,7 @@ def analyze_multi_block_relations_in_row(nonogram, row):
         return False
 
     # loop over cells in row
-    for col in range(1, len(nonogram.rows[row]) - 1 ):
+    for col in range(1, len(nonogram.rows[row]) - 1):
         # filling in right direction
         if nonogram.rows[row][col] == 1 and nonogram.rows[row][col+1] == 0:
             changed = fill_cells_to_the_right(nonogram, row, col)
@@ -485,7 +485,7 @@ def analyze_multi_block_relations(nonogram):
     sth_changed = False
 
     # loop over nonogram dimensions (rows and columns)
-    for i in range(2):
+    for dummy_dimension in range(2):
         # loop over nonogram rows (columns)
         for row in range(len(nonogram.rows)):
             sth_changed_loc = analyze_multi_block_relations_in_row(nonogram, row)

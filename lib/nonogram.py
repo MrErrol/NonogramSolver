@@ -1,9 +1,9 @@
+from copy import copy, deepcopy
+
 # This part allows to import from main directory
 import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
-
-from copy import copy, deepcopy
 
 from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile, transpose_rows
@@ -11,7 +11,7 @@ from utils.read_from_file import read_datafile, transpose_rows
 
 class Nonogram:
     def __init__(self, filename, presolved=False, wait=0.0):
-        rows = self.read_nonogram_from_file(filename, presolved=presolved)
+        dummy_rows = self.read_nonogram_from_file(filename, presolved=presolved)
         self.rowBlockOrigins = [[0]*len(hints) for hints in self.rowHints]
         self.colBlockOrigins = [[0]*len(hints) for hints in self.colHints]
         self.rowBlockEndings = [[self.nCols - 1]*len(hints) \
@@ -34,7 +34,7 @@ class Nonogram:
         Checks if sum of filled cell according to hints on rows and columns
         is the same.
         Usually allows to smoke-gun typing error.
-        
+
         Return:
         bool - bool variable informing if nonogram seems to be self-consistet
         """
@@ -53,7 +53,7 @@ class Nonogram:
         Fills the rowHints and colHints with data read from file.
         """
         # This part of code is used by method copy()
-        if filename == None: 
+        if filename is None:
             self.rowHints = []
             self.colHints = []
             self.nRows = 0
@@ -63,18 +63,18 @@ class Nonogram:
         # Reading datafile
         self.rowHints, self.colHints, rows = read_datafile(filename,
                                                            presolved=presolved,
-                                                           )
+                                                          )
         self.nRows = len(self.rowHints)
         self.nCols = len(self.colHints)
         self.fill_presolved_cells(rows, presolved=presolved)
-        
+
         # simple check of self-consistency
         # usually allows to smoke-gun typing error
         if not self.self_consistency_check():
             print('Input nonogram is not self consistent.')
             print('The sum of filled cells in rows is different than in columns.')
             quit()
-        
+
         return rows
 
 
@@ -201,7 +201,7 @@ class Nonogram:
         else:
             raise Exception("Trying to overwrite filled/empty cell! " + \
                             str(row) + ' ' + str(col)
-                            )
+                           )
 
 
     def show_basic_hint(self, row, col):

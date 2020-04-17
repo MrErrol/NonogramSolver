@@ -1,5 +1,5 @@
-from matplotlib import pyplot as plt
 from time import sleep
+from matplotlib import pyplot as plt
 
 
 def end_iplot():
@@ -19,8 +19,8 @@ def call_imshow(data):
     return plt.imshow(data,
                       cmap='binary', origin='upper',
                       vmin=-1, vmax=1,
-                      extent=( 0.5 , 0.5 + len(data[0]), 0.5 , 0.5 + len(data) ),
-                      )
+                      extent=(0.5, 0.5 + len(data[0]), 0.5, 0.5 + len(data)),
+                     )
 
 
 def plot(data, interactive=False):

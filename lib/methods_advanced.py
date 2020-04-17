@@ -8,7 +8,7 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     Function performs few simple checks if it is possible to fill the line
     according to actual knowledge. It may misclassify unfillable row
     as fillable, but not fillable as unfillable.
-    
+
     Returns:
     --------
     bool - bool variable answearing the question whether line is fillable
@@ -22,9 +22,9 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
         return False
 
     # loop over blocks
-    for i in range(len(hints)):
+    for i, hint in enumerate(hints):
         # check if there is enough space for a block
-        if blockEndings[i] - blockOrigins[i] + 1 < hints[i]:
+        if blockEndings[i] - blockOrigins[i] + 1 < hint:
             return False
 
         # check if there are filled cells between blocks (or after last block)
@@ -59,7 +59,7 @@ def safe_deduce(nono, row):
             )
     except:
         return True
-    if sth_changed1 or sth_changed2 :
+    if sth_changed1 or sth_changed2:
         nono.rowBlockOrigins[row] = blockOrigins
         nono.rowBlockEndings[row] = blockEndings
         try:
@@ -81,7 +81,7 @@ def make_deduction(nono):
     # Loop determining the analysis depth
     # Range - 2*depth, where 2 stands for transposition that is going
     # through rows and columns separately
-    for checking_depth in range(2*2):
+    for dummy_checking_depth in range(2*2):
         # Loop over previously changed rows (or columns)
         for row in nono.rowsChanged:
             # perform deduction and report possible problems
@@ -119,7 +119,7 @@ def make_assumption(nonogram, row, col):
                                          nono.rowHints[row],
                                          nono.rowBlockOrigins[row],
                                          nono.rowBlockEndings[row],
-                                         ):
+                                        ):
             return False
 
     # Loops verifying all modified columns
@@ -128,7 +128,7 @@ def make_assumption(nonogram, row, col):
                                          nono.colHints[col],
                                          nono.colBlockOrigins[col],
                                          nono.colBlockEndings[col],
-                                         ):
+                                        ):
             return False
 
     # No internal discrepancy found
@@ -204,7 +204,7 @@ def ivestigate_row_with_assumptions(nonogram, row):
     empty_cells = get_empty_cells(nonogram, row)
 
     # single forward-backward loop
-    for i in range(2):
+    for dummy in range(2):
         change = investigate_empty_cells_from_left(nonogram, row, empty_cells)
         sth_changed.append(change)
         # updating and reversing the list to make backward loop
@@ -225,20 +225,17 @@ def search_for_assumptions(nonogram, searching_depth=2):
     sth_changed = []
 
     # loop over nonogram dimensions (rows and columns)
-    for dim in range(2):
+    for dummy_dimension in range(2):
         # Finding non-filled rows in nonogram
         rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
 
         # loop over rows truncated by searching_depth
-        for depth in range(searching_depth):
+        for dummy_depth in range(searching_depth):
             sth_changed.append(ivestigate_row_with_assumptions(nonogram, rows[0]))
             sth_changed.append(ivestigate_row_with_assumptions(nonogram, rows[-1]))
             del rows[0]
-            # to prevent calling last element of empty list
-            try:
-                del rows[-1]
-                rows[0]
-            except:
+            # to prevent calling element of an empty list
+            if not rows:
                 break
 
         # transposing nonogram for dimension loop

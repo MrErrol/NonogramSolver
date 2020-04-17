@@ -5,16 +5,17 @@ from utils.tools import print_failure_statement
 
 
 def perform_good_start(nono):
-    # Simple beggining, gives nice block limits initialization and usually even
-    # fills some cells
-    for i in range(2):
+    """
+    Function meaningfully initializes block limits. Usually even fills some cells.
+    """
+    for dummy_dimension in range(2):
         for row in range(nono.nRows):
-            sth_changed, nono.rowBlockOrigins[row] = methods.push_block_Origins(
+            dummy, nono.rowBlockOrigins[row] = methods.push_block_Origins(
                 nono.rowHints[row],
                 nono.rowBlockOrigins[row],
                 index=0,
                 )
-            sth_changed, nono.rowBlockEndings[row] = methods.push_block_Endings(
+            dummy, nono.rowBlockEndings[row] = methods.push_block_Endings(
                 nono.rowHints[row],
                 nono.rowBlockEndings[row],
                 index=0,
@@ -55,7 +56,7 @@ def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input):
     rowsChanged = rowsChanged_input
     colsChanged = colsChanged_input
     # Loop over Nonogram dimensions (rows and columns)
-    for i in range(2):
+    for dummy_dimension in range(2):
         # Loop over Nonogram rows (columns if transposed)
         for row in rowsChanged:
             # Deduction over single row
@@ -66,7 +67,7 @@ def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input):
 
 def make_single_iteration_of_deduction(nono, rowsChanged, colsChanged,
                                        searching_depth,
-                                       ):
+                                      ):
     """
     Performs single iteration of deduction. May use all implemented methods,
     yet stops after the cheapest finds solution.
@@ -96,7 +97,7 @@ def solver(nono, searching_depth=2):
     # Gives nice block limits initialization
     perform_good_start(nono)
 
-    cycle = 0 
+    cycle = 0
     # main loop
     while nono.undetermind:
         # Stores basic information about improvements since last cycle
