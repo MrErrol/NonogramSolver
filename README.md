@@ -47,7 +47,7 @@ Of course. My fault.
 Add flag `--verbose 0` or `-v 0` on top of `--hint` and you will get just small hint:
 
 ```
-Analyze row 1.
+Analyze row 2.
 ```
 
 ***
