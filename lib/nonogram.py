@@ -233,6 +233,74 @@ class Limits:
         self.colBlockEndings[row] = newEndings
 
 
+class MetaData:
+    """
+    Class containing metadata of nonogram used by logic of solving algorithm.
+    Solver metadata are located in ModeData class.
+
+    Contains:
+    - number of yet unsolved cells
+    - indices of rows and columns that changed since last reset (usually
+      since beggining of iteration)
+    - information whether nonogram is transosed
+    """
+
+
+    def __init__(self, nRows, nCols):
+        self.undetermind = nRows * nCols
+        self.rowsChanged = set(range(nRows))
+        self.colsChanged = set(range(nCols))
+        self.transposed = False
+
+
+    def copy(self):
+        """
+        Returns deepcopy of itself.
+        """
+        return deepcopy(self)
+
+
+    def transpose(self):
+        """
+        Exchanges rows with columns and stores information about transposition
+        state of the nonogram.
+        """
+        self.rowsChanged, self.colsChanged = \
+            self.colsChanged, self.rowsChanged
+        self.transposed = not self.transposed
+
+
+    def filled_cell(self, row, col):
+        """
+        Updates metadata after filling the cell at position (row, col).
+        """
+        self.rowsChanged.add(row)
+        self.colsChanged.add(col)
+        self.undetermind -= 1
+
+
+    def reset_changed_rows_and_cols(self):
+        """
+        Resets counter of changed rows and columns.
+        """
+        self.rowsChanged = set()
+        self.colsChanged = set()
+
+
+    def get_rows_changed(self):
+        """
+        Returns rows changed since last reset.
+        """
+        return self.rowsChanged
+
+
+    def get_cols_changed(self):
+        """
+        Returns columns changed since last reset.
+        """
+        return self.rowsChanged
+
+
 class Nonogram:
     def __init__(self, filename, presolved=False, wait=0.0):
         dummy_rows = self.read_nonogram_from_file(filename, presolved=presolved)
