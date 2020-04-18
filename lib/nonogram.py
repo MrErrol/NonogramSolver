@@ -9,6 +9,15 @@ from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile, structure_raw_cells, transpose_rows
 
 
+class OverwriteException(Exception):
+    """
+    Exception raised, when program tries to overwrite filled/empty cell.
+    If not raised while assumption making it means that nonogram provided
+    is unsolvable.
+    """
+    pass
+
+
 class Data:
     """
     Class containing actual status (filled, empty, unknown) of nonogram cells
@@ -20,8 +29,8 @@ class Data:
         if filename is None:
             self.rows = [[]]
             self.cols = [[]]
-            self.rowHints = []
-            self.colHints = []
+            self.rowHints = [[]]
+            self.colHints = [[]]
         else:
             self.rowHints, self.colHints, rawRows = read_datafile(
                 filename,
@@ -30,14 +39,84 @@ class Data:
             self.rows = structure_raw_cells(rawRows)
             self.cols = transpose_rows(self.rows)
 
+        if not self.self_consistency_check():
+            self.complain()
+            quit()
 
-    def fill_presolved_cells(self, rows, presolved=False):
-        if presolved:
-            self.rows = [row + [-1] for row in rows]
-            self.cols = transpose_rows(self.rows)
+
+    def self_consistency_check(self):
+        """
+        Checks if sum of filled cell according to hints on rows and columns
+        is the same.
+        Usually allows to smoke-gun typing error.
+
+        Return:
+        bool - bool variable informing if nonogram seems to be self-consistet
+        """
+        # number of filled cells in rows
+        numberPixelRows = sum([sum(row) for row in self.rowHints])
+        # number of filled cells in columns
+        numberPixelCols = sum([sum(col) for col in self.colHints])
+        if not numberPixelRows == numberPixelCols:
+            return False
+
+        return True
+
+
+    def complain(self):
+        """
+        Function informs user about inconsistency in provided data.
+        It is usually caused by typing error.
+        """
+        print('Input nonogram is not self consistent.')
+        print('The sum of filled cells in rows is different than in columns.')
+
+
+    def transpose(self):
+        """
+        Exchanges rows with columns.
+        """
+        self.rowHints, self.colHints = self.colHints, self.rowHints
+        self.rows, self.cols = self.cols, self.rows
+
+
+    def copy(self):
+        """
+        Function makes a copy of a class instance.
+        Copied class share common hints with the original one.
+        """
+        new_data = Data()
+        new_data.rowHints = self.rowHints
+        new_data.colHints = self.colHints
+        new_data.rows = deepcopy(self.rows)
+        new_data.cols = deepcopy(self.cols)
+        return new_data
+
+
+    def fill_cell(self, row, col, value):
+        """
+        Fills the cell at position [row][col] with value.
+        +1 represents filled cell.
+        -1 represents empty cell.
+         0 represents yet unknown cell.
+
+        In order to preserve data consistency the method should be used only by
+        corresponding method of class Nonogram.
+
+        Return:
+        -------
+        sth_changed - bool variable informing if cell state has been changed
+        """
+        if self.rows[row][col] == self.cols[col][row] == value:
+            return False
+        elif self.rows[row][col] == self.cols[col][row] == 0:
+            self.rows[row][col] = self.cols[col][row] = value
+            return True
         else:
-            self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
-            self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
+            raise OverwriteException(
+                "Trying to overwrite filled/empty cell! " + \
+                str(row) + ' ' + str(col)
+            )
 
 
 class Limits:
