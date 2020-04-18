@@ -9,20 +9,41 @@ from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile, transpose_rows
 
 class Limits:
-    def __init__(self, rowHints=[[]], colHints=[[]]):
-        self.rowBlockOrigins = [[0] * len(hints) for hints in rowHints]
-        self.colBlockOrigins = [[0] * len(hints) for hints in colHints]
-        self.rowBlockEndings = [[len(colHints) - 1] * len(hints) \
-                                for hints in rowHints]
-        self.colBlockEndings = [[len(rowHints) - 1] * len(hints) \
-                                for hints in colHints]
+    """
+    Class containing all block origins and endings deduced up to now.
+    Block limits (origins and endings) are initialized at their maximal
+    possible values. No analysis is performed.
+
+    When fed with incomplete data returns empty class.
+    """
+
+
+    def __init__(self, rowHints=None, colHints=None):
+        if (rowHints is None) or (colHints is None):
+            self.rowBlockOrigins = [[]]
+            self.rowBlockEndings = [[]]
+            self.colBlockOrigins = [[]]
+            self.colBlockEndings = [[]]
+        else:
+            self.rowBlockOrigins = [[0] * len(hints) for hints in rowHints]
+            self.colBlockOrigins = [[0] * len(hints) for hints in colHints]
+            self.rowBlockEndings = [[len(colHints) - 1] * len(hints) \
+                                    for hints in rowHints]
+            self.colBlockEndings = [[len(rowHints) - 1] * len(hints) \
+                                    for hints in colHints]
 
 
     def copy(self):
+        """
+        Returns a deepcopy of a class.
+        """
         return deepcopy(self)
 
 
     def transpose(self):
+        """
+        Exchanges rows with columns.
+        """
         self.rowBlockOrigins, self.colBlockOrigins = \
             self.colBlockOrigins, self.rowBlockOrigins
         self.rowBlockEndings, self.colBlockEndings = \
