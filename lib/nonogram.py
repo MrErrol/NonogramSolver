@@ -119,6 +119,34 @@ class Data:
             )
 
 
+    def get_row_hints(self, row, blockIndex=None):
+        if blockIndex is None:
+            return self.rowHints[row]
+        else:
+            return self.rowHints[row][blockIndex]
+
+
+    def get_col_hints(self, col, blockIndex=None):
+        if blockIndex is None:
+            return self.colHints[col]
+        else:
+            return self.colHints[col][blockIndex]
+
+
+    def get_row(self, row=None):
+        if row is None:
+            return self.rows
+        else:
+            return self.rows[row]
+
+
+    def get_col(self, col=None):
+        if col is None:
+            return self.cols
+        else:
+            return self.cols[col]
+
+
 class Limits:
     """
     Class containing all block origins and endings deduced up to now.
