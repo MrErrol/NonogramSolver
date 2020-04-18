@@ -8,6 +8,70 @@ sys.path.insert(0, os.path.dirname('__file__'))
 from utils.visualizers import plot, update_plot, end_iplot
 from utils.read_from_file import read_datafile, transpose_rows
 
+class Limits:
+    def __init__(self, rowHints=[[]], colHints=[[]]):
+        self.rowBlockOrigins = [[0] * len(hints) for hints in rowHints]
+        self.colBlockOrigins = [[0] * len(hints) for hints in colHints]
+        self.rowBlockEndings = [[len(colHints) - 1] * len(hints) \
+                                for hints in rowHints]
+        self.colBlockEndings = [[len(rowHints) - 1] * len(hints) \
+                                for hints in colHints]
+
+
+    def copy(self):
+        return deepcopy(self)
+
+
+    def transpose(self):
+        self.rowBlockOrigins, self.colBlockOrigins = \
+            self.colBlockOrigins, self.rowBlockOrigins
+        self.rowBlockEndings, self.colBlockEndings = \
+            self.colBlockEndings, self.rowBlockEndings
+
+
+    def get_row_origins(self, row, blockIndex=None):
+        if blockIndex is None:
+            return self.rowBlockOrigins[row]
+        else:
+            return self.rowBlockOrigins[row][blockIndex]
+
+
+    def get_row_endings(self, row, blockIndex=None):
+        if blockIndex is None:
+            return self.rowBlockEndings[row]
+        else:
+            return self.rowBlockEndings[row][blockIndex]
+
+
+    def get_col_origins(self, col, blockIndex=None):
+        if blockIndex is None:
+            return self.colBlockOrigins[col]
+        else:
+            return self.colBlockOrigins[col][blockIndex]
+
+
+    def get_col_endings(self, col, blockIndex=None):
+        if blockIndex is None:
+            return self.colBlockEndings[col]
+        else:
+            return self.colBlockEndings[col][blockIndex]
+
+
+    def set_row_origins(self, row, newOrigins):
+        self.rowBlockOrigins[row] = newOrigins
+
+
+    def set_col_origins(self, row, newOrigins):
+        self.colBlockOrigins[row] = newOrigins
+
+
+    def set_row_endings(self, row, newEndings):
+        self.rowBlockEndings[row] = newEndings
+
+
+    def set_col_endings(self, row, newEndings):
+        self.colBlockEndings[row] = newEndings
+
 
 class Nonogram:
     def __init__(self, filename, presolved=False, wait=0.0):
