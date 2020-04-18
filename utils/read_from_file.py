@@ -22,12 +22,15 @@ def does_it_contain_only_numbers(text):
     return all([[letter in digits for letter in word][0] for word in text])
 
 
+def structure_raw_cells(raw_cells):
+    return [row + [-1] for row in raw_cells]
+
+
 def transpose_rows(rows):
-    cols = [[rows[j][i]\
+    raw_cells_transposed = [[rows[j][i]\
             for j in range(len(rows[i])-1)]\
             for i in range(len(rows))]
-    cols = [col+[-1] for col in cols]
-    return cols
+    return structure_raw_cells(raw_cells_transposed)
 
 
 def read_presolved_nonogram_representation(file, mapping=default_mapping()):
