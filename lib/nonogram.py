@@ -6,7 +6,39 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.read_from_file import read_datafile, transpose_rows
+from utils.read_from_file import read_datafile, structure_raw_cells, transpose_rows
+
+
+class Data:
+    """
+    Class containing actual status (filled, empty, unknown) of nonogram cells
+    along with hints provided by user.
+    """
+
+
+    def __init__(self, filename=None, presolved=False):
+        if filename is None:
+            self.rows = [[]]
+            self.cols = [[]]
+            self.rowHints = []
+            self.colHints = []
+        else:
+            self.rowHints, self.colHints, rawRows = read_datafile(
+                filename,
+                presolved=presolved,
+            )
+            self.rows = structure_raw_cells(rawRows)
+            self.cols = transpose_rows(self.rows)
+
+
+    def fill_presolved_cells(self, rows, presolved=False):
+        if presolved:
+            self.rows = [row + [-1] for row in rows]
+            self.cols = transpose_rows(self.rows)
+        else:
+            self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
+            self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
+
 
 class Limits:
     """
