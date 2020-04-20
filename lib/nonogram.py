@@ -539,9 +539,11 @@ class Nonogram:
         sth_changed - bool variable informing if cell state has been changed
         """
         # filling cell
-        self.data.fill_cell(self, row, col, value)
-        # updating nonogram metadata
-        self.meta_data.progress_tracker.filled_cell(row, col)
+        sth_changed = self.data.fill_cell(row, col, value)
+        if sth_changed:
+            # updating nonogram metadata
+            self.meta_data.progress_tracker.filled_cell(row, col)
+        return sth_changed
 
 
     def show_basic_hint(self, row, col):
