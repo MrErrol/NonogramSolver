@@ -419,7 +419,7 @@ class ModeData:
         """
         if self.fig:
             return True
-        else
+        else:
             return False
 
 
