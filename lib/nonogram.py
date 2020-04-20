@@ -465,7 +465,7 @@ class Nonogram:
         Method that copies Nonogram. It does not copy interactive plot references.
         """
         nono = Nonogram()
-        nono.data = self.copy()
+        nono.data = self.data.copy()
         nono.limits = self.limits.copy()
         nono.meta_data = self.meta_data.copy()
         nono.mode_data = self.mode_data.copy()
