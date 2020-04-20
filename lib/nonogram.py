@@ -37,6 +37,8 @@ class Data:
                 filename,
                 presolved=presolved,
             )
+            if rawRows is True:
+                rawRows = [[0] * len(self.colHints)] * len(self.rowHints)
             self.rows = structure_raw_cells(rawRows)
             self.cols = transpose_rows(self.rows)
 
