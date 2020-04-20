@@ -359,7 +359,7 @@ def fill_row(nono, row):
 
     # if nonogram is in the interactive mode, update plot
     if nono.mode_data.is_interactive_plot_active() and sth_changed:
-        nono.mode_data.update_plot()
+        nono.update_plot()
 
     return sth_changed
 
@@ -459,7 +459,7 @@ def analyze_multi_block_relations_in_row(nonogram, row):
         return False
 
     # loop over cells in row
-    for col in range(1, nonogram.meta_data.get_cumber_of_cols()):
+    for col in range(1, nonogram.meta_data.get_number_of_cols()):
         # filling in right direction
         if nonogram.data.get_row(row, col) == 1 and nonogram.data.get_row(row, col+1) == 0:
             changed = fill_cells_to_the_right(nonogram, row, col)
