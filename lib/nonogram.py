@@ -238,24 +238,25 @@ class Limits:
         self.colBlockEndings[row] = newEndings
 
 
-class MetaData:
+class ProgressTracker:
     """
-    Class containing metadata of nonogram used by logic of solving algorithm.
-    Solver metadata are located in ModeData class.
-
-    Contains:
-    - number of yet unsolved cells
-    - indices of rows and columns that changed since last reset (usually
-      since beggining of iteration)
-    - information whether nonogram is transosed
+    Class containing progress data of the solver:
+    - rows changed since last reset
+    - columns changed since last reset
+    - number of undetermind cells
     """
-
-
     def __init__(self, nRows, nCols):
-        self.undetermind = nRows * nCols
         self.rowsChanged = set(range(nRows))
         self.colsChanged = set(range(nCols))
-        self.transposed = False
+        self.undetermind = nRows * nCols
+
+
+    def transpose(self):
+        """
+        Exchanges rows with columns.
+        """
+        self.rowsChanged, self.colsChanged = \
+            self.colsChanged, self.rowsChanged
 
 
     def copy(self):
@@ -263,16 +264,6 @@ class MetaData:
         Returns deepcopy of itself.
         """
         return deepcopy(self)
-
-
-    def transpose(self):
-        """
-        Exchanges rows with columns and stores information about transposition
-        state of the nonogram.
-        """
-        self.rowsChanged, self.colsChanged = \
-            self.colsChanged, self.rowsChanged
-        self.transposed = not self.transposed
 
 
     def filled_cell(self, row, col):
@@ -306,12 +297,67 @@ class MetaData:
         return self.rowsChanged
 
 
+class MetaData:
+    """
+    Class containing metadata of nonogram used by logic of solving algorithm.
+    Solver metadata are located in ModeData class.
+
+    Contains:
+    - number of rows and columns
+    - class ProgressTracker
+    - information whether nonogram is transposed
+    """
+
+
+    def __init__(self, nRows, nCols):
+        self.n_rows = nRows
+        self.n_cols = nCols
+        self.progress_tracker = ProgressTracker(nRows, nCols)
+        self.transposed = False
+
+
+    def copy(self):
+        """
+        Returns deepcopy of itself.
+        """
+        new_meta_data = MetaData(self.n_rows, self.n_cols)
+        new_meta_data.transposed = copy(self.transposed)
+        new_meta_data.progress_tracker = self.progress_tracker.copy()
+        return new_meta_data
+
+
+    def transpose(self):
+        """
+        Exchanges rows with columns and stores information about transposition
+        state of the nonogram.
+        """
+        self.n_rows, self.n_cols = self.n_cols, self.n_rows
+        self.progress_tracker.transpose()
+        self.transposed = not self.transposed
+
+
     def is_transposed(self):
         """
         Informs whether nonogram data are transposed with respect to
         the original ones.
         """
         return self.transposed
+
+
+    def get_number_of_rows(self):
+        """
+        Returns number of rows of a nonogram.
+        (In a given transposition state)
+        """
+        return self.n_rows
+
+
+    def get_number_of_cols(self):
+        """
+        Returns number of cols of a nonogram.
+        (In a given transposition state)
+        """
+        return self.n_cols
 
 
 class ModeData:
@@ -479,7 +525,7 @@ class Nonogram:
         # filling cell
         self.data.fill_cell(self, row, col, value)
         # updating nonogram metadata
-        self.meta_data.filled_cell(row, col)
+        self.meta_data.progress_tracker.filled_cell(row, col)
 
 
     def show_basic_hint(self, row, col):
