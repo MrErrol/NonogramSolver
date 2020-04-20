@@ -6,7 +6,8 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.read_from_file import read_datafile, structure_raw_cells, transpose_rows
+from utils.read_from_file import read_datafile, structure_raw_cells, \
+    strip_trailing_empty_cells, transpose_rows
 
 
 class OverwriteException(Exception):
@@ -119,15 +120,19 @@ class Data:
             )
 
 
-    def get_row_hints(self, row, blockIndex=None):
-        if blockIndex is None:
+    def get_row_hints(self, row=None, blockIndex=None):
+        if row is None:
+            return self.rowHints
+        elif blockIndex is None:
             return self.rowHints[row]
         else:
             return self.rowHints[row][blockIndex]
 
 
     def get_col_hints(self, col, blockIndex=None):
-        if blockIndex is None:
+        if col is None:
+            return self.colHints
+        elif blockIndex is None:
             return self.colHints[col]
         else:
             return self.colHints[col][blockIndex]
@@ -301,6 +306,14 @@ class MetaData:
         return self.rowsChanged
 
 
+    def is_transposed(self):
+        """
+        Informs whether nonogram data are transposed with respect to
+        the original ones.
+        """
+        return self.transposed
+
+
 class ModeData:
     """
     Class containing nonlogistic metadata of Nonogram.
@@ -342,6 +355,10 @@ class ModeData:
 
 
     def end_iplot(self):
+        """
+        Finalizes interactive plot.
+        Plot is updated before finalization.
+        """
         self.update_plot()
         end_iplot()
 
@@ -351,120 +368,45 @@ class ModeData:
 
 
 class Nonogram:
-    def __init__(self, filename, presolved=False, wait=0.0):
-        dummy_rows = self.read_nonogram_from_file(filename, presolved=presolved)
-        self.rowBlockOrigins = [[0]*len(hints) for hints in self.rowHints]
-        self.colBlockOrigins = [[0]*len(hints) for hints in self.colHints]
-        self.rowBlockEndings = [[self.nCols - 1]*len(hints) \
-                                for hints in self.rowHints]
-        self.colBlockEndings = [[self.nRows - 1]*len(hints) \
-                                for hints in self.colHints]
-        self.undetermind = self.nRows*self.nCols
-        self.rowsChanged = set(range(self.nRows))
-        self.colsChanged = set(range(self.nCols))
-        self.transposed = False
-        self.fig = None
-        self.im = None
-        self.wait = wait
-        self.hinter = 'simple'
-        self.verbose = 0
+    """
+    Class that holds all data about given nonogram.
+    All the interaction with subclasses (except for getters) should be done via
+    methods of this class.
+    """
 
 
-    def self_consistency_check(self):
-        """
-        Checks if sum of filled cell according to hints on rows and columns
-        is the same.
-        Usually allows to smoke-gun typing error.
-
-        Return:
-        bool - bool variable informing if nonogram seems to be self-consistet
-        """
-        # number of filled cells in rows
-        npixR = sum([sum(row) for row in self.rowHints])
-        # number of filled cells in columns
-        npixC = sum([sum(col) for col in self.colHints])
-        if not npixR == npixC:
-            return False
-
-        return True
-
-
-    def read_nonogram_from_file(self, filename, presolved=False):
-        """
-        Fills the rowHints and colHints with data read from file.
-        """
-        # This part of code is used by method copy()
-        if filename is None:
-            self.rowHints = []
-            self.colHints = []
-            self.nRows = 0
-            self.nCols = 0
-            return 0
-
-        # Reading datafile
-        self.rowHints, self.colHints, rows = read_datafile(filename,
-                                                           presolved=presolved,
-                                                          )
-        self.nRows = len(self.rowHints)
-        self.nCols = len(self.colHints)
-        self.fill_presolved_cells(rows, presolved=presolved)
-
-        # simple check of self-consistency
-        # usually allows to smoke-gun typing error
-        if not self.self_consistency_check():
-            print('Input nonogram is not self consistent.')
-            print('The sum of filled cells in rows is different than in columns.')
-            quit()
-
-        return rows
-
-
-    def fill_presolved_cells(self, rows, presolved=False):
-        if presolved:
-            self.rows = [row + [-1] for row in rows]
-            self.cols = transpose_rows(self.rows)
-        else:
-            self.rows = [[0]*self.nCols + [-1] for i in range(self.nRows)]
-            self.cols = [[0]*self.nRows + [-1] for i in range(self.nCols)]
+    def __init__(self, filename=None, presolved=False, wait=0.0, verbosity=0):
+        self.data = Data(filename=filename, presolved=presolved)
+        self.limits = Limits(
+            self.data.get_row_hints(),
+            self.data.get_col_hints(),
+        )
+        self.meta_data = MetaData(
+            len(self.data.get_row()),
+            len(self.data.get_col()),
+        )
+        self.mode_data = ModeData(wait=wait, verbosity=verbosity)
 
 
     def transpose(self):
-        self.rowHints, self.colHints = self.colHints, self.rowHints
-        self.nRows, self.nCols = self.nCols, self.nRows
-        self.rows, self.cols = self.cols, self.rows
-        self.rowBlockOrigins, self.colBlockOrigins = \
-            self.colBlockOrigins, self.rowBlockOrigins
-        self.rowBlockEndings, self.colBlockEndings = \
-            self.colBlockEndings, self.rowBlockEndings
-        self.rowsChanged, self.colsChanged = \
-            self.colsChanged, self.rowsChanged
-        self.transposed = not self.transposed
+        """
+        Methods that transposes nonogram, effectiveli exchanging rows with
+        columns. The plot functions are not affected.
+        """
+        self.data.transpose()
+        self.limits.transpose()
+        self.meta_data.transpose()
 
 
     def copy(self):
         """
         Method that copies Nonogram. It does not copy interactive plot references.
         """
-        nono = Nonogram(None)
-        nono.rowHints = self.rowHints
-        nono.colHints = self.colHints
-        nono.nRows = self.nRows
-        nono.nCols = self.nCols
-        nono.rows = deepcopy(self.rows)
-        nono.cols = deepcopy(self.cols)
-        nono.rowBlockOrigins = deepcopy(self.rowBlockOrigins)
-        nono.colBlockOrigins = deepcopy(self.colBlockOrigins)
-        nono.rowBlockEndings = deepcopy(self.rowBlockEndings)
-        nono.colBlockEndings = deepcopy(self.colBlockEndings)
-        nono.undetermind = copy(self.undetermind)
-        nono.rowsChanged = copy(self.rowsChanged)
-        nono.colsChanged = copy(self.colsChanged)
-        nono.transposed = copy(self.transposed)
-        nono.fig = None
-        nono.im = None
-        nono.wait = self.wait
-        nono.hinter = self.hinter
-        nono.verbose = self.verbose
+        nono = Nonogram()
+        nono.data = self.copy()
+        nono.limits = self.limits.copy()
+        nono.meta_data = self.meta_data.copy()
+        nono.mode_data = self.mode_data.copy()
         return nono
 
 
@@ -478,10 +420,10 @@ class Nonogram:
         data - matrix (list of lists) of nonogram cell values (including
                trailing -1)
         """
-        if self.transposed:
-            return copy(self.cols)
+        if self.meta_data.is_transposed():
+            return copy(self.data.get_col())
         else:
-            return copy(self.rows)
+            return copy(self.data.get_row())
 
 
     def get_picture_data(self):
@@ -494,8 +436,7 @@ class Nonogram:
         --------
         data - matrix (list of lists) of nonogram cell values
         """
-        rows = self.get_true_rows()
-        return [row[:-1] for row in rows]
+        return strip_trailing_empty_cells(self.get_true_rows())
 
 
     def plot(self, interactive=False):
@@ -503,7 +444,7 @@ class Nonogram:
         Calls plotting function and stores obtained figure and image.
         """
         data = self.get_picture_data()
-        self.fig, self.im = plot(data, interactive=interactive)
+        self.mode_data.plot(data, interactive=interactive)
 
 
     def update_plot(self):
@@ -512,12 +453,14 @@ class Nonogram:
         Figure and image are updated by it.
         """
         data = self.get_picture_data()
-        update_plot(data, self.fig, self.im, self.wait)
+        self.mode_data.update_plot(data)
 
 
     def end_iplot(self):
-        self.update_plot()
-        end_iplot()
+        """
+        Calls the function that finalizes interactive plot.
+        """
+        self.mode_data.end_iplot()
 
 
     def fill_cell(self, row, col, value):
@@ -527,35 +470,29 @@ class Nonogram:
         -1 represents empty cell.
          0 represents yet unknown cell.
 
+         Keeps track of nonogram metadata.
+
         Return:
         -------
         sth_changed - bool variable informing if cell state has been changed
         """
-        if self.rows[row][col] == self.cols[col][row] == value:
-            return False
-        elif self.rows[row][col] == self.cols[col][row] == 0:
-            self.rows[row][col] = self.cols[col][row] = value
-            self.rowsChanged.add(row)
-            self.colsChanged.add(col)
-            self.undetermind -= 1
-            return True
-        else:
-            raise Exception("Trying to overwrite filled/empty cell! " + \
-                            str(row) + ' ' + str(col)
-                           )
+        # filling cell
+        self.data.fill_cell(self, row, col, value)
+        # updating nonogram metadata
+        self.meta_data.filled_cell(row, col)
 
 
     def show_basic_hint(self, row, col):
         """
         Prints basic hint about next cell to be filled.
         """
-        if self.hinter == 'simple':
-            if self.transposed:
+        if self.mode_data.get_verbosity():
+            if self.meta_data.is_transposed():
                 print('Analyze column ' + str(row) + '.')
             else:
                 print('Analyze row ' + str(row) + '.')
         else:
-            if self.transposed:
+            if self.meta_data.is_transposed():
                 print("Assume the cell at row=" + str(col) + " and col=" + \
                       str(row) + " to be filled and try to deduce consequences.")
             else:
@@ -571,10 +508,10 @@ class Nonogram:
         """
         self.show_basic_hint(row + 1, col + 1)
 
-        if self.verbose:
+        if self.mode_data.get_verbosity():
             values = {-1:'empty.', 1:'filled.'}
             print("Cell at row=" + str(row+1) + " and col=" + str(col+1) +
                   " may be deduced to be " + values[value])
-            if self.hinter == 'assumption_making':
-                print('You will need to analyze more than just single row or column.')
+            #if self.hinter == 'assumption_making':
+            #    print('You will need to analyze more than just single row or column.')
         quit()
