@@ -373,16 +373,16 @@ def find_min_block_length(nonogram, row, cell_position):
     min_length - minimal length of the block that may cover chosen cell
     """
     # indices of blocks that may cover chosen position
-    indices_o = [index for index, value \
+    indices_origins = [index for index, value \
                  in enumerate(nonogram.rowBlockOrigins[row]) \
                  if value <= cell_position
                 ]
-    indices_e = [index for index, value \
+    indices_endings = [index for index, value \
                  in enumerate(nonogram.rowBlockEndings[row]) \
                  if value >= cell_position
                 ]
     # intersection of both sets
-    indices = set(indices_o) & set(indices_e)
+    indices = set(indices_origins) & set(indices_endings)
     block_lengths = [nonogram.rowHints[row][index] for index in indices]
     return min(block_lengths)
 
