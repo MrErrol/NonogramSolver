@@ -1,6 +1,10 @@
 from string import digits
 
 
+DEFAULT_MAPPING = {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1,\
+            '+':1, '-':-1, '0':0, '1':1, '2':-1}
+
+
 def is_beggining_of_row_hints(line):
     return line[:5] == 'ROWS:'
 
@@ -11,11 +15,6 @@ def is_beggining_of_col_hints(line):
 
 def is_beggining_of_cells(line):
     return line[:6] == 'CELLS:'
-
-
-def default_mapping():
-    return {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1,\
-            '+':1, '-':-1, '0':0, '1':1, '2':-1}
 
 
 def does_it_contain_only_numbers(text):
@@ -31,9 +30,11 @@ def strip_trailing_empty_cells(structured_cells):
 
 
 def transpose_raw_cells(raw_cells):
-    return [[raw_cells[j][i] \
-            for j, dummy_value_1 in enumerate(raw_cells[i])] \
-            for i, dummy_value_2 in enumerate(raw_cells)]
+    number_of_rows = len(raw_cells)
+    number_of_cols = len(raw_cells[0])
+    return [[raw_cells[i][j] \
+            for i in range(number_of_rows)] \
+            for j in range(number_of_cols)]
 
 
 def transpose_rows(rows):
@@ -43,7 +44,7 @@ def transpose_rows(rows):
     return new_rows
 
 
-def read_presolved_nonogram_representation(file, mapping=default_mapping()):
+def read_presolved_nonogram_representation(file, mapping=DEFAULT_MAPPING):
     read_list = []
     while True:
         line = file.readline()
