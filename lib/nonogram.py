@@ -413,6 +413,16 @@ class ModeData:
         end_iplot()
 
 
+    def is_interactive_plot_active(self):
+        """
+        Informs whether interactive plot is started.
+        """
+        if self.fig:
+            return True
+        else
+            return False
+
+
     def get_verbosity(self):
         return self.verbosity
 
