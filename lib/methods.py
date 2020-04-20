@@ -267,9 +267,9 @@ def fill_inside_of_the_blocks(nonogram, row):
     --------
     sth_changed - bool variable informing whether nonogram state has changed
     """
-    hints = nonogram.rowHints[row]
-    endings = nonogram.rowBlockEndings[row]
-    origins = nonogram.rowBlockOrigins[row]
+    hints = nonogram.data.get_row_hints(row)
+    endings = nonogram.limits.get_row_endings(row)
+    origins = nonogram.limits.get_row_origins(row)
 
     sth_changed = False
 
@@ -289,9 +289,9 @@ def fill_between_the_blocks(nonogram, row):
     --------
     sth_changed - bool variable informing whether nonogram state has changed
     """
-    hints = nonogram.rowHints[row]
-    endings = nonogram.rowBlockEndings[row]
-    origins = nonogram.rowBlockOrigins[row]
+    hints = nonogram.data.get_row_hints(row)
+    endings = nonogram.limits.get_row_endings(row)
+    origins = nonogram.limits.get_row_origins(row)
 
     sth_changed = False
 
@@ -303,7 +303,7 @@ def fill_between_the_blocks(nonogram, row):
     return sth_changed
 
 
-def fill_beggining_of_the_row(nono, row):
+def fill_beggining_of_the_row(nonogram, row):
     """
     Function marks as empty area before first block.
 
@@ -311,8 +311,8 @@ def fill_beggining_of_the_row(nono, row):
     --------
     sth_changed - bool variable informing whether nonogram state has changed
     """
-    origins = nono.rowBlockOrigins[row]
-    sth_changed = fill_range_in_row(nono, row, range(origins[0]), -1)
+    origin = nonogram.limits.get_row_origins(row, 0)
+    sth_changed = fill_range_in_row(nonogram, row, range(origin), -1)
     return sth_changed
 
 
@@ -324,9 +324,9 @@ def fill_end_of_the_row(nono, row):
     --------
     sth_changed - bool variable informing whether nonogram state has changed
     """
-    endings = nono.rowBlockEndings[row]
+    ending = nono.limits.get_row_endings(row, -1)
     sth_changed = fill_range_in_row(nono, row,
-                                    range(endings[-1] + 1, nono.nCols),
+                                    range(ending + 1, nono.meta_data.n_cols),
                                     -1)
     return sth_changed
 
@@ -357,9 +357,9 @@ def fill_row(nono, row):
 
     sth_changed = changed_1 or changed_2 or changed_3 or changed_4
 
-    # if figure is present, nonogram is in the interactive mode
-    if nono.fig and sth_changed:
-        nono.update_plot()
+    # if nonogram is in the interactive mode, update plot
+    if nono.mode_data.is_interactive_plot_active() and sth_changed:
+        nono.mode_data.update_plot()
 
     return sth_changed
 
@@ -374,16 +374,16 @@ def find_min_block_length(nonogram, row, cell_position):
     """
     # indices of blocks that may cover chosen position
     indices_origins = [index for index, value \
-                 in enumerate(nonogram.rowBlockOrigins[row]) \
+                 in enumerate(nonogram.limits.get_row_origins(row)) \
                  if value <= cell_position
                 ]
     indices_endings = [index for index, value \
-                 in enumerate(nonogram.rowBlockEndings[row]) \
+                 in enumerate(nonogram.limits.get_row_endings(row)) \
                  if value >= cell_position
                 ]
     # intersection of both sets
     indices = set(indices_origins) & set(indices_endings)
-    block_lengths = [nonogram.rowHints[row][index] for index in indices]
+    block_lengths = [nonogram.data.get_row_hints(row, index) for index in indices]
     return min(block_lengths)
 
 
@@ -402,7 +402,7 @@ def fill_cells_to_the_right(nonogram, row, col):
 
     # leeway stores a number of fillable cells to the left
     # -1 at the end returns length of line, when there is no true empty cell
-    left_cells = nonogram.rows[row][:col]
+    left_cells = nonogram.data.get_row(row)[:col]
     leeway = (left_cells[::-1]+[-1]).index(-1)
 
     block_length = find_min_block_length(nonogram, row, col)
@@ -430,7 +430,7 @@ def fill_cells_to_the_left(nonogram, row, col):
 
     # leeway stores a number of fillable cells to the right
     # -1 at the end returns length of line, when there is no true empty cell
-    right_cells = nonogram.rows[row][col+1:]
+    right_cells = nonogram.data.get_row(row)[col+1:]
     leeway = (right_cells + [-1]).index(-1)
 
     block_length = find_min_block_length(nonogram, row, col)
@@ -455,18 +455,18 @@ def analyze_multi_block_relations_in_row(nonogram, row):
     sth_changed = False
 
     # filled line case
-    if not 0 in nonogram.rows[row]:
+    if not 0 in nonogram.data.get_row(row):
         return False
 
     # loop over cells in row
-    for col in range(1, len(nonogram.rows[row]) - 1):
+    for col in range(1, nonogram.meta_data.get_cumber_of_cols()):
         # filling in right direction
-        if nonogram.rows[row][col] == 1 and nonogram.rows[row][col+1] == 0:
+        if nonogram.data.get_row(row, col) == 1 and nonogram.data.get_row(row, col+1) == 0:
             changed = fill_cells_to_the_right(nonogram, row, col)
             sth_changed = sth_changed or changed
 
         # filling in left direction
-        if nonogram.rows[row][col] == 1 and nonogram.rows[row][col-1] == 0:
+        if nonogram.data.get_row(row, col) == 1 and nonogram.data.get_row(row, col-1) == 0:
             changed = fill_cells_to_the_left(nonogram, row, col)
             sth_changed = sth_changed or changed
 
@@ -487,7 +487,7 @@ def analyze_multi_block_relations(nonogram):
     # loop over nonogram dimensions (rows and columns)
     for dummy_dimension in range(2):
         # loop over nonogram rows (columns)
-        for row in range(len(nonogram.rows)):
+        for row in range(nonogram.meta_data.get_number_of_rows()):
             sth_changed_loc = analyze_multi_block_relations_in_row(nonogram, row)
             sth_changed = sth_changed or sth_changed_loc
         nonogram.transpose()
