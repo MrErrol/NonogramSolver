@@ -301,6 +301,55 @@ class MetaData:
         return self.rowsChanged
 
 
+class ModeData:
+    """
+    Class containing nonlogistic metadata of Nonogram.
+
+    It contains:
+    - image data
+    - verbosity level for hinter mode
+    """
+
+
+    def __init__(self, wait=None, verbosity=0):
+        self.fig = None
+        self.im = None
+        self.wait = wait
+        self.verbosity = verbosity
+
+
+    def copy(self):
+        """
+        Copies the class ignoring all image data.
+        (Only verbosity is copied.)
+        """
+        return ModeData(verbosity=self.verbosity)
+
+
+    def plot(self, data, interactive=False):
+        """
+        Calls plotting function and stores obtained figure and image.
+        """
+        self.fig, self.im = plot(data, interactive=interactive)
+
+
+    def update_plot(self, data):
+        """
+        Calls function that updates plot.
+        Figure and image are updated by it.
+        """
+        update_plot(data, self.fig, self.im, self.wait)
+
+
+    def end_iplot(self):
+        self.update_plot()
+        end_iplot()
+
+
+    def get_verbosity(self):
+        return self.verbosity
+
+
 class Nonogram:
     def __init__(self, filename, presolved=False, wait=0.0):
         dummy_rows = self.read_nonogram_from_file(filename, presolved=presolved)
