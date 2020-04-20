@@ -129,7 +129,7 @@ class Data:
             return self.rowHints[row][blockIndex]
 
 
-    def get_col_hints(self, col, blockIndex=None):
+    def get_col_hints(self, col=None, blockIndex=None):
         if col is None:
             return self.colHints
         elif blockIndex is None:
