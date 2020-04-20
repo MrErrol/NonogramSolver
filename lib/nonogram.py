@@ -138,18 +138,22 @@ class Data:
             return self.colHints[col][blockIndex]
 
 
-    def get_row(self, row=None):
+    def get_row(self, row=None, col=None):
         if row is None:
             return self.rows
-        else:
+        elif col is None:
             return self.rows[row]
+        else:
+            return self.rows[row][col]
 
 
-    def get_col(self, col=None):
+    def get_col(self, col=None, row=None):
         if col is None:
             return self.cols
-        else:
+        elif row is None:
             return self.cols[col]
+        else:
+            return self.cols[col][row]
 
 
 class Limits:
