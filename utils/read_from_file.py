@@ -26,11 +26,21 @@ def structure_raw_cells(raw_cells):
     return [row + [-1] for row in raw_cells]
 
 
+def strip_trailing_empty_cells(structured_cells):
+    return [row[:-1] for row in structured_cells]
+
+
+def transpose_raw_cells(raw_cells):
+    return [[raw_cells[j][i] \
+            for j, dummy_value_1 in enumerate(raw_cells[i])] \
+            for i, dummy_value_2 in enumerate(raw_cells)]
+
+
 def transpose_rows(rows):
-    raw_cells_transposed = [[rows[j][i]\
-            for j in range(len(rows[i])-1)]\
-            for i in range(len(rows))]
-    return structure_raw_cells(raw_cells_transposed)
+    new_rows = strip_trailing_empty_cells(rows)
+    new_rows = transpose_raw_cells(new_rows)
+    new_rows = structure_raw_cells(new_rows)
+    return new_rows
 
 
 def read_presolved_nonogram_representation(file, mapping=default_mapping()):
