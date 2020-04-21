@@ -40,15 +40,15 @@ def test_make_assumption():
 def test_make_assumption_part2(mocked_check):
     mocked_check.return_value = False
 
-    nono_assume_4.rowBlockOrigins[0] = [2, 2]
-    nono_assume_4.rowBlockEndings[0] = [2, 2]
+    nono_assume_4.limits.rowBlockOrigins[0] = [2, 2]
+    nono_assume_4.limits.rowBlockEndings[0] = [2, 2]
 
     assert make_assumption(nono_assume_4, 0, 5) == False
 
-    nono_assume_4.rowBlockOrigins[0] = [0, 2]
-    nono_assume_4.rowBlockEndings[0] = [3, 5]
-    nono_assume_4.colBlockOrigins[5] = [2]
-    nono_assume_4.colBlockEndings[5] = [2]
+    nono_assume_4.limits.rowBlockOrigins[0] = [0, 2]
+    nono_assume_4.limits.rowBlockEndings[0] = [3, 5]
+    nono_assume_4.limits.colBlockOrigins[5] = [2]
+    nono_assume_4.limits.colBlockEndings[5] = [2]
 
     assert make_assumption(nono_assume_4, 0, 5) == False
 
@@ -57,12 +57,12 @@ def test_ivestigate_row_with_assumptions():
     assert ivestigate_row_with_assumptions(nono_assume_2, 0) == False
     assert ivestigate_row_with_assumptions(nono_assume_2, 1) == False
     assert ivestigate_row_with_assumptions(nono_assume_2, 3) == True    
-    assert nono_assume_2.rows[3] == [-1, -1, 0, 0, 0, -1, -1, -1] # -1 at 5th position is not obvious
+    assert nono_assume_2.data.get_row(3) == [-1, -1, 0, 0, 0, -1, -1, -1] # -1 at 5th position is not obvious
 
 
 def test_search_for_assumptions():
     assert search_for_assumptions(nono_assume_3, searching_depth=1) == True
-    assert nono_assume_3.rows[0] == [ 0,  0,  0,  0,  0,  0,  0, -1]
-    assert nono_assume_3.rows[3] == [-1, -1,  0,  0,  0, -1, -1, -1]
+    assert nono_assume_3.data.get_row(0) == [ 0,  0,  0,  0,  0,  0,  0, -1]
+    assert nono_assume_3.data.get_row(3) == [-1, -1,  0,  0,  0, -1, -1, -1]
     assert search_for_assumptions(nono_assume_3, searching_depth=3) == True
-    assert nono_assume_3.rows[2] == [-1, -1,  0, -1, -1, -1, -1, -1] # cause we already know all about row 3
+    assert nono_assume_3.data.get_row(2) == [-1, -1,  0, -1, -1, -1, -1, -1] # cause we already know all about row 3
