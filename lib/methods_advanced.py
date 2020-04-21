@@ -132,6 +132,27 @@ def make_assumption(nonogram, row, col):
     # No internal discrepancy found
     return True
 
+def push_limits_within_a_row(nono, row):
+    """
+    Function pushes all block origins and endings within given row as far
+    as possible.
+    """
+    changed_origins, new_origins = push_block_Origins(
+        nono.data.get_row_hints(row),
+        nono.limits.get_row_origins(row),
+        exh=True,
+    )
+    changed_endings, new_endings = push_block_Endings(
+        nono.data.get_row_hints(row),
+        nono.limits.get_row_endings(row),
+        exh=True,
+    )
+
+    if changed_origins:
+        nono.limits.set_row_origins(row, new_origins)
+    if changed_endings:
+        nono.limits.set_row_endings(row, new_endings)
+
 
 def push_everything_from_this_cell(nono, row, col):
     """
@@ -141,21 +162,7 @@ def push_everything_from_this_cell(nono, row, col):
     # Loop over nonogram dimensions (rows and columns)
     for dimension in range(2):
         index = [row, col][dimension]
-        changed_origins, new_origins = push_block_Origins(
-            nono.data.get_row_hints(index),
-            nono.limits.get_row_origins(index),
-            exh=True,
-        )
-        changed_endings, new_endings = push_block_Endings(
-            nono.data.get_row_hints(index),
-            nono.limits.get_row_endings(index),
-            exh=True,
-        )
-
-        if changed_origins:
-            nono.limits.set_row_origins(index, new_origins)
-        if changed_endings:
-            nono.limits.set_row_endings(index, new_endings)
+        push_limits_within_a_row(nono, index)
 
         nono.transpose()
 
