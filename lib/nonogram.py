@@ -289,6 +289,20 @@ class ProgressTracker:
         self.colsChanged = set()
 
 
+    def mark_row_as_changed(self, row):
+        """
+        Adds row to collection of changed rows.
+        """
+        self.rowsChanged.add(row)
+
+
+    def mark_col_as_changed(self, col):
+        """
+        Adds column to collection of changed columns.
+        """
+        self.colsChanged.add(col)
+
+
     def get_rows_changed(self):
         """
         Returns rows changed since last reset.
@@ -301,6 +315,20 @@ class ProgressTracker:
         Returns columns changed since last reset.
         """
         return self.colsChanged
+
+
+    def get_number_of_undetermind_cells(self):
+        """
+        Returns number of (yet) undetermind cells.
+        """
+        return self.undetermind
+
+
+    def anything_improved(self):
+        if self.rowsChanged == set() and self.colsChanged == set():
+            return False
+        else:
+            return True
 
 
 class MetaData:
