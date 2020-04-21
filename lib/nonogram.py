@@ -300,7 +300,7 @@ class ProgressTracker:
         """
         Returns columns changed since last reset.
         """
-        return self.rowsChanged
+        return self.colsChanged
 
 
 class MetaData:
