@@ -33,9 +33,9 @@ nono_1a = Nonogram(None)
 nono_1b = Nonogram(None)
 nono_2a = Nonogram(None)
 
-nono_1a.rows = table_1a
-nono_1b.rows = table_1b
-nono_2a.rows = table_2a
+nono_1a.data.rows = table_1a
+nono_1b.data.rows = table_1b
+nono_2a.data.rows = table_2a
 
 
 def test_does_it_contain_only_numbers():
