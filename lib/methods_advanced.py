@@ -48,20 +48,20 @@ def safe_deduce(nono, row):
     """
     try:
         sth_changed1, blockOrigins = deduce_new_block_origins(
-            nono.rows[row],
-            nono.rowHints[row],
-            nono.rowBlockOrigins[row],
+            nono.data.get_row(row),
+            nono.data.get_row_hints(row),
+            nono.limits.get_row_origins(row),
             )
         sth_changed2, blockEndings = deduce_new_block_endings(
-            nono.rows[row],
-            nono.rowHints[row],
-            nono.rowBlockEndings[row],
+            nono.data.get_row(row),
+            nono.data.get_row_hints(row),
+            nono.limits.get_row_endings(row),
             )
     except:
         return True
     if sth_changed1 or sth_changed2:
-        nono.rowBlockOrigins[row] = blockOrigins
-        nono.rowBlockEndings[row] = blockEndings
+        nono.limits.set_row_origins(row, blockOrigins)
+        nono.limits.set_row_endings(row, blockEndings)
         try:
             fill_row(nono, row)
         except:
@@ -83,7 +83,7 @@ def make_deduction(nono):
     # through rows and columns separately
     for dummy_checking_depth in range(2*2):
         # Loop over previously changed rows (or columns)
-        for row in nono.rowsChanged:
+        for row in nono.meta_data.progress_tracker.get_rows_changed():
             # perform deduction and report possible problems
             if safe_deduce(nono, row):
                 # discrepancy found
@@ -104,9 +104,7 @@ def make_assumption(nonogram, row, col):
     bool - bool variable answearing the question if the cell may be filled
     """
     nono = nonogram.copy()
-    nono.rowsChanged = set()
-    nono.colsChanged = set()
-    nono.hinter = 'assumption_making'
+    nono.meta_data.progress_tracker.reset_changed_rows_and_cols()
     # Our assumption
     nono.fill_cell(row, col, 1)
 
@@ -114,20 +112,20 @@ def make_assumption(nonogram, row, col):
         return False
 
     # Loops verifying all modified rows
-    for row in nono.rowsChanged:
-        if not check_if_line_is_fillable(nono.rows[row],
-                                         nono.rowHints[row],
-                                         nono.rowBlockOrigins[row],
-                                         nono.rowBlockEndings[row],
+    for row in nono.meta_data.progress_tracker.get_rows_changed():
+        if not check_if_line_is_fillable(nono.data.get_row(row),
+                                         nono.data.get_row_hints(row),
+                                         nono.limits.get_row_origins(row),
+                                         nono.limits.get_row_endings(row),
                                         ):
             return False
 
     # Loops verifying all modified columns
-    for col in nono.colsChanged:
-        if not check_if_line_is_fillable(nono.cols[col],
-                                         nono.colHints[col],
-                                         nono.colBlockOrigins[col],
-                                         nono.colBlockEndings[col],
+    for col in nono.meta_data.progress_tracker.get_cols_changed():
+        if not check_if_line_is_fillable(nono.data.get_col(col),
+                                         nono.data.get_col_hints(col),
+                                         nono.limits.get_col_origins(col),
+                                         nono.limits.get_col_endings(col),
                                         ):
             return False
 
@@ -140,26 +138,25 @@ def push_everything_from_this_cell(nono, row, col):
     Function pushes all block endings that might be affected be change of
     (row, col) cell state.
     """
-    dummy, nono.rowBlockOrigins[row] = push_block_Origins(
-        nono.rowHints[row],
-        nono.rowBlockOrigins[row],
-        exh=True,
+    # Loop over nonogram dimensions (rows and columns)
+    for dummy_dimension in range(2):
+        changed_origins, new_origins = push_block_Origins(
+            nono.data.get_row_hints(row),
+            nono.limits.get_row_origins(row),
+            exh=True,
         )
-    dummy, nono.rowBlockEndings[row] = push_block_Endings(
-        nono.rowHints[row],
-        nono.rowBlockEndings[row],
-        exh=True,
+        changed_endings, new_endings = push_block_Endings(
+            nono.data.get_row_hints(row),
+            nono.limits.get_row_endings(row),
+            exh=True,
         )
-    dummy, nono.colBlockOrigins[col] = push_block_Origins(
-        nono.colHints[col],
-        nono.colBlockOrigins[col],
-        exh=True,
-        )
-    dummy, nono.colBlockEndings[col] = push_block_Endings(
-        nono.colHints[col],
-        nono.colBlockEndings[col],
-        exh=True,
-        )
+
+        if changed_origins:
+            nono.limits.set_row_origins(row, new_origins)
+        if changed_endings:
+            nono.limits.set_row_endings(row, new_endings)
+
+        nono.transpose()
 
 
 def investigate_empty_cells_from_left(nono, row, empty_cells):
@@ -198,7 +195,7 @@ def ivestigate_row_with_assumptions(nonogram, row):
     """
     # gives indices of empty cells in the row
     def get_empty_cells(nonogram, row):
-        return [index for index, value in enumerate(nonogram.rows[row]) if value == 0]
+        return [index for index, value in enumerate(nonogram.data.get_row(row)) if value == 0]
 
     sth_changed = []
     empty_cells = get_empty_cells(nonogram, row)
@@ -227,7 +224,7 @@ def search_for_assumptions(nonogram, searching_depth=2):
     # loop over nonogram dimensions (rows and columns)
     for dummy_dimension in range(2):
         # Finding non-filled rows in nonogram
-        rows = [index for index, line in enumerate(nonogram.rows) if 0 in line]
+        rows = [index for index, line in enumerate(nonogram.data.get_row()) if 0 in line]
 
         # loop over rows truncated by searching_depth
         for dummy_depth in range(searching_depth):
