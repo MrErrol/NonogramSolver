@@ -9,17 +9,8 @@ def perform_good_start(nono):
     Function meaningfully initializes block limits. Usually even fills some cells.
     """
     for dummy_dimension in range(2):
-        for row in range(nono.nRows):
-            dummy, nono.rowBlockOrigins[row] = methods.push_block_Origins(
-                nono.rowHints[row],
-                nono.rowBlockOrigins[row],
-                index=0,
-                )
-            dummy, nono.rowBlockEndings[row] = methods.push_block_Endings(
-                nono.rowHints[row],
-                nono.rowBlockEndings[row],
-                index=0,
-                )
+        for row in range(nono.meta_data.get_number_of_rows()):
+            advanced.push_limits_within_a_row(nono, row)
             methods.fill_row(nono, row)
         nono.transpose()
 
@@ -29,20 +20,20 @@ def perform_simple_deducing_for_single_row(nono, row):
     Function tries to deduce new block limits for a single row of nonogram.
     If succeeded it appropriately updates them in the nonogram class.
     """
-    sth_changed_1, origins = methods.deduce_new_block_origins(
-        nono.rows[row],
-        nono.rowHints[row],
-        nono.rowBlockOrigins[row],
+    origins_changed, new_origins = methods.deduce_new_block_origins(
+        nono.data.get_row(row),
+        nono.data.get_row_hints(row),
+        nono.limits.get_row_origins(row),
     )
-    sth_changed_2, endings = methods.deduce_new_block_endings(
-        nono.rows[row],
-        nono.rowHints[row],
-        nono.rowBlockEndings[row],
+    endings_changed, new_endings = methods.deduce_new_block_endings(
+        nono.data.get_row(row),
+        nono.data.get_row_hints(row),
+        nono.limits.get_row_endings(row),
     )
-    if sth_changed_1 or sth_changed_2:
-        nono.rowBlockOrigins[row] = origins
-        nono.rowBlockEndings[row] = endings
-        nono.rowsChanged.add(row)
+    if origins_changed or endings_changed:
+        nono.limits.set_row_origins(row, new_origins)
+        nono.limits.set_row_endings(row, new_endings)
+        nono.meta_data.progress_tracker.mark_row_as_changed(row)
         methods.fill_row(nono, row)
 
 
@@ -76,12 +67,12 @@ def make_single_iteration_of_deduction(nono, rowsChanged, colsChanged,
     perform_simple_deducing(nono, rowsChanged, colsChanged)
 
     # Check if anything improved
-    if nono.rowsChanged == set() and nono.colsChanged == set():
+    if not nono.meta_data.progress_tracker.anything_improved():
         # Calling advanced, more costly function
         methods.analyze_multi_block_relations(nono)
 
     # Check if anything improved
-    if nono.rowsChanged == set() and nono.colsChanged == set():
+    if not nono.meta_data.progress_tracker.anything_improved():
         # Calling advanced, even more costly function
         advanced.search_for_assumptions(nono, searching_depth=searching_depth)
 
@@ -99,20 +90,18 @@ def solver(nono, searching_depth=2):
 
     cycle = 0
     # main loop
-    while nono.undetermind:
+    while nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
         # Stores basic information about improvements since last cycle
-        rowsChanged = copy(nono.rowsChanged)
-        colsChanged = copy(nono.colsChanged)
-        nono.rowsChanged = set()
-        nono.colsChanged = set()
+        rowsChanged = copy(nono.meta_data.progress_tracker.get_rows_changed())
+        colsChanged = copy(nono.meta_data.progress_tracker.get_cols_changed())
+        nono.meta_data.progress_tracker.reset_changed_rows_and_cols()
 
-        # Performs cheapest deduction possible
         make_single_iteration_of_deduction(
             nono, rowsChanged, colsChanged, searching_depth,
         )
 
         # Check if anything improved
-        if nono.rowsChanged == set() and nono.colsChanged == set():
+        if not nono.meta_data.progress_tracker.anything_improved():
             print_failure_statement(cycle)
             return cycle
 
