@@ -14,6 +14,15 @@ def print_failure_statement(cycle):
     print("Cycle : " + str(cycle))
 
 
+def print_complain():
+    """
+    Function informs user about inconsistency in provided data.
+    It is usually caused by typing error.
+    """
+    print('Input nonogram is not self consistent.')
+    print('The sum of filled cells in rows is different than in columns.')
+
+
 def print_mistakes(mistakes, verbose):
     """
     Prints misclassified cells.

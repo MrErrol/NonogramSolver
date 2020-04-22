@@ -6,6 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
+from utils.tools import print_complain
 from utils.read_from_file import read_datafile, structure_raw_cells, \
     strip_trailing_empty_cells, transpose_rows
 
@@ -43,7 +44,7 @@ class Data:
             self.cols = transpose_rows(self.rows)
 
         if not self.self_consistency_check():
-            self.complain()
+            print_complain()
             quit()
 
 
@@ -64,15 +65,6 @@ class Data:
             return False
 
         return True
-
-
-    def complain(self):
-        """
-        Function informs user about inconsistency in provided data.
-        It is usually caused by typing error.
-        """
-        print('Input nonogram is not self consistent.')
-        print('The sum of filled cells in rows is different than in columns.')
 
 
     def transpose(self):
