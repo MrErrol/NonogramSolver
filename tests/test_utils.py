@@ -9,7 +9,7 @@ from utils.read_from_file import read_datafile, read_numeric_lines,\
     is_beggining_of_col_hints, is_beggining_of_cells,\
     does_it_contain_only_numbers, read_presolved_nonogram_representation
 from utils.tools import print_mistakes, compare_values, compare_tables,\
-    compare_nonograms
+    compare_nonograms, show_basic_hint
 from lib.nonogram import Nonogram
 
 
@@ -119,6 +119,21 @@ def test_print_mistakes(mocked_print):
                                       call("(row number, column number)"),
                                       call((2,3)),
                                       call((4,6))]
+
+
+@patch('builtins.print')
+def test_show_basic_hint(mocked_print):
+    show_basic_hint(2, 3, True, 1)
+    assert mocked_print.mock_calls == [call("Analyze column 2.")]
+    mocked_print.reset_mock()
+    show_basic_hint(2, 3, False, 1)
+    assert mocked_print.mock_calls == [call("Analyze row 2.")]
+    mocked_print.reset_mock()
+    show_basic_hint(2, 3, True, 0)
+    assert mocked_print.mock_calls == [call("Assume the cell at row=3 and col=2 to be filled and try to deduce consequences.")]
+    mocked_print.reset_mock()
+    show_basic_hint(2, 3, False, 0)
+    assert mocked_print.mock_calls == [call("Assume the cell at row=2 and col=3 to be filled and try to deduce consequences.")]
 
 
 @patch('builtins.print')
