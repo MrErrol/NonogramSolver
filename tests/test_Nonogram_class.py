@@ -3,7 +3,6 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
-import pytest
 from unittest.mock import patch, Mock, call
 import lib.nonogram as nonogram
 
