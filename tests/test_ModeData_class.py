@@ -75,8 +75,8 @@ def test_ModeData_end_iplot(mocked_eiplot):
     mode_data.fig = 'fig'
     mode_data.im = 'im'
     mode_data.update_plot = Mock()
-    mode_data.end_iplot()
-    assert mode_data.update_plot.mock_calls == [call()]
+    mode_data.end_iplot('data')
+    assert mode_data.update_plot.mock_calls == [call('data')]
     assert mocked_eiplot.mock_calls == [call()]
 
 

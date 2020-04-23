@@ -130,8 +130,10 @@ def test_Nonogram_update_plot():
 def test_Nonogram_end_iplot():
     nono = nonogram.Nonogram(filename_1)
     nono.mode_data.end_iplot = Mock()
+    nono.get_picture_data = Mock()
+    nono.get_picture_data.return_value = 'data'
     nono.end_iplot()
-    assert nono.mode_data.end_iplot.mock_calls == [call()]
+    assert nono.mode_data.end_iplot.mock_calls == [call('data')]
 
 
 def test_Nonogram_fill_cell():
