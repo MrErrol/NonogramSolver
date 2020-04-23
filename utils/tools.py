@@ -37,6 +37,24 @@ def print_mistakes(mistakes, verbose):
             print(shifted_pair)
 
 
+def show_basic_hint(row, col, transposed, verbosity):
+    """
+    Prints basic hint about next cell to be filled.
+    """
+    if verbosity:
+        if transposed:
+            print('Analyze column ' + str(row) + '.')
+        else:
+            print('Analyze row ' + str(row) + '.')
+    else:
+        if transposed:
+            print("Assume the cell at row=" + str(col) + " and col=" + \
+                str(row) + " to be filled and try to deduce consequences.")
+        else:
+            print("Assume the cell at row=" + str(row) + " and col=" + \
+                str(col) + " to be filled and try to deduce consequences.")
+
+
 def compare_values(value1, value2):
     """
     Checks whether two values of cells are consistent.

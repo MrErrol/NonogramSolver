@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.tools import print_complain
+from utils.tools import print_complain, show_basic_hint
 from utils.read_from_file import read_datafile, structure_raw_cells, \
     strip_trailing_empty_cells, transpose_rows
 
@@ -566,31 +566,16 @@ class Nonogram:
         return sth_changed
 
 
-    def show_basic_hint(self, row, col):
-        """
-        Prints basic hint about next cell to be filled.
-        """
-        if self.mode_data.get_verbosity():
-            if self.meta_data.is_transposed():
-                print('Analyze column ' + str(row) + '.')
-            else:
-                print('Analyze row ' + str(row) + '.')
-        else:
-            if self.meta_data.is_transposed():
-                print("Assume the cell at row=" + str(col) + " and col=" + \
-                      str(row) + " to be filled and try to deduce consequences.")
-            else:
-                print("Assume the cell at row=" + str(row) + " and col=" + \
-                      str(col) + " to be filled and try to deduce consequences.")
-
-
     def show_hint(self, row, col, value):
         """
         Prints information about next cell to be filled. Adds small hint
         how to deduce it.
         Shifts index to counting from 1.
         """
-        self.show_basic_hint(row + 1, col + 1)
+        show_basic_hint(row + 1, col + 1,
+                        self.meta_data.is_transposed(),
+                        self.mode_data.get_verbosity(),
+                        )
 
         if self.mode_data.get_verbosity():
             values = {-1:'empty.', 1:'filled.'}
