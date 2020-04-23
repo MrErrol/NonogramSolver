@@ -426,12 +426,12 @@ class ModeData:
         update_plot(data, self.fig, self.im, self.wait)
 
 
-    def end_iplot(self):
+    def end_iplot(self, data):
         """
         Finalizes interactive plot.
         Plot is updated before finalization.
         """
-        self.update_plot()
+        self.update_plot(data)
         end_iplot()
 
 
@@ -439,10 +439,7 @@ class ModeData:
         """
         Informs whether interactive plot is started.
         """
-        if self.fig:
-            return True
-        else:
-            return False
+        return bool(self.fig)
 
 
     def get_verbosity(self):
@@ -542,7 +539,8 @@ class Nonogram:
         """
         Calls the function that finalizes interactive plot.
         """
-        self.mode_data.end_iplot()
+        data = self.get_picture_data()
+        self.mode_data.end_iplot(data)
 
 
     def fill_cell(self, row, col, value):
@@ -575,7 +573,7 @@ class Nonogram:
         show_basic_hint(row + 1, col + 1,
                         self.meta_data.is_transposed(),
                         self.mode_data.get_verbosity(),
-                        )
+                       )
 
         if self.mode_data.get_verbosity():
             values = {-1:'empty.', 1:'filled.'}
