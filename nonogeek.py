@@ -29,7 +29,7 @@ def getOptions(args):
                         help="Sets verbosity for hinter mode. (0-1)",
                        )
     parser.add_argument("-c", "--check",
-                        dest='just_check',
+                        dest='presolved_datafile',
                         help="File with presolved cells. Turns on verification mode. \
                         Checks whether mistake has been made. Does not plot the solution.",
                        )
@@ -61,8 +61,8 @@ cycle = solver(nono,
 timeAfterSolving = time()
 
 
-if options.just_check:
-    user_nono = Nonogram(options.input, presolved=options.just_check)
+if options.presolved_datafile:
+    user_nono = Nonogram(options.input, presolved=options.presolved_datafile)
     compare_nonograms(nono, user_nono, verbose=options.verbosity)
     quit()
 
