@@ -161,7 +161,7 @@ def push_everything_from_this_cell(nono, row, col):
     """
     # Loop over nonogram dimensions (rows and columns)
     for dimension in range(2):
-        index = [row, col][dimension]
+        index = row if dimension else col
         push_limits_within_a_row(nono, index)
 
         nono.transpose()
