@@ -6,7 +6,7 @@ from lib.nonogram import Nonogram
 from lib.solver import solver
 from utils.tools import compare_nonograms
 
-def getOptions(args=argv[1:]):
+def getOptions(args):
     parser = ArgumentParser(description="Parses command.")
     parser.add_argument("input",
                         help="Input file with nonogram.",
@@ -40,7 +40,7 @@ def getOptions(args=argv[1:]):
     options = parser.parse_args(args)
     return options
 
-options = getOptions()
+options = getOptions(argv[1:])
 
 nono = Nonogram(options.input, presolved=None, wait=options.wait)
 
