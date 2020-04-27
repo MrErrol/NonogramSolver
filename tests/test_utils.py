@@ -16,8 +16,10 @@ from lib.nonogram import Nonogram
 file_1 = open('tests/data/broken_nono_1.dat', 'r')
 file_2 = open('tests/data/nono_test_2.dat', 'r')
 file_3 = open('tests/data/nono_test_3.dat', 'r')
+file_3_pre = open('tests/data/nono_test_3-presolved.dat', 'r')
 filename_2_broken = 'tests/data/nono_test_2_broken.dat'
 filename_3 = 'tests/data/nono_test_3.dat'
+filename_3_pre = "tests/data/nono_test_3-presolved.dat"
 
 filename_small_1 = 'nonograms/small_1.dat'
 file_small_1 = open(filename_small_1, 'r')
@@ -73,22 +75,22 @@ def test_read_numeric_lines():
 
 
 def test_read_presolved_nonogram_representation():
-    [file_3.readline() for i in range(9)] # discarding fisrt 9 lines
-    assert read_presolved_nonogram_representation(file_3) == ([[1, 1, -1],\
-                                                               [-1, 1, 0],\
-                                                               [0, -1, 1]],\
-                                                              "")
-    file_3.close()
+    assert read_presolved_nonogram_representation(file_3_pre) == (
+        [[1, 1, -1],
+        [-1, 1, 0],
+        [0, -1, 1]]
+    )
+    file_3_pre.close()
 
 
 def test_read_datafile():
     assert read_datafile(filename_small_1) ==\
-           ([[2], [2], [1, 1]], [[1, 1], [2], [2]], True)
-    assert read_datafile(filename_3, presolved=True) ==\
+           ([[2], [2], [1, 1]], [[1, 1], [2], [2]])
+    assert read_datafile(filename_3) ==\
            ([[2], [2], [1, 1]],\
            [[1, 1], [2], [2]],\
-           [[1, 1, -1], [-1, 1, 0], [0, -1, 1]])
-    assert read_datafile(filename_2_broken) == ([], [], True)
+           )
+    assert read_datafile(filename_2_broken) == ([], [])
 
 
 def test_compare_values():
