@@ -37,8 +37,8 @@ def getOptions(args):
                         dest='searching_depth', type=int, default=2, action='store',
                         help="Searching depth for assumption making.",
                        )
-    options = parser.parse_args(args)
-    return options
+    read_options = parser.parse_args(args)
+    return read_options
 
 options = getOptions(argv[1:])
 
