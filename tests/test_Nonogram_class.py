@@ -8,13 +8,6 @@ import lib.nonogram as nonogram
 
 
 filename_1 = "nonograms/small_1.dat"
-nono2 = nonogram.Nonogram("nonograms/small_1.dat")
-nono3 = nonogram.Nonogram("nonograms/small_1.dat")
-nono4 = nonogram.Nonogram("nonograms/small_1.dat")
-nono5 = nonogram.Nonogram("nonograms/small_1.dat")
-nono6 = nonogram.Nonogram("nonograms/small_1.dat")
-nono7 = nonogram.Nonogram("nonograms/small_1.dat")
-nono_pre = nonogram.Nonogram("tests/data/nono_test_3.dat", presolved=True)
 
 
 @patch('builtins.print')
