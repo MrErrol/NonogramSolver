@@ -71,7 +71,7 @@ if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
 
 print("Solved in : " + str(timeAfterSolving - timeBeforeSolving) + 's')
 
-if not options.interactive:
-    nono.plot()
-else:
+if options.interactive:
     nono.end_iplot()
+else:
+    nono.plot()
