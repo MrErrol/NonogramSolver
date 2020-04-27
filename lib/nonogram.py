@@ -445,6 +445,10 @@ class ModeData:
         return self.verbosity
 
 
+    def set_verbosity(self, verbosity):
+        self.verbosity = verbosity
+
+
 class Nonogram:
     """
     Class that holds all data about given nonogram.

@@ -24,8 +24,8 @@ def getOptions(args):
                         dest='hinter', default=False, action='store_true',
                         help="Hinter mode.",
                        )
-    parser.add_argument("-v", "--verbose",
-                        dest='verbose', type=int, default=1, action='store',
+    parser.add_argument("-v", "--verbosity",
+                        dest='verbosity', type=int, default=1, action='store',
                         help="Sets verbosity for hinter mode. (0-1)",
                        )
     parser.add_argument("-c", "--check",
@@ -49,7 +49,7 @@ if options.interactive:
 
 if options.hinter:
     nono.fill_cell = nono.show_hint
-    nono.verbose = options.verbose
+    nono.mode_data.set_verbosity(options.verbosity)
 
 
 timeBeforeSolving = time()
@@ -63,7 +63,7 @@ timeAfterSolving = time()
 
 if options.just_check:
     user_nono = Nonogram(options.input, presolved=options.just_check)
-    compare_nonograms(nono, user_nono, verbose=options.verbose)
+    compare_nonograms(nono, user_nono, verbose=options.verbosity)
     quit()
 
 if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
