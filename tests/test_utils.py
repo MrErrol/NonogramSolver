@@ -17,6 +17,7 @@ file_1 = open('tests/data/broken_nono_1.dat', 'r')
 file_2 = open('tests/data/nono_test_2.dat', 'r')
 file_3 = open('tests/data/nono_test_3.dat', 'r')
 file_3_pre = open('tests/data/nono_test_3-presolved.dat', 'r')
+file_3_pre_a = open('tests/data/nono_test_3-presolved.dat', 'r')
 filename_2_broken = 'tests/data/nono_test_2_broken.dat'
 filename_3 = 'tests/data/nono_test_3.dat'
 filename_3_pre = "tests/data/nono_test_3-presolved.dat"
@@ -81,6 +82,17 @@ def test_read_presolved_nonogram_representation():
         [0, -1, 1]]
     )
     file_3_pre.close()
+
+
+def test_read_presolved_nonogram_representation_modified_mapping():
+    rotated_mapping = {'f': 0, 'F': 0, 'u': -1, 'U': -1, 'e': 1, 'E': 1,
+     '+': 0, '-': 1, '0': -1, '1': 0, '2': 1}
+    assert read_presolved_nonogram_representation(file_3_pre_a, mapping=rotated_mapping) == (
+        [[0, 0, 1],
+        [1, 0, -1],
+        [-1, 1, 0]]
+    )
+    file_3_pre_a.close()
 
 
 def test_read_datafile():
