@@ -91,3 +91,9 @@ def test_ModeData_is_interactive_plot_active():
 def test_ModeData_get_verbosity():
     mode_data = nonogram.ModeData(verbosity=2)
     assert mode_data.get_verbosity() == 2
+
+
+def test_ModeData_set_verbosity():
+    mode_data = nonogram.ModeData(verbosity=2)
+    mode_data.set_verbosity(3)
+    assert mode_data.verbosity == 3
