@@ -29,9 +29,9 @@ def getOptions(args=argv[1:]):
                         help="Sets verbosity for hinter mode. (0-1)",
                        )
     parser.add_argument("-c", "--check",
-                        dest='just_check', default=False, action='store_true',
-                        help="Verification mode. Checks whether mistake has \
-                        been made. Does not plot the solution.",
+                        dest='just_check',
+                        help="File with presolved cells. Turns on verification mode. \
+                        Checks whether mistake has been made. Does not plot the solution.",
                        )
     parser.add_argument("-d", "--depth",
                         dest='searching_depth', type=int, default=2, action='store',
@@ -42,7 +42,7 @@ def getOptions(args=argv[1:]):
 
 options = getOptions()
 
-nono = Nonogram(options.input, presolved=False, wait=options.wait)
+nono = Nonogram(options.input, presolved=None, wait=options.wait)
 
 if options.interactive:
     nono.plot(interactive=options.interactive)
@@ -62,11 +62,11 @@ timeAfterSolving = time()
 
 
 if options.just_check:
-    user_nono = Nonogram(options.input, presolved=True)
+    user_nono = Nonogram(options.input, presolved=options.just_check)
     compare_nonograms(nono, user_nono, verbose=options.verbose)
     quit()
 
-if not nono.undetermind:
+if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
 
 print("Solved in : " + str(timeAfterSolving - timeBeforeSolving) + 's')
