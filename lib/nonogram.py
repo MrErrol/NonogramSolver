@@ -7,8 +7,8 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
 from utils.tools import print_complain, show_basic_hint
-from utils.read_from_file import read_datafile, structure_raw_cells, \
-    strip_trailing_empty_cells, transpose_rows
+from utils.read_from_file import read_datafile, read_presolved_datafile,\
+    structure_raw_cells, strip_trailing_empty_cells, transpose_rows
 
 
 class OverwriteException(Exception):
@@ -27,19 +27,18 @@ class Data:
     """
 
 
-    def __init__(self, filename=None, presolved=False):
+    def __init__(self, filename=None, presolved=None):
         if filename is None:
             self.rows = [[]]
             self.cols = [[]]
             self.rowHints = [[]]
             self.colHints = [[]]
         else:
-            self.rowHints, self.colHints, rawRows = read_datafile(
-                filename,
-                presolved=presolved,
-            )
-            if rawRows is True:
+            self.rowHints, self.colHints = read_datafile(filename)
+            if presolved is None:
                 rawRows = [[0] * len(self.colHints)] * len(self.rowHints)
+            else:
+                rawRows = read_presolved_datafile(presolved)
             self.rows = structure_raw_cells(rawRows)
             self.cols = transpose_rows(self.rows)
 
@@ -454,7 +453,7 @@ class Nonogram:
     """
 
 
-    def __init__(self, filename=None, presolved=False, wait=0.0, verbosity=0):
+    def __init__(self, filename=None, presolved=None, wait=0.0, verbosity=0):
         self.data = Data(filename=filename, presolved=presolved)
         self.limits = Limits(
             self.data.get_row_hints(),

@@ -44,7 +44,7 @@ def transpose_rows(rows):
     return new_rows
 
 
-def read_presolved_nonogram_representation(file, mapping=DEFAULT_MAPPING):
+def read_presolved_nonogram_representation(file, mapping=None):
     read_list = []
     while True:
         line = file.readline()
@@ -61,7 +61,12 @@ def read_presolved_nonogram_representation(file, mapping=DEFAULT_MAPPING):
 
         read_list.append(line.rstrip())
 
-    return [[mapping[letter] for letter in row] for row in read_list], line
+    if mapping is None:
+        map = DEFAULT_MAPPING
+    else:
+        map = mapping
+
+    return [[map[letter] for letter in row] for row in read_list]
 
 
 def read_numeric_lines(file):
@@ -90,7 +95,7 @@ def read_numeric_lines(file):
     return read_list, line
 
 
-def read_datafile(filename, presolved=False):
+def read_datafile(filename):
     """
     Function reads from datafile hints (lengths of blocks) for rows and columns
     of nonogram.
@@ -103,12 +108,11 @@ def read_datafile(filename, presolved=False):
 
     rowHints = []
     colHints = []
-    cells = not presolved
 
     file = open(filename, 'r')
     line = file.readline()
 
-    while not (rowHints and colHints and cells):
+    while not (rowHints and colHints):
         if line == '':
             break
         if is_beggining_of_row_hints(line):
@@ -117,11 +121,19 @@ def read_datafile(filename, presolved=False):
         if is_beggining_of_col_hints(line):
             colHints, line = read_numeric_lines(file)
             continue
-        if is_beggining_of_cells(line) and presolved:
-            cells, line = read_presolved_nonogram_representation(file)
-            continue
         line = file.readline()
 
     file.close()
 
-    return rowHints, colHints, cells
+    return rowHints, colHints
+
+
+def read_presolved_datafile(filename):
+    """
+    Reads datafile that contains presolved cels.
+    """
+    file = open(filename, 'r')
+    cells = read_presolved_nonogram_representation(file)
+    file.close()
+
+    return cells
