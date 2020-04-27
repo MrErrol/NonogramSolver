@@ -12,13 +12,11 @@ def getOptions(args):
                         help="Input file with nonogram.",
                        )
     parser.add_argument("-l", "--live",
-                        dest='interactive', default=False, action='store_true',
-                        help="Live plotting mode.",
-                       )
-    parser.add_argument('-w', '--wait',
-                        dest='wait', default=0.0, action='store', type=float,
-                        help="Additional waiting time after each plot update in \
-                        live plotting mode. Given in sec.",
+                        dest='wait_time',
+                        default=-1.0, const=0.0,
+                        action='store', nargs='?', type=float,
+                        help="Live plotting mode. May be provided with time \
+                        (in seconds) to wait after each plot update.",
                        )
     parser.add_argument("--hint",
                         dest='hinter', default=False, action='store_true',
@@ -42,10 +40,11 @@ def getOptions(args):
 
 options = getOptions(argv[1:])
 
-nono = Nonogram(options.input, presolved=None, wait=options.wait)
+nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
 
-if options.interactive:
-    nono.plot(interactive=options.interactive)
+
+if options.wait_time > -1e-9:
+    nono.plot(interactive=True)
 
 if options.hinter:
     nono.fill_cell = nono.show_hint
@@ -71,7 +70,7 @@ if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
 
 print("Solved in : " + str(timeAfterSolving - timeBeforeSolving) + 's')
 
-if options.interactive:
+if options.wait_time > -1e-9:
     nono.end_iplot()
 else:
     nono.plot()
