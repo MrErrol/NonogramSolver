@@ -114,6 +114,13 @@ class Data:
 
 
     def get_row_hints(self, row=None, block_index=None):
+        """
+        Return hints for rows.
+        get_row_hints()    - returns all of them
+        get_row_hints(row) - returns hints for a given row
+        get_row_hints(row, block_index) - returns hints for
+        a given block in a given row
+        """
         if row is None:
             return self.row_hints
         elif block_index is None:
@@ -123,6 +130,13 @@ class Data:
 
 
     def get_col_hints(self, col=None, block_index=None):
+        """
+        Return hints for columns.
+        get_col_hints()    - returns all of them
+        get_col_hints(col) - returns hints for a given column
+        get_col_hints(col, block_index) - returns hints for
+        a given block in a given column
+        """
         if col is None:
             return self.col_hints
         elif block_index is None:
@@ -132,6 +146,12 @@ class Data:
 
 
     def get_row(self, row=None, col=None):
+        """
+        Return rows of cells of a nonogram.
+        get_row()    - returns all nonogram cells
+        get_row(row) - returns only given row
+        get_row(row, col) - returns single cell
+        """
         if row is None:
             return self.rows
         elif col is None:
@@ -141,6 +161,12 @@ class Data:
 
 
     def get_col(self, col=None, row=None):
+        """
+        Return columns of cells of a nonogram.
+        get_col()    - returns all nonogram cells
+        get_col(col) - returns only given column
+        get_col(col, col) - returns single cell
+        """
         if col is None:
             return self.cols
         elif row is None:
@@ -192,6 +218,12 @@ class Limits:
 
 
     def get_row_origins(self, row, block_index=None):
+        """
+        Returns deduced minimal origins of blocks in rows.
+        get_row_origins() - returns all of them
+        get_row_origins(row) - returns origins for a given row
+        get_row_origins(row, block_index) - returns origin for a given block
+        """
         if block_index is None:
             return self.row_block_origins[row]
         else:
@@ -199,6 +231,12 @@ class Limits:
 
 
     def get_row_endings(self, row, block_index=None):
+        """
+        Returns deduced maximal endings of blocks in rows.
+        get_row_endings() - returns all of them
+        get_row_endings(row) - returns endings for a given row
+        get_row_endings(row, block_index) - returns ending for a given block
+        """
         if block_index is None:
             return self.row_block_endings[row]
         else:
@@ -206,6 +244,12 @@ class Limits:
 
 
     def get_col_origins(self, col, block_index=None):
+        """
+        Returns deduced minimal origins of blocks in columns.
+        get_col_origins() - returns all of them
+        get_col_origins(col) - returns origins for a given column
+        get_col_origins(col, block_index) - returns origin for a given block
+        """
         if block_index is None:
             return self.col_block_origins[col]
         else:
@@ -213,6 +257,12 @@ class Limits:
 
 
     def get_col_endings(self, col, block_index=None):
+        """
+        Returns deduced maximal endings of blocks in columns.
+        get_col_endings() - returns all of them
+        get_col_endings(col) - returns endings for a given column
+        get_col_endings(col, block_index) - returns ending for a given block
+        """
         if block_index is None:
             return self.col_block_endings[col]
         else:
@@ -220,18 +270,30 @@ class Limits:
 
 
     def set_row_origins(self, row, new_origins):
+        """
+        Updates minimal origins of blocks in a given row.
+        """
         self.row_block_origins[row] = new_origins
 
 
     def set_col_origins(self, row, new_origins):
+        """
+        Updates minimal origins of blocks in a given column.
+        """
         self.col_block_origins[row] = new_origins
 
 
     def set_row_endings(self, row, new_endings):
+        """
+        Updates maximal endings of blocks in a given row.
+        """
         self.row_block_endings[row] = new_endings
 
 
     def set_col_endings(self, row, new_endings):
+        """
+        Updates maximal endings of blocks in a given column.
+        """
         self.col_block_endings[row] = new_endings
 
 
@@ -316,10 +378,13 @@ class ProgressTracker:
 
 
     def anything_improved(self):
-        if self.rows_changed == set() and self.cols_changed == set():
-            return False
-        else:
-            return True
+        """
+        Checks whether there is any row or column marked as changed since last reset.
+
+        Returns:
+        sth_changed - bool variable
+        """
+        return self.rows_changed != set() or self.cols_changed != set()
 
 
 class MetaData:
@@ -442,10 +507,16 @@ class ModeData:
 
 
     def get_verbosity(self):
+        """
+        Returns verbosity for hinter mode.
+        """
         return self.verbosity
 
 
     def set_verbosity(self, verbosity):
+        """
+        Sets verbosity for hinter mode.
+        """
         self.verbosity = verbosity
 
 
