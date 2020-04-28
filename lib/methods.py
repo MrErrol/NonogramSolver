@@ -1,7 +1,7 @@
 from copy import copy
 
 
-def push_block_Origins(hints, blockOrigins, index=0, exh=False):
+def push_block_origins(hints, block_origins, index=0, exh=False):
     """
     Function updates minimal position of block origins starting from NEXT to
     given block index.
@@ -11,28 +11,28 @@ def push_block_Origins(hints, blockOrigins, index=0, exh=False):
     Returns
     -------
     sth_changed - bool variable
-    blockOrigins - copy of (possibly updated) block origins
+    block_origins - copy of (possibly updated) block origins
     """
-    blockOrigins = copy(blockOrigins)
+    block_origins = copy(block_origins)
     # Storing information whether function deduced anything new
     sth_changed = False
 
     i = index
     while i+1 < len(hints):
-        minimalNextBlockPosition = blockOrigins[i] + hints[i] + 1
+        minimal_next_block_position = block_origins[i] + hints[i] + 1
         i += 1
-        if  blockOrigins[i] < minimalNextBlockPosition:
-            blockOrigins[i] = minimalNextBlockPosition
+        if  block_origins[i] < minimal_next_block_position:
+            block_origins[i] = minimal_next_block_position
             sth_changed = True
             continue
 
         if not exh:
             break
 
-    return sth_changed, blockOrigins
+    return sth_changed, block_origins
 
 
-def push_block_Endings(hints, blockEndings, index=0, exh=False):
+def push_block_endings(hints, block_endings, index=0, exh=False):
     """
     Function updates minimal position of block endings starting from NEXT to
     given block index.
@@ -42,85 +42,85 @@ def push_block_Endings(hints, blockEndings, index=0, exh=False):
     Returns
     -------
     sth_changed - bool variable
-    blockOrigins - copy of (possibly updated) block origins
+    block_origins - copy of (possibly updated) block origins
     """
     # Reversing line (extra empty cell removed from the end and put at the end)
-    blockOrigins = [blockEndings[-1] - ending for ending in blockEndings[::-1]]
+    block_origins = [block_endings[-1] - ending for ending in block_endings[::-1]]
 
     # Solving equivalent problem with reversed line
-    sth_changed, blockOrigins = push_block_Origins(hints[::-1], blockOrigins,
-                                                   index=index, exh=exh)
+    sth_changed, block_origins = push_block_origins(hints[::-1], block_origins,
+                                                    index=index, exh=exh)
 
     # Reversing back obtained solution
-    blockEndings = [blockEndings[-1] - origin for origin in blockOrigins[::-1]]
+    block_endings = [block_endings[-1] - origin for origin in block_origins[::-1]]
 
-    return sth_changed, blockEndings
+    return sth_changed, block_endings
 
 
-def pull_single_block_origin(line, hints, blockOrigins, blockIndex):
+def pull_single_block_origin(line, hints, block_origins, block_index):
     """
     Function pulls given block by a filled cell.
     Does not check whether such a cell exists.
 
     WARNING!
-    Function will modify provided blockOrigins.
+    Function will modify provided block_origins.
 
     Returns:
-    blockOrigins - updated blockOrigins
+    block_origins - updated block_origins
     """
     # renamed to make code more clear
-    i = blockIndex
+    i = block_index
     # cells between given and following blocks
-    cells = line[blockOrigins[i] + hints[i] : blockOrigins[i + 1]]
+    cells = line[block_origins[i] + hints[i] : block_origins[i + 1]]
     # shift stores distance of pulling cell from the next block origin
     shift = cells[::-1].index(1)
-    # blockOrigins[i + 1] - blockOrigins[i] is a free space
+    # block_origins[i + 1] - block_origins[i] is a free space
     # hints[i] + shift is the maximal distance of the block origin from next block origin
     # difference of the two above gives desired shift of the block origin
-    shift = blockOrigins[i + 1] - blockOrigins[i] - hints[i] - shift
-    blockOrigins[i] += shift
-    return blockOrigins
+    shift = block_origins[i + 1] - block_origins[i] - hints[i] - shift
+    block_origins[i] += shift
+    return block_origins
 
 
-def pull_block_origins(line, hints, blockOrigins):
+def pull_block_origins(line, hints, block_origins):
     """
-    Function tries to pull further blockOrigins by filled cells that do not
+    Function tries to pull further block_origins by filled cells that do not
     belong to the next block.
     Function should be used only by the function deduce_new_block_origins as it
     performs more complete analysis.
 
     WARNING!
-    Function will modify provided blockOrigins.
+    Function will modify provided block_origins.
 
     Returns:
     --------
     sth_changed - bool variable informing whether anything new has been deduced
-    blockOrigins - updated blockOrigins
+    block_origins - updated block_origins
     """
     sth_changed = False
     i = len(hints) - 1
 
     # Adding virtual block for sake of simplicity of procedure that measures distance
-    blockOrigins += [len(line)]
+    block_origins += [len(line)]
 
     # backward loop
     while i >= 0:
         # Checking if there is a filled cell to pull block origin
-        if 1 in line[blockOrigins[i] + hints[i] : blockOrigins[i + 1]]:
+        if 1 in line[block_origins[i] + hints[i] : block_origins[i + 1]]:
             # pulling the block
-            blockOrigins = pull_single_block_origin(line, hints, blockOrigins, i)
+            block_origins = pull_single_block_origin(line, hints, block_origins, i)
             # pushing following blocks origins further away
-            dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+            dummy, block_origins = push_block_origins(hints, block_origins, index=i)
             sth_changed = True
         i -= 1
 
     # removing virtual block
-    del blockOrigins[-1]
+    del block_origins[-1]
 
-    return sth_changed, blockOrigins
+    return sth_changed, block_origins
 
 
-def check_no_empty_cell_inside(line, hints, blockOrigins, blockIndex):
+def check_no_empty_cell_inside(line, hints, block_origins, block_index):
     """
     Functions check whether there are empty cells inside the most left available
     position for the i-th block and shifts the block origin if there is at least
@@ -129,23 +129,23 @@ def check_no_empty_cell_inside(line, hints, blockOrigins, blockIndex):
     Returns:
     --------
     sth_changed - bool variable informing whether block Origins has been changed
-    blockOrigins - (possibly updated) block Origins
+    block_origins - (possibly updated) block Origins
     """
     sth_changed = False
     # for compactness
-    i = blockIndex
+    i = block_index
 
-    required_cells = line[blockOrigins[i]:blockOrigins[i] + hints[i]]
+    required_cells = line[block_origins[i]:block_origins[i] + hints[i]]
     if -1 in required_cells:
-        blockOrigins[i] += hints[i] - required_cells[::-1].index(-1)
+        block_origins[i] += hints[i] - required_cells[::-1].index(-1)
         # pushing following blocks origins further away
-        dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+        dummy, block_origins = push_block_origins(hints, block_origins, index=i)
         sth_changed = True
 
-    return sth_changed, blockOrigins
+    return sth_changed, block_origins
 
 
-def check_no_filled_cell_just_after_block(line, hints, blockOrigins, blockIndex):
+def check_no_filled_cell_just_after_block(line, hints, block_origins, block_index):
     """
     Functions check whether there is filled cell just after the most left
     available position for the i-th block and shifts the block origin by 1
@@ -154,22 +154,22 @@ def check_no_filled_cell_just_after_block(line, hints, blockOrigins, blockIndex)
     Returns:
     --------
     sth_changed - bool variable informing whether block Origins has been changed
-    blockOrigins - (possibly updated) block Origins
+    block_origins - (possibly updated) block Origins
     """
     sth_changed = False
     # for compactness
-    i = blockIndex
+    i = block_index
 
-    if line[blockOrigins[i] + hints[i]] == 1:
-        blockOrigins[i] += 1
+    if line[block_origins[i] + hints[i]] == 1:
+        block_origins[i] += 1
         # pushing following blocks origins further away
-        dummy, blockOrigins = push_block_Origins(hints, blockOrigins, index=i)
+        dummy, block_origins = push_block_origins(hints, block_origins, index=i)
         sth_changed = True
 
-    return sth_changed, blockOrigins
+    return sth_changed, block_origins
 
 
-def deduce_new_block_origins(line, hints, blockOrigins):
+def deduce_new_block_origins(line, hints, block_origins):
     """
     Function tries to deduce higher than given block origins for a single given
     line.
@@ -177,9 +177,9 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     Returns:
     --------
     sth_changed - bool variable
-    blockOrigins - copy of (possibly updated) block origins
+    block_origins - copy of (possibly updated) block origins
     """
-    blockOrigins = copy(blockOrigins)
+    block_origins = copy(block_origins)
     # Storing information whether function deduced anything new
     sth_changed = False
 
@@ -187,16 +187,16 @@ def deduce_new_block_origins(line, hints, blockOrigins):
     i = 0
     while i < len(hints):
         # Situation when there is filled cell just before the block need not to
-        # be checked, due to use of push_block_Origins
+        # be checked, due to use of push_block_origins
 
         # check for empty space blocking placing
-        changed1, blockOrigins = check_no_empty_cell_inside(
-            line, hints, blockOrigins, i,
+        changed1, block_origins = check_no_empty_cell_inside(
+            line, hints, block_origins, i,
         )
 
         # check for filled space enforcing push of block origin
-        changed2, blockOrigins = check_no_filled_cell_just_after_block(
-            line, hints, blockOrigins, i,
+        changed2, block_origins = check_no_filled_cell_just_after_block(
+            line, hints, block_origins, i,
         )
 
         if changed1 or changed2:
@@ -205,33 +205,33 @@ def deduce_new_block_origins(line, hints, blockOrigins):
             i += 1
 
     # backward loop analysis
-    changed, blockOrigins = pull_block_origins(line, hints, blockOrigins)
+    changed, block_origins = pull_block_origins(line, hints, block_origins)
     sth_changed = sth_changed or changed
 
-    return sth_changed, blockOrigins
+    return sth_changed, block_origins
 
 
-def deduce_new_block_endings(line, hints, blockEndings):
+def deduce_new_block_endings(line, hints, block_endings):
     """
     Function tries to deduce lower than given block endings for a single given line.
 
     Returns:
     --------
     sth_changed - bool variable
-    blockEndings - copy of (possibly updated) block endings
+    block_endings - copy of (possibly updated) block endings
     """
     # Reversing line (extra empty cell removed from the end and put at the end)
     newline = copy(line[-2::-1] + [-1])
-    blockOrigins = [len(newline) - 2 - ending for ending in blockEndings[::-1]]
+    block_origins = [len(newline) - 2 - ending for ending in block_endings[::-1]]
 
     # Solving equivalent problem with reversed line
-    sth_changed, blockOrigins = deduce_new_block_origins(newline, hints[::-1],
-                                                         blockOrigins)
+    sth_changed, block_origins = deduce_new_block_origins(newline, hints[::-1],
+                                                          block_origins)
 
     # Reversing back obtained solution
-    blockEndings = [len(newline) - 2 - origin for origin in blockOrigins[::-1]]
+    block_endings = [len(newline) - 2 - origin for origin in block_origins[::-1]]
 
-    return sth_changed, blockEndings
+    return sth_changed, block_endings
 
 
 def fill_range_in_row(nonogram, row, cols, value):

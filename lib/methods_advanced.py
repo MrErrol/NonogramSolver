@@ -1,6 +1,6 @@
 from copy import copy
 from lib.methods import deduce_new_block_origins, deduce_new_block_endings,\
-    push_block_Origins, push_block_Endings, fill_row
+    push_block_origins, push_block_endings, fill_row
 
 
 def check_if_line_is_fillable(line, hints, block_origins, block_endings):
@@ -137,12 +137,12 @@ def push_limits_within_a_row(nono, row):
     Function pushes all block origins and endings within given row as far
     as possible.
     """
-    changed_origins, new_origins = push_block_Origins(
+    changed_origins, new_origins = push_block_origins(
         nono.data.get_row_hints(row),
         nono.limits.get_row_origins(row),
         exh=True,
     )
-    changed_endings, new_endings = push_block_Endings(
+    changed_endings, new_endings = push_block_endings(
         nono.data.get_row_hints(row),
         nono.limits.get_row_endings(row),
         exh=True,
