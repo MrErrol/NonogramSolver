@@ -91,26 +91,26 @@ nono_3 = Nonogram("nonograms/small_1.dat")
 #    assert nono.nCols == 3
 #    assert nono.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
 #    assert nono.cols == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
-#    assert nono.rowHints == [[2], [2], [1, 1]]
-#    assert nono.colHints == [[1, 1], [2], [2]]
-#    assert nono.rowBlockOrigins == [[0], [0], [0, 0]]
-#    assert nono.colBlockOrigins == [[0, 0], [0], [0]]
-#    assert nono.rowBlockEndings == [[2], [2], [2, 2]]
-#    assert nono.colBlockEndings == [[2, 2], [2], [2]]
+#    assert nono.row_hints == [[2], [2], [1, 1]]
+#    assert nono.col_hints == [[1, 1], [2], [2]]
+#    assert nono.row_block_origins == [[0], [0], [0, 0]]
+#    assert nono.col_block_origins == [[0, 0], [0], [0]]
+#    assert nono.row_block_endings == [[2], [2], [2, 2]]
+#    assert nono.col_block_endings == [[2, 2], [2], [2]]
 #    assert nono.undetermind == 9
-#    assert nono.rowsChanged == []
-#    assert nono.colsChanged == []
+#    assert nono.rows_changed == []
+#    assert nono.cols_changed == []
 #    assert nono.transposed == False  
 
 def test_fill_between_the_blocks():
-    nono_1.limits.rowBlockOrigins[2] = [0, 2]
-    nono_1.limits.rowBlockEndings[2] = [0, 2]
+    nono_1.limits.row_block_origins[2] = [0, 2]
+    nono_1.limits.row_block_endings[2] = [0, 2]
     fill_between_the_blocks(nono_1, 2)
     assert nono_1.data.rows[2] == [0, -1, 0, -1]
     
 def test_fill_inside_of_the_blocks():
-    nono_2.limits.rowBlockOrigins[2] = [0, 2]
-    nono_2.limits.rowBlockEndings[2] = [0, 2]
+    nono_2.limits.row_block_origins[2] = [0, 2]
+    nono_2.limits.row_block_endings[2] = [0, 2]
     fill_inside_of_the_blocks(nono_2, 0)
     fill_inside_of_the_blocks(nono_2, 2)
     assert nono_2.data.rows[0] == [0, 1, 0, -1]
@@ -121,8 +121,8 @@ def test_fill_row():
     assert nono_3.data.rows == [[0, 1, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
     assert nono_3.data.cols == [[0, 0, 0, -1], [1, 0, 0, -1], [0, 0, 0, -1]]
     assert nono_3.meta_data.progress_tracker.undetermind == 8
-    nono_3.limits.rowBlockOrigins[2] = [0, 2]
-    nono_3.limits.rowBlockEndings[2] = [0, 2]
+    nono_3.limits.row_block_origins[2] = [0, 2]
+    nono_3.limits.row_block_endings[2] = [0, 2]
     nono_3.update_plot = Mock()
     # fake figure to fake interactive mode on
     nono_3.mode_data.fig = True
@@ -138,52 +138,52 @@ nono_multi_3 = Nonogram("tests/data/nono_test_1.dat")
 nono_multi_4 = Nonogram("tests/data/nono_test_1.dat")
 
 def test_find_min_block_length():
-    nono_multi_1.limits.rowBlockOrigins[0] = [0, 2, 4, 5]
-    nono_multi_1.limits.rowBlockEndings[0] = [3, 5, 7, 9]
-    nono_multi_1.data.rowHints[0] = [2, 4, 5, 1]
+    nono_multi_1.limits.row_block_origins[0] = [0, 2, 4, 5]
+    nono_multi_1.limits.row_block_endings[0] = [3, 5, 7, 9]
+    nono_multi_1.data.row_hints[0] = [2, 4, 5, 1]
     assert find_min_block_length(nono_multi_1, 0, 1) == 2
     assert find_min_block_length(nono_multi_1, 0, 2) == 2
     assert find_min_block_length(nono_multi_1, 0, 4) == 4
     assert find_min_block_length(nono_multi_1, 0, 5) == 1
 
 def test_fill_cells_to_the_right():
-    nono_multi_2.data.rowHints[1]        = [3, 3]
-    nono_multi_2.limits.rowBlockOrigins[1] = [0, 4]
-    nono_multi_2.limits.rowBlockEndings[1] = [6, 10]
+    nono_multi_2.data.row_hints[1]        = [3, 3]
+    nono_multi_2.limits.row_block_origins[1] = [0, 4]
+    nono_multi_2.limits.row_block_endings[1] = [6, 10]
     nono_multi_2.data.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
     assert fill_cells_to_the_right(nono_multi_2, 1, 5) == True
     assert nono_multi_2.data.rows[1] == [0, 0, 0, -1, 0, 1, 1, -1, 0, 0, 0, -1]
     
 def test_fill_cells_to_the_left():
-    nono_multi_3.data.rowHints[1]        = [3, 3]
-    nono_multi_3.limits.rowBlockOrigins[1] = [0, 4]
-    nono_multi_3.limits.rowBlockEndings[1] = [6, 10]
+    nono_multi_3.data.row_hints[1]        = [3, 3]
+    nono_multi_3.limits.row_block_origins[1] = [0, 4]
+    nono_multi_3.limits.row_block_endings[1] = [6, 10]
     nono_multi_3.data.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
     assert fill_cells_to_the_left(nono_multi_3, 1, 5) == True
     assert nono_multi_3.data.rows[1] == [0, 0, 0, -1, 1, 1, 0, -1, 0, 0, 0, -1]
     
 def test_analyze_multi_block_relations_in_row():
-    nono_multi_1.data.rowHints[1]        = [3, 3]
-    nono_multi_1.limits.rowBlockOrigins[1] = [0, 4]
-    nono_multi_1.limits.rowBlockEndings[1] = [6, 10]
+    nono_multi_1.data.row_hints[1]        = [3, 3]
+    nono_multi_1.limits.row_block_origins[1] = [0, 4]
+    nono_multi_1.limits.row_block_endings[1] = [6, 10]
     nono_multi_1.data.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
     assert analyze_multi_block_relations_in_row(nono_multi_1, 1) == True
     assert nono_multi_1.data.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
-    nono_multi_1.data.rowHints[2]        = [3, 3]
-    nono_multi_1.limits.rowBlockOrigins[2] = [0, 4]
-    nono_multi_1.limits.rowBlockEndings[2] = [6, 10]
+    nono_multi_1.data.row_hints[2]        = [3, 3]
+    nono_multi_1.limits.row_block_origins[2] = [0, 4]
+    nono_multi_1.limits.row_block_endings[2] = [6, 10]
     nono_multi_1.data.rows[2] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
     assert analyze_multi_block_relations_in_row(nono_multi_1, 2) == True
     assert nono_multi_1.data.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
-    nono_multi_1.data.rowHints[3]        = [3, 3]
-    nono_multi_1.limits.rowBlockOrigins[3] = [0, 4]
-    nono_multi_1.limits.rowBlockEndings[3] = [6, 10]
+    nono_multi_1.data.row_hints[3]        = [3, 3]
+    nono_multi_1.limits.row_block_origins[3] = [0, 4]
+    nono_multi_1.limits.row_block_endings[3] = [6, 10]
     nono_multi_1.data.rows[3] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
     assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == True
@@ -194,9 +194,9 @@ def test_analyze_multi_block_relations_in_row():
     assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == False
 
 def test_analyze_multi_block_relations():
-    nono_multi_4.data.rowHints        = [[3, 3]] * 4
-    nono_multi_4.limits.rowBlockOrigins = [[0, 4 ]] * 4
-    nono_multi_4.limits.rowBlockEndings = [[6, 10]] * 4
+    nono_multi_4.data.row_hints        = [[3, 3]] * 4
+    nono_multi_4.limits.row_block_origins = [[0, 4 ]] * 4
+    nono_multi_4.limits.row_block_endings = [[6, 10]] * 4
     nono_multi_4.data.rows = [[0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1],
                               [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1],
                               [0, 0, 0, -1, 1, 0, 0, -1, 0, 0, 0, -1],

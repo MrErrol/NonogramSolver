@@ -31,15 +31,15 @@ class Data:
         if filename is None:
             self.rows = [[]]
             self.cols = [[]]
-            self.rowHints = [[]]
-            self.colHints = [[]]
+            self.row_hints = [[]]
+            self.col_hints = [[]]
         else:
-            self.rowHints, self.colHints = read_datafile(filename)
+            self.row_hints, self.col_hints = read_datafile(filename)
             if presolved is None:
-                rawRows = [[0] * len(self.colHints)] * len(self.rowHints)
+                raw_rows = [[0] * len(self.col_hints)] * len(self.row_hints)
             else:
-                rawRows = read_presolved_datafile(presolved)
-            self.rows = structure_raw_cells(rawRows)
+                raw_rows = read_presolved_datafile(presolved)
+            self.rows = structure_raw_cells(raw_rows)
             self.cols = transpose_rows(self.rows)
 
         if not self.self_consistency_check():
@@ -57,10 +57,10 @@ class Data:
         bool - bool variable informing if nonogram seems to be self-consistet
         """
         # number of filled cells in rows
-        numberPixelRows = sum([sum(row) for row in self.rowHints])
+        number_of_pixels_in_rows = sum([sum(row) for row in self.row_hints])
         # number of filled cells in columns
-        numberPixelCols = sum([sum(col) for col in self.colHints])
-        if not numberPixelRows == numberPixelCols:
+        number_of_pixels_in_cols = sum([sum(col) for col in self.col_hints])
+        if number_of_pixels_in_rows != number_of_pixels_in_cols:
             return False
 
         return True
@@ -70,7 +70,7 @@ class Data:
         """
         Exchanges rows with columns.
         """
-        self.rowHints, self.colHints = self.colHints, self.rowHints
+        self.row_hints, self.col_hints = self.col_hints, self.row_hints
         self.rows, self.cols = self.cols, self.rows
 
 
@@ -80,8 +80,8 @@ class Data:
         Copied class share common hints with the original one.
         """
         new_data = Data()
-        new_data.rowHints = self.rowHints
-        new_data.colHints = self.colHints
+        new_data.row_hints = self.row_hints
+        new_data.col_hints = self.col_hints
         new_data.rows = deepcopy(self.rows)
         new_data.cols = deepcopy(self.cols)
         return new_data
@@ -115,20 +115,20 @@ class Data:
 
     def get_row_hints(self, row=None, blockIndex=None):
         if row is None:
-            return self.rowHints
+            return self.row_hints
         elif blockIndex is None:
-            return self.rowHints[row]
+            return self.row_hints[row]
         else:
-            return self.rowHints[row][blockIndex]
+            return self.row_hints[row][blockIndex]
 
 
     def get_col_hints(self, col=None, blockIndex=None):
         if col is None:
-            return self.colHints
+            return self.col_hints
         elif blockIndex is None:
-            return self.colHints[col]
+            return self.col_hints[col]
         else:
-            return self.colHints[col][blockIndex]
+            return self.col_hints[col][blockIndex]
 
 
     def get_row(self, row=None, col=None):
@@ -159,19 +159,19 @@ class Limits:
     """
 
 
-    def __init__(self, rowHints=None, colHints=None):
-        if (rowHints is None) or (colHints is None):
-            self.rowBlockOrigins = [[]]
-            self.rowBlockEndings = [[]]
-            self.colBlockOrigins = [[]]
-            self.colBlockEndings = [[]]
+    def __init__(self, row_hints=None, col_hints=None):
+        if (row_hints is None) or (col_hints is None):
+            self.row_block_origins = [[]]
+            self.row_block_endings = [[]]
+            self.col_block_origins = [[]]
+            self.col_block_endings = [[]]
         else:
-            self.rowBlockOrigins = [[0] * len(hints) for hints in rowHints]
-            self.colBlockOrigins = [[0] * len(hints) for hints in colHints]
-            self.rowBlockEndings = [[len(colHints) - 1] * len(hints) \
-                                    for hints in rowHints]
-            self.colBlockEndings = [[len(rowHints) - 1] * len(hints) \
-                                    for hints in colHints]
+            self.row_block_origins = [[0] * len(hints) for hints in row_hints]
+            self.col_block_origins = [[0] * len(hints) for hints in col_hints]
+            self.row_block_endings = [[len(col_hints) - 1] * len(hints) \
+                                    for hints in row_hints]
+            self.col_block_endings = [[len(row_hints) - 1] * len(hints) \
+                                    for hints in col_hints]
 
 
     def copy(self):
@@ -185,54 +185,54 @@ class Limits:
         """
         Exchanges rows with columns.
         """
-        self.rowBlockOrigins, self.colBlockOrigins = \
-            self.colBlockOrigins, self.rowBlockOrigins
-        self.rowBlockEndings, self.colBlockEndings = \
-            self.colBlockEndings, self.rowBlockEndings
+        self.row_block_origins, self.col_block_origins = \
+            self.col_block_origins, self.row_block_origins
+        self.row_block_endings, self.col_block_endings = \
+            self.col_block_endings, self.row_block_endings
 
 
     def get_row_origins(self, row, blockIndex=None):
         if blockIndex is None:
-            return self.rowBlockOrigins[row]
+            return self.row_block_origins[row]
         else:
-            return self.rowBlockOrigins[row][blockIndex]
+            return self.row_block_origins[row][blockIndex]
 
 
     def get_row_endings(self, row, blockIndex=None):
         if blockIndex is None:
-            return self.rowBlockEndings[row]
+            return self.row_block_endings[row]
         else:
-            return self.rowBlockEndings[row][blockIndex]
+            return self.row_block_endings[row][blockIndex]
 
 
     def get_col_origins(self, col, blockIndex=None):
         if blockIndex is None:
-            return self.colBlockOrigins[col]
+            return self.col_block_origins[col]
         else:
-            return self.colBlockOrigins[col][blockIndex]
+            return self.col_block_origins[col][blockIndex]
 
 
     def get_col_endings(self, col, blockIndex=None):
         if blockIndex is None:
-            return self.colBlockEndings[col]
+            return self.col_block_endings[col]
         else:
-            return self.colBlockEndings[col][blockIndex]
+            return self.col_block_endings[col][blockIndex]
 
 
     def set_row_origins(self, row, newOrigins):
-        self.rowBlockOrigins[row] = newOrigins
+        self.row_block_origins[row] = newOrigins
 
 
     def set_col_origins(self, row, newOrigins):
-        self.colBlockOrigins[row] = newOrigins
+        self.col_block_origins[row] = newOrigins
 
 
     def set_row_endings(self, row, newEndings):
-        self.rowBlockEndings[row] = newEndings
+        self.row_block_endings[row] = newEndings
 
 
     def set_col_endings(self, row, newEndings):
-        self.colBlockEndings[row] = newEndings
+        self.col_block_endings[row] = newEndings
 
 
 class ProgressTracker:
@@ -243,8 +243,8 @@ class ProgressTracker:
     - number of undetermind cells
     """
     def __init__(self, nRows, nCols):
-        self.rowsChanged = set(range(nRows))
-        self.colsChanged = set(range(nCols))
+        self.rows_changed = set(range(nRows))
+        self.cols_changed = set(range(nCols))
         self.undetermind = nRows * nCols
 
 
@@ -252,8 +252,8 @@ class ProgressTracker:
         """
         Exchanges rows with columns.
         """
-        self.rowsChanged, self.colsChanged = \
-            self.colsChanged, self.rowsChanged
+        self.rows_changed, self.cols_changed = \
+            self.cols_changed, self.rows_changed
 
 
     def copy(self):
@@ -267,8 +267,8 @@ class ProgressTracker:
         """
         Updates metadata after filling the cell at position (row, col).
         """
-        self.rowsChanged.add(row)
-        self.colsChanged.add(col)
+        self.rows_changed.add(row)
+        self.cols_changed.add(col)
         self.undetermind -= 1
 
 
@@ -276,36 +276,36 @@ class ProgressTracker:
         """
         Resets counter of changed rows and columns.
         """
-        self.rowsChanged = set()
-        self.colsChanged = set()
+        self.rows_changed = set()
+        self.cols_changed = set()
 
 
     def mark_row_as_changed(self, row):
         """
         Adds row to collection of changed rows.
         """
-        self.rowsChanged.add(row)
+        self.rows_changed.add(row)
 
 
     def mark_col_as_changed(self, col):
         """
         Adds column to collection of changed columns.
         """
-        self.colsChanged.add(col)
+        self.cols_changed.add(col)
 
 
     def get_rows_changed(self):
         """
         Returns rows changed since last reset.
         """
-        return self.rowsChanged
+        return self.rows_changed
 
 
     def get_cols_changed(self):
         """
         Returns columns changed since last reset.
         """
-        return self.colsChanged
+        return self.cols_changed
 
 
     def get_number_of_undetermind_cells(self):
@@ -316,7 +316,7 @@ class ProgressTracker:
 
 
     def anything_improved(self):
-        if self.rowsChanged == set() and self.colsChanged == set():
+        if self.rows_changed == set() and self.cols_changed == set():
             return False
         else:
             return True

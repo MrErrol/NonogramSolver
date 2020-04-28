@@ -19,8 +19,8 @@ def test_Data_initialisation_empty():
     empty = nonogram.Data()
     assert empty.rows == [[]]
     assert empty.cols == [[]]
-    assert empty.rowHints == [[]]
-    assert empty.colHints == [[]]
+    assert empty.row_hints == [[]]
+    assert empty.col_hints == [[]]
 
 
 def test_Data_initialisation_simple():
@@ -28,8 +28,8 @@ def test_Data_initialisation_simple():
     data_1 = nonogram.Data(filename_1)
     assert data_1.rows == [[0, 0, 0, 0, 0, 0, 0, -1]] * 4
     assert data_1.cols == [[0, 0, 0, 0, -1]] * 7
-    assert data_1.rowHints == [[2, 2], [2, 2], [1], [3]]
-    assert data_1.colHints == [[2], [2], [2], [1], [1], [2], [2]]
+    assert data_1.row_hints == [[2, 2], [2, 2], [1], [3]]
+    assert data_1.col_hints == [[2], [2], [2], [1], [1], [2], [2]]
 
 
 def test_Data_initialisation_presolved():
@@ -50,8 +50,8 @@ def test_Data_transpose():
     # Compare with test_Data_initialisation_presolved
     data_3 = nonogram.Data(filename_3, presolved=filename_3_pre)
     data_3.transpose()
-    assert data_3.rowHints == [[1, 1], [2], [2]]
-    assert data_3.colHints == [[2], [2], [1, 1]]
+    assert data_3.row_hints == [[1, 1], [2], [2]]
+    assert data_3.col_hints == [[2], [2], [1, 1]]
     assert data_3.rows == [[1, -1, 0, -1], [1, 1, -1, -1], [-1, 0, 1, -1]]
     assert data_3.cols == [[1, 1, -1, -1], [-1, 1, 0, -1], [0, -1, 1, -1]]
 
@@ -61,8 +61,8 @@ def test_Data_copy():
     nono_copy = data_3.copy()
     assert data_3.rows == nono_copy.rows
     assert data_3.cols == nono_copy.cols
-    assert data_3.rowHints is nono_copy.rowHints
-    assert data_3.colHints is nono_copy.colHints
+    assert data_3.row_hints is nono_copy.row_hints
+    assert data_3.col_hints is nono_copy.col_hints
 
 
 def test_Data_fill_cell_filling():

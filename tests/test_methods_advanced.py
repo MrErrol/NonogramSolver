@@ -40,15 +40,15 @@ def test_make_assumption():
 def test_make_assumption_part2(mocked_check):
     mocked_check.return_value = False
 
-    nono_assume_4.limits.rowBlockOrigins[0] = [2, 2]
-    nono_assume_4.limits.rowBlockEndings[0] = [2, 2]
+    nono_assume_4.limits.row_block_origins[0] = [2, 2]
+    nono_assume_4.limits.row_block_endings[0] = [2, 2]
 
     assert make_assumption(nono_assume_4, 0, 5) == False
 
-    nono_assume_4.limits.rowBlockOrigins[0] = [0, 2]
-    nono_assume_4.limits.rowBlockEndings[0] = [3, 5]
-    nono_assume_4.limits.colBlockOrigins[5] = [2]
-    nono_assume_4.limits.colBlockEndings[5] = [2]
+    nono_assume_4.limits.row_block_origins[0] = [0, 2]
+    nono_assume_4.limits.row_block_endings[0] = [3, 5]
+    nono_assume_4.limits.col_block_origins[5] = [2]
+    nono_assume_4.limits.col_block_endings[5] = [2]
 
     assert make_assumption(nono_assume_4, 0, 5) == False
 

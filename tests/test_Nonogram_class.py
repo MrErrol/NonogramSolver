@@ -32,15 +32,15 @@ def test_Nonogram_initialisation_in_depth():
     assert nono.meta_data.n_cols == 3
     assert nono.data.rows == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
     assert nono.data.cols == [[0, 0, 0, -1], [0, 0, 0, -1], [0, 0, 0, -1]]
-    assert nono.data.rowHints == [[2], [2], [1, 1]]
-    assert nono.data.colHints == [[1, 1], [2], [2]]
-    assert nono.limits.rowBlockOrigins == [[0], [0], [0, 0]]
-    assert nono.limits.colBlockOrigins == [[0, 0], [0], [0]]
-    assert nono.limits.rowBlockEndings == [[2], [2], [2, 2]]
-    assert nono.limits.colBlockEndings == [[2, 2], [2], [2]]
+    assert nono.data.row_hints == [[2], [2], [1, 1]]
+    assert nono.data.col_hints == [[1, 1], [2], [2]]
+    assert nono.limits.row_block_origins == [[0], [0], [0, 0]]
+    assert nono.limits.col_block_origins == [[0, 0], [0], [0]]
+    assert nono.limits.row_block_endings == [[2], [2], [2, 2]]
+    assert nono.limits.col_block_endings == [[2, 2], [2], [2]]
     assert nono.meta_data.progress_tracker.undetermind == 9
-    assert nono.meta_data.progress_tracker.rowsChanged == {0, 1, 2}
-    assert nono.meta_data.progress_tracker.colsChanged == {0, 1, 2}
+    assert nono.meta_data.progress_tracker.rows_changed == {0, 1, 2}
+    assert nono.meta_data.progress_tracker.cols_changed == {0, 1, 2}
     assert nono.meta_data.transposed == False
 
 
