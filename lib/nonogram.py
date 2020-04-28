@@ -113,22 +113,22 @@ class Data:
             )
 
 
-    def get_row_hints(self, row=None, blockIndex=None):
+    def get_row_hints(self, row=None, block_index=None):
         if row is None:
             return self.row_hints
-        elif blockIndex is None:
+        elif block_index is None:
             return self.row_hints[row]
         else:
-            return self.row_hints[row][blockIndex]
+            return self.row_hints[row][block_index]
 
 
-    def get_col_hints(self, col=None, blockIndex=None):
+    def get_col_hints(self, col=None, block_index=None):
         if col is None:
             return self.col_hints
-        elif blockIndex is None:
+        elif block_index is None:
             return self.col_hints[col]
         else:
-            return self.col_hints[col][blockIndex]
+            return self.col_hints[col][block_index]
 
 
     def get_row(self, row=None, col=None):
@@ -191,48 +191,48 @@ class Limits:
             self.col_block_endings, self.row_block_endings
 
 
-    def get_row_origins(self, row, blockIndex=None):
-        if blockIndex is None:
+    def get_row_origins(self, row, block_index=None):
+        if block_index is None:
             return self.row_block_origins[row]
         else:
-            return self.row_block_origins[row][blockIndex]
+            return self.row_block_origins[row][block_index]
 
 
-    def get_row_endings(self, row, blockIndex=None):
-        if blockIndex is None:
+    def get_row_endings(self, row, block_index=None):
+        if block_index is None:
             return self.row_block_endings[row]
         else:
-            return self.row_block_endings[row][blockIndex]
+            return self.row_block_endings[row][block_index]
 
 
-    def get_col_origins(self, col, blockIndex=None):
-        if blockIndex is None:
+    def get_col_origins(self, col, block_index=None):
+        if block_index is None:
             return self.col_block_origins[col]
         else:
-            return self.col_block_origins[col][blockIndex]
+            return self.col_block_origins[col][block_index]
 
 
-    def get_col_endings(self, col, blockIndex=None):
-        if blockIndex is None:
+    def get_col_endings(self, col, block_index=None):
+        if block_index is None:
             return self.col_block_endings[col]
         else:
-            return self.col_block_endings[col][blockIndex]
+            return self.col_block_endings[col][block_index]
 
 
-    def set_row_origins(self, row, newOrigins):
-        self.row_block_origins[row] = newOrigins
+    def set_row_origins(self, row, new_origins):
+        self.row_block_origins[row] = new_origins
 
 
-    def set_col_origins(self, row, newOrigins):
-        self.col_block_origins[row] = newOrigins
+    def set_col_origins(self, row, new_origins):
+        self.col_block_origins[row] = new_origins
 
 
-    def set_row_endings(self, row, newEndings):
-        self.row_block_endings[row] = newEndings
+    def set_row_endings(self, row, new_endings):
+        self.row_block_endings[row] = new_endings
 
 
-    def set_col_endings(self, row, newEndings):
-        self.col_block_endings[row] = newEndings
+    def set_col_endings(self, row, new_endings):
+        self.col_block_endings[row] = new_endings
 
 
 class ProgressTracker:
