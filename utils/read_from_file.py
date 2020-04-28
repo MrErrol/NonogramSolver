@@ -62,11 +62,11 @@ def read_presolved_nonogram_representation(file, mapping=None):
         read_list.append(line.rstrip())
 
     if mapping is None:
-        map = DEFAULT_MAPPING
+        mapper = DEFAULT_MAPPING
     else:
-        map = mapping
+        mapper = mapping
 
-    return [[map[letter] for letter in row] for row in read_list]
+    return [[mapper[letter] for letter in row] for row in read_list]
 
 
 def read_numeric_lines(file):
@@ -102,30 +102,30 @@ def read_datafile(filename):
 
     Returns:
     --------
-    rowHints - list of list of hints for rows for nonogram
-    colHints - list of list of hints for columns for nonogram
+    row_hints - list of list of hints for rows for nonogram
+    col_hints - list of list of hints for columns for nonogram
     """
 
-    rowHints = []
-    colHints = []
+    row_hints = []
+    col_hints = []
 
     file = open(filename, 'r')
     line = file.readline()
 
-    while not (rowHints and colHints):
+    while not (row_hints and col_hints):
         if line == '':
             break
         if is_beggining_of_row_hints(line):
-            rowHints, line = read_numeric_lines(file)
+            row_hints, line = read_numeric_lines(file)
             continue
         if is_beggining_of_col_hints(line):
-            colHints, line = read_numeric_lines(file)
+            col_hints, line = read_numeric_lines(file)
             continue
         line = file.readline()
 
     file.close()
 
-    return rowHints, colHints
+    return row_hints, col_hints
 
 
 def read_presolved_datafile(filename):
