@@ -15,7 +15,7 @@ def perform_good_start(nono):
         nono.transpose()
 
 
-def perform_simple_deducing_for_single_row(nono, row):
+def perform_single_row_deduction(nono, row):
     """
     Function tries to deduce new block limits for a single row of nonogram.
     If succeeded it appropriately updates them in the nonogram class.
@@ -37,34 +37,34 @@ def perform_simple_deducing_for_single_row(nono, row):
         methods.fill_row(nono, row)
 
 
-def perform_simple_deducing(nono, rowsChanged_input, colsChanged_input):
+def perform_simple_deducing(nono, rows_changed_input, cols_changed_input):
     """
     Function performs simple deducing over rows and columns of nonogram provided
     as the arguments of the function. Deduction is simple in the sens that:
     - it treats every row/column separately
     - it includes block relations only between neighbouring blocks
     """
-    rowsChanged = rowsChanged_input
-    colsChanged = colsChanged_input
+    rows_changed = rows_changed_input
+    cols_changed = cols_changed_input
     # Loop over Nonogram dimensions (rows and columns)
     for dummy_dimension in range(2):
         # Loop over Nonogram rows (columns if transposed)
-        for row in rowsChanged:
+        for row in rows_changed:
             # Deduction over single row
-            perform_simple_deducing_for_single_row(nono, row)
+            perform_single_row_deduction(nono, row)
         nono.transpose()
-        rowsChanged, colsChanged = colsChanged, rowsChanged
+        rows_changed, cols_changed = cols_changed, rows_changed
 
 
-def make_single_iteration_of_deduction(nono, rowsChanged, colsChanged,
-                                       searching_depth,
-                                      ):
+def single_deduction_iteration(nono, rows_changed, cols_changed,
+                               searching_depth,
+                              ):
     """
     Performs single iteration of deduction. May use all implemented methods,
     yet stops after the cheapest finds solution.
     """
     # Simple and cheap deduction - does most of the work
-    perform_simple_deducing(nono, rowsChanged, colsChanged)
+    perform_simple_deducing(nono, rows_changed, cols_changed)
 
     # Check if anything improved
     if not nono.meta_data.progress_tracker.anything_improved():
@@ -92,12 +92,12 @@ def solver(nono, searching_depth=2):
     # main loop
     while nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
         # Stores basic information about improvements since last cycle
-        rowsChanged = copy(nono.meta_data.progress_tracker.get_rows_changed())
-        colsChanged = copy(nono.meta_data.progress_tracker.get_cols_changed())
+        rows_changed = copy(nono.meta_data.progress_tracker.get_rows_changed())
+        cols_changed = copy(nono.meta_data.progress_tracker.get_cols_changed())
         nono.meta_data.progress_tracker.reset_changed_rows_and_cols()
 
-        make_single_iteration_of_deduction(
-            nono, rowsChanged, colsChanged, searching_depth,
+        single_deduction_iteration(
+            nono, rows_changed, cols_changed, searching_depth,
         )
 
         # Check if anything improved
