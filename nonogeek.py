@@ -67,11 +67,11 @@ if options.wait_time > -1e-9:
     nono.plot(interactive=True)
 
 
-timeBeforeSolving = time()
+time_before_solving = time()
 
 cycle = solver(nono, searching_depth=options.searching_depth)
 
-timeAfterSolving = time()
+time_after_solving = time()
 
 
 if options.presolved_datafile:
@@ -86,7 +86,7 @@ if options.presolved_datafile:
 if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
 
-print("Solving took : " + str(timeAfterSolving - timeBeforeSolving) + 's')
+print("Solving took : " + str(time_after_solving - time_before_solving) + 's')
 
 if options.wait_time > -1e-9:
     nono.end_iplot()
