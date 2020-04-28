@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 from unittest.mock import Mock, call
 from lib.nonogram import Nonogram
-from lib.methods import push_block_Origins, push_block_Endings,\
+from lib.methods import push_block_origins, push_block_endings,\
     deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks,\
     fill_inside_of_the_blocks, fill_cells_to_the_right, fill_cells_to_the_left,\
     fill_row
@@ -20,28 +20,28 @@ blockOrigins3 = [0, 0, 5]
 blockOrigins4 = [0, 0, 7, 5]
 blockOrigins5 = [0, 2, 4]
 
-def test_push_block_Origins():
-    assert push_block_Origins(hints1, blockOrigins1) == (True, [0, 2, 4])
-    assert push_block_Origins(hints2, blockOrigins2) == (True, [0, 2, 5, 7])
-    assert push_block_Origins(hints1, blockOrigins3) == (True, [0, 2, 5])
-    assert push_block_Origins(hints2, blockOrigins4) == (True, [0, 2, 7, 5])
-    assert push_block_Origins(hints1, blockOrigins1, index=1) == (True, [0, 0, 2])
-    assert push_block_Origins(hints1, blockOrigins1, index=2) == (False, [0, 0, 0])
-    assert push_block_Origins(hints2, blockOrigins4, index=2) == (True, [0, 0, 7, 9])
+def test_push_block_origins():
+    assert push_block_origins(hints1, blockOrigins1) == (True, [0, 2, 4])
+    assert push_block_origins(hints2, blockOrigins2) == (True, [0, 2, 5, 7])
+    assert push_block_origins(hints1, blockOrigins3) == (True, [0, 2, 5])
+    assert push_block_origins(hints2, blockOrigins4) == (True, [0, 2, 7, 5])
+    assert push_block_origins(hints1, blockOrigins1, index=1) == (True, [0, 0, 2])
+    assert push_block_origins(hints1, blockOrigins1, index=2) == (False, [0, 0, 0])
+    assert push_block_origins(hints2, blockOrigins4, index=2) == (True, [0, 0, 7, 9])
 
 blockEndings_1 = [8, 8, 8]
 blockEndings_2 = [12, 12, 12, 12]
 blockEndings_3 = [3, 8, 8]
 blockEndings_4 = [8, 5, 12, 12]
     
-def test_push_block_Endings():
-    assert push_block_Endings(hints1, blockEndings_1) == (True, [4, 6, 8])
-    assert push_block_Endings(hints2, blockEndings_2) == (True, [3, 6, 8, 12])
-    assert push_block_Endings(hints1, blockEndings_3) == (True, [3, 6, 8])
-    assert push_block_Endings(hints2, blockEndings_4) == (True, [8, 5, 8, 12])
-    assert push_block_Endings(hints1, blockEndings_1, index=1) == (True, [6, 8, 8])
-    assert push_block_Endings(hints1, blockEndings_1, index=2) == (False, [8, 8, 8])
-    assert push_block_Endings(hints2, blockEndings_4, index=2) == (True, [2, 5, 12, 12])    
+def test_push_block_endings():
+    assert push_block_endings(hints1, blockEndings_1) == (True, [4, 6, 8])
+    assert push_block_endings(hints2, blockEndings_2) == (True, [3, 6, 8, 12])
+    assert push_block_endings(hints1, blockEndings_3) == (True, [3, 6, 8])
+    assert push_block_endings(hints2, blockEndings_4) == (True, [8, 5, 8, 12])
+    assert push_block_endings(hints1, blockEndings_1, index=1) == (True, [6, 8, 8])
+    assert push_block_endings(hints1, blockEndings_1, index=2) == (False, [8, 8, 8])
+    assert push_block_endings(hints2, blockEndings_4, index=2) == (True, [2, 5, 12, 12])
     
 line1 = [0]*5 + [-1]
 line2 = [0, 1, 0, 0, 0, 0, -1]
