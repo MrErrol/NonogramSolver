@@ -3,7 +3,7 @@ from lib.methods import deduce_new_block_origins, deduce_new_block_endings,\
     push_block_Origins, push_block_Endings, fill_row
 
 
-def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
+def check_if_line_is_fillable(line, hints, block_origins, block_endings):
     """
     Function performs few simple checks if it is possible to fill the line
     according to actual knowledge. It may misclassify unfillable row
@@ -14,21 +14,21 @@ def check_if_line_is_fillable(line, hints, blockOrigins, blockEndings):
     bool - bool variable answearing the question whether line is fillable
     """
     # add virtual block at the end, just to simplify comparison
-    blockOrigins = copy(blockOrigins)
-    blockOrigins.append(len(line) + 1)
+    block_origins = copy(block_origins)
+    block_origins.append(len(line) + 1)
 
     # Check if there are filled cells before the first block
-    if 1 in line[:blockOrigins[0]]:
+    if 1 in line[:block_origins[0]]:
         return False
 
     # loop over blocks
     for i, hint in enumerate(hints):
         # check if there is enough space for a block
-        if blockEndings[i] - blockOrigins[i] + 1 < hint:
+        if block_endings[i] - block_origins[i] + 1 < hint:
             return False
 
         # check if there are filled cells between blocks (or after last block)
-        if 1 in line[blockEndings[i] + 1 : blockOrigins[i+1]]:
+        if 1 in line[block_endings[i] + 1 : block_origins[i+1]]:
             return False
 
     # No problems found
@@ -47,12 +47,12 @@ def safe_deduce(nono, row):
     found_discrepancy - bool variable informing whether discrepancy has been found
     """
     try:
-        sth_changed1, blockOrigins = deduce_new_block_origins(
+        sth_changed1, block_origins = deduce_new_block_origins(
             nono.data.get_row(row),
             nono.data.get_row_hints(row),
             nono.limits.get_row_origins(row),
             )
-        sth_changed2, blockEndings = deduce_new_block_endings(
+        sth_changed2, block_endings = deduce_new_block_endings(
             nono.data.get_row(row),
             nono.data.get_row_hints(row),
             nono.limits.get_row_endings(row),
@@ -60,8 +60,8 @@ def safe_deduce(nono, row):
     except:
         return True
     if sth_changed1 or sth_changed2:
-        nono.limits.set_row_origins(row, blockOrigins)
-        nono.limits.set_row_endings(row, blockEndings)
+        nono.limits.set_row_origins(row, block_origins)
+        nono.limits.set_row_endings(row, block_endings)
         try:
             fill_row(nono, row)
         except:
