@@ -6,7 +6,14 @@ from lib.nonogram import Nonogram
 from lib.solver import solver
 from utils.tools import compare_nonograms
 
-def getOptions(args):
+
+def find_and_print_hint(options):
+    new_nono = Nonogram(options.input)
+    new_nono.mode_data.set_verbosity(options.verbosity)
+    solver(new_nono, searching_depth=options.searching_depth)
+
+
+def get_options(args):
     parser = ArgumentParser(description="Parses command.")
     parser.add_argument("input",
                         help="Input file with nonogram.",
@@ -25,7 +32,7 @@ def getOptions(args):
                         help="Hinter mode. May be provided with verbosity (0-1).",
                        )
     parser.add_argument("-c", "--check",
-                        dest='presolved_datafile',
+                        dest='presolved_datafile', default=None,
                         help="File with presolved cells. Turns on verification mode. \
                         Checks whether mistake has been made. Does not plot the solution.",
                        )
@@ -36,7 +43,22 @@ def getOptions(args):
     read_options = parser.parse_args(args)
     return read_options
 
-options = getOptions(argv[1:])
+
+options = get_options(argv[1:])
+
+
+# Prevents setting interactive plot for check and hinter modes
+if options.wait_time > -1e-9 and (options.presolved_datafile or options.verbosity >= 0):
+    print("Can't use live mode with hint mode or check mode.")
+    quit()
+
+# Creating empty datafile for special case of hint mode giving just first move
+if options.verbosity >= 0 and not options.presolved_datafile:
+    print("You haven't provided me any presolved cells!")
+    print("Have this for a good start:")
+    find_and_print_hint(options)
+    quit()
+
 
 nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
 
@@ -44,16 +66,10 @@ nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
 if options.wait_time > -1e-9:
     nono.plot(interactive=True)
 
-if options.verbosity >= 0:
-    #nono.fill_cell = nono.show_hint
-    nono.mode_data.set_verbosity(options.verbosity)
-
 
 timeBeforeSolving = time()
 
-cycle = solver(nono,
-               searching_depth=options.searching_depth
-              )
+cycle = solver(nono, searching_depth=options.searching_depth)
 
 timeAfterSolving = time()
 
@@ -61,12 +77,16 @@ timeAfterSolving = time()
 if options.presolved_datafile:
     user_nono = Nonogram(options.input, presolved=options.presolved_datafile)
     compare_nonograms(nono, user_nono, verbose=options.verbosity)
+
+    if options.verbosity >= 0:
+        find_and_print_hint(options)
+
     quit()
 
 if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
     print("Solved Nonogram in cycle: " + str(cycle) + ".")
 
-print("Solved in : " + str(timeAfterSolving - timeBeforeSolving) + 's')
+print("Solving took : " + str(timeAfterSolving - timeBeforeSolving) + 's')
 
 if options.wait_time > -1e-9:
     nono.end_iplot()
