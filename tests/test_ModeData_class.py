@@ -12,7 +12,7 @@ def test_ModeData_initialisation_empty():
     assert mode_data.fig == None
     assert mode_data.im == None
     assert mode_data.wait == None
-    assert mode_data.verbosity == 0
+    assert mode_data.verbosity == -1
 
 
 def test_ModeData_initialisation_wait():
@@ -20,7 +20,7 @@ def test_ModeData_initialisation_wait():
     assert mode_data.fig == None
     assert mode_data.im == None
     assert mode_data.wait == 5
-    assert mode_data.verbosity == 0
+    assert mode_data.verbosity == -1
 
 
 def test_ModeData_initialisation_full():

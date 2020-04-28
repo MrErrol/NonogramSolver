@@ -460,7 +460,7 @@ class ModeData:
     """
 
 
-    def __init__(self, wait=None, verbosity=0):
+    def __init__(self, wait=None, verbosity=-1):
         self.fig = None
         self.im = None
         self.wait = wait
@@ -528,7 +528,7 @@ class Nonogram:
     """
 
 
-    def __init__(self, filename=None, presolved=None, wait=0.0, verbosity=0):
+    def __init__(self, filename=None, presolved=None, wait=0.0, verbosity=-1):
         self.data = Data(filename=filename, presolved=presolved)
         self.limits = Limits(
             self.data.get_row_hints(),
@@ -630,6 +630,11 @@ class Nonogram:
         -------
         sth_changed - bool variable informing if cell state has been changed
         """
+        # special case for hinter mode
+        # no cell is filled, just hint printed and program quits
+        if self.mode_data.get_verbosity() >= 0:
+            self.show_hint(row, col, value)
+
         # filling cell
         sth_changed = self.data.fill_cell(row, col, value)
         if sth_changed:

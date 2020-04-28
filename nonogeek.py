@@ -19,12 +19,10 @@ def getOptions(args):
                         (in seconds) to wait after each plot update.",
                        )
     parser.add_argument("--hint",
-                        dest='hinter', default=False, action='store_true',
-                        help="Hinter mode.",
-                       )
-    parser.add_argument("-v", "--verbosity",
-                        dest='verbosity', type=int, default=1, action='store',
-                        help="Sets verbosity for hinter mode. (0-1)",
+                        dest='verbosity',
+                        default=-1, const=0,
+                        action='store', nargs='?', type=int,
+                        help="Hinter mode. May be provided with verbosity (0-1).",
                        )
     parser.add_argument("-c", "--check",
                         dest='presolved_datafile',
@@ -46,8 +44,8 @@ nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
 if options.wait_time > -1e-9:
     nono.plot(interactive=True)
 
-if options.hinter:
-    nono.fill_cell = nono.show_hint
+if options.verbosity >= 0:
+    #nono.fill_cell = nono.show_hint
     nono.mode_data.set_verbosity(options.verbosity)
 
 

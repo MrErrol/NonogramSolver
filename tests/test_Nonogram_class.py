@@ -151,7 +151,7 @@ def test_Nonogram_fill_cell():
 def test_Nonogram_show_hint_nonverbose(mocked_show_basic_hint, mocked_quit):
     nono = nonogram.Nonogram(filename_1)
     nono.show_hint(2, 3, -1)
-    assert mocked_show_basic_hint.mock_calls == [call(3, 4, False, 0)]
+    assert mocked_show_basic_hint.mock_calls == [call(3, 4, False, -1)]
     assert mocked_quit.mock_calls == [call()]
 
 
