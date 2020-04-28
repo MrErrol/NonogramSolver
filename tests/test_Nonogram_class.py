@@ -150,8 +150,8 @@ def test_Nonogram_fill_cell():
 @patch('lib.nonogram.show_basic_hint')
 def test_Nonogram_show_hint_nonverbose(mocked_show_basic_hint, mocked_quit):
     nono = nonogram.Nonogram(filename_1)
-    nono.show_hint(2, 3, -1)
-    assert mocked_show_basic_hint.mock_calls == [call(3, 4, False, -1)]
+    nono.show_hint_simple(2, 3, -1)
+    assert mocked_show_basic_hint.mock_calls == [call(3, False)]
     assert mocked_quit.mock_calls == [call()]
 
 
@@ -161,8 +161,8 @@ def test_Nonogram_show_hint_nonverbose(mocked_show_basic_hint, mocked_quit):
 def test_Nonogram_show_hint_verbose(mocked_show_basic_hint, mocked_print, mocked_quit):
     nono = nonogram.Nonogram(filename_1)
     nono.mode_data.verbosity = 1
-    nono.show_hint(2, 3, -1)
-    assert mocked_show_basic_hint.mock_calls == [call(3, 4, False, 1)]
+    nono.show_hint_simple(2, 3, -1)
+    assert mocked_show_basic_hint.mock_calls == [call(3, False)]
     assert mocked_print.mock_calls == [
         call("Cell at row=3 and col=4 may be deduced to be empty."),
     ]

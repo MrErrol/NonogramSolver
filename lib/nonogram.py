@@ -6,7 +6,8 @@ import sys
 sys.path.insert(0, os.path.dirname('__file__'))
 
 from utils.visualizers import plot, update_plot, end_iplot
-from utils.tools import print_complain, show_basic_hint
+from utils.tools import print_complain, show_basic_hint, \
+    show_basic_hint_assumption, show_explicit_hint
 from utils.read_from_file import read_datafile, read_presolved_datafile,\
     structure_raw_cells, strip_trailing_empty_cells, transpose_rows
 
@@ -633,7 +634,7 @@ class Nonogram:
         # special case for hinter mode
         # no cell is filled, just hint printed and program quits
         if self.mode_data.get_verbosity() >= 0:
-            self.show_hint(row, col, value)
+            self.show_hint_simple(row, col, value)
 
         # filling cell
         sth_changed = self.data.fill_cell(row, col, value)
@@ -643,21 +644,28 @@ class Nonogram:
         return sth_changed
 
 
-    def show_hint(self, row, col, value):
+    def show_hint_simple(self, row, col, value):
         """
-        Prints information about next cell to be filled. Adds small hint
-        how to deduce it.
+        Prints information about next cell to be filled.
         Shifts index to counting from 1.
+        Should be called by deductions based on a single row.
         """
-        show_basic_hint(row + 1, col + 1,
-                        self.meta_data.is_transposed(),
-                        self.mode_data.get_verbosity(),
-                       )
+        show_basic_hint(row + 1, self.meta_data.is_transposed())
 
         if self.mode_data.get_verbosity():
-            values = {-1:'empty.', 1:'filled.'}
-            print("Cell at row=" + str(row+1) + " and col=" + str(col+1) +
-                  " may be deduced to be " + values[value])
-            #if self.hinter == 'assumption_making':
-            #    print('You will need to analyze more than just single row or column.')
+            show_explicit_hint(row, col, value, self.meta_data.is_transposed())
+        quit()
+
+
+    def show_hint_advanced(self, row, col, value):
+        """
+        Prints information about next cell to be filled.
+        Shifts index to counting from 1.
+        Should be called by deductions based on assumption making.
+        """
+        show_basic_hint_assumption(row, col, self.meta_data.is_transposed())
+
+        if self.mode_data.get_verbosity():
+            show_explicit_hint(row, col, value, self.meta_data.is_transposed())
+            print('You will need to analyze more than just single row or column.')
         quit()

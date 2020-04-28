@@ -137,17 +137,11 @@ def test_print_mistakes(mocked_print):
 
 @patch('builtins.print')
 def test_show_basic_hint(mocked_print):
-    show_basic_hint(2, 3, True, 1)
+    show_basic_hint(2, True)
     assert mocked_print.mock_calls == [call("Analyze column 2.")]
     mocked_print.reset_mock()
-    show_basic_hint(2, 3, False, 1)
+    show_basic_hint(2, False)
     assert mocked_print.mock_calls == [call("Analyze row 2.")]
-    mocked_print.reset_mock()
-    show_basic_hint(2, 3, True, 0)
-    assert mocked_print.mock_calls == [call("Assume the cell at row=3 and col=2 to be filled and try to deduce consequences.")]
-    mocked_print.reset_mock()
-    show_basic_hint(2, 3, False, 0)
-    assert mocked_print.mock_calls == [call("Assume the cell at row=2 and col=3 to be filled and try to deduce consequences.")]
 
 
 @patch('builtins.print')

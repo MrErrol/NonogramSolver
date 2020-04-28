@@ -37,22 +37,41 @@ def print_mistakes(mistakes, verbose):
             print(shifted_pair)
 
 
-def show_basic_hint(row, col, transposed, verbosity):
+def show_basic_hint(row, transposed):
     """
     Prints basic hint about next cell to be filled.
+    Used with simple solving methods.
     """
-    if verbosity:
-        if transposed:
-            print('Analyze column ' + str(row) + '.')
-        else:
-            print('Analyze row ' + str(row) + '.')
+    if transposed:
+        print('Analyze column ' + str(row) + '.')
     else:
-        if transposed:
-            print("Assume the cell at row=" + str(col) + " and col=" + \
-                str(row) + " to be filled and try to deduce consequences.")
-        else:
-            print("Assume the cell at row=" + str(row) + " and col=" + \
-                str(col) + " to be filled and try to deduce consequences.")
+        print('Analyze row ' + str(row) + '.')
+
+
+def show_basic_hint_assumption(row, col, transposed):
+    """
+    Print basic hint about next cell to be filled.
+    Deduction requires assumption making.
+    """
+    if transposed:
+        print("Assume the cell at row=" + str(col) + " and col=" + \
+              str(row) + " to be filled and try to deduce consequences.")
+    else:
+        print("Assume the cell at row=" + str(row) + " and col=" + \
+              str(col) + " to be filled and try to deduce consequences.")
+
+
+def show_explicit_hint(row, col, value, transposed):
+    """
+    Prints explicit information about next cell to be filled.
+    """
+    values = {-1: 'empty.', 1: 'filled.'}
+    if transposed:
+        print("Cell at row=" + str(col + 1) + " and col=" + str(row + 1) +
+              " may be deduced to be " + values[value])
+    else:
+        print("Cell at row=" + str(row + 1) + " and col=" + str(col + 1) +
+              " may be deduced to be " + values[value])
 
 
 def compare_values(value1, value2):

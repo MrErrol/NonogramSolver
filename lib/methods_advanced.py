@@ -182,6 +182,10 @@ def investigate_empty_cells_from_left(nono, row, empty_cells):
 
     for col in empty_cells:
         if not make_assumption(nono, row, col):
+            # special call of function showing hint for assumption making mode
+            # used only in hint mode (verbotity >= 0)
+            if nono.mode_data.get_verbosity() >= 0:
+                nono.show_hint_advanced(row, col, -1)
             nono.fill_cell(row, col, -1)
             # Use of pushes after fill_cell is required by deducing functions
             push_everything_from_this_cell(nono, row, col)
