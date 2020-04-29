@@ -167,7 +167,7 @@ def push_everything_from_this_cell(nono, row, col):
         nono.transpose()
 
 
-def investigate_empty_cells_from_left(nono, row, empty_cells):
+def investigate_cells_from_left(nono, row, empty_cells):
     """
     Function tries to fill empty_cells in row from the left trying to find
     discrepancy.
@@ -214,7 +214,7 @@ def ivestigate_row_with_assumptions(nonogram, row):
 
     # single forward-backward loop
     for dummy in range(2):
-        change = investigate_empty_cells_from_left(nonogram, row, empty_cells)
+        change = investigate_cells_from_left(nonogram, row, empty_cells)
         sth_changed.append(change)
         # updating and reversing the list to make backward loop
         empty_cells = get_empty_cells(nonogram, row)[::-1]
