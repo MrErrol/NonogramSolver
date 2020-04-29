@@ -8,12 +8,19 @@ from utils.tools import compare_nonograms
 
 
 def find_and_print_hint(options):
+    """
+    Function initializes new (possibly presolved) nonogram and prints hint
+    for the next cell to be filled.
+    """
     new_nono = Nonogram(options.input)
     new_nono.mode_data.set_verbosity(options.verbosity)
     solver(new_nono, searching_depth=options.searching_depth)
 
 
 def get_options(args):
+    """
+    Function parses command line arguments.
+    """
     parser = ArgumentParser(description="Parses command.")
     parser.add_argument("input",
                         help="Input file with nonogram.",
@@ -43,52 +50,52 @@ def get_options(args):
     read_options = parser.parse_args(args)
     return read_options
 
-
-options = get_options(argv[1:])
-
-
-# Prevents setting interactive plot for check and hinter modes
-if options.wait_time > -1e-9 and (options.presolved_datafile or options.verbosity >= 0):
-    print("Can't use live mode with hint mode or check mode.")
-    quit()
-
-# Creating empty datafile for special case of hint mode giving just first move
-if options.verbosity >= 0 and not options.presolved_datafile:
-    print("You haven't provided me any presolved cells!")
-    print("Have this for a good start:")
-    find_and_print_hint(options)
-    quit()
+if __name__ == '__main__':
+    options = get_options(argv[1:])
 
 
-nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
+    # Prevents setting interactive plot for check and hinter modes
+    if options.wait_time > -1e-9 and (options.presolved_datafile or options.verbosity >= 0):
+        print("Can't use live mode with hint mode or check mode.")
+        quit()
 
-
-if options.wait_time > -1e-9:
-    nono.plot(interactive=True)
-
-
-time_before_solving = time()
-
-cycle = solver(nono, searching_depth=options.searching_depth)
-
-time_after_solving = time()
-
-
-if options.presolved_datafile:
-    user_nono = Nonogram(options.input, presolved=options.presolved_datafile)
-    compare_nonograms(nono, user_nono, verbose=options.verbosity)
-
-    if options.verbosity >= 0:
+    # Creating empty datafile for special case of hint mode giving just first move
+    if options.verbosity >= 0 and not options.presolved_datafile:
+        print("You haven't provided me any presolved cells!")
+        print("Have this for a good start:")
         find_and_print_hint(options)
+        quit()
 
-    quit()
 
-if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
-    print("Solved Nonogram in cycle: " + str(cycle) + ".")
+    nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
 
-print("Solving took : " + str(time_after_solving - time_before_solving) + 's')
 
-if options.wait_time > -1e-9:
-    nono.end_iplot()
-else:
-    nono.plot()
+    if options.wait_time > -1e-9:
+        nono.plot(interactive=True)
+
+
+    time_before_solving = time()
+
+    cycle = solver(nono, searching_depth=options.searching_depth)
+
+    time_after_solving = time()
+
+
+    if options.presolved_datafile:
+        user_nono = Nonogram(options.input, presolved=options.presolved_datafile)
+        compare_nonograms(nono, user_nono, verbose=options.verbosity)
+
+        if options.verbosity >= 0:
+            find_and_print_hint(options)
+
+        quit()
+
+    if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
+        print("Solved Nonogram in cycle: " + str(cycle) + ".")
+
+    print("Solving took : " + str(time_after_solving - time_before_solving) + 's')
+
+    if options.wait_time > -1e-9:
+        nono.end_iplot()
+    else:
+        nono.plot()
