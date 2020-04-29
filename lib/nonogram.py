@@ -96,14 +96,15 @@ class Data:
         """
         if self.rows[row][col] == self.cols[col][row] == value:
             return False
-        elif self.rows[row][col] == self.cols[col][row] == 0:
-            self.rows[row][col] = self.cols[col][row] = value
-            return True
-        else:
+
+        if not self.rows[row][col] == self.cols[col][row] == 0:
             raise OverwriteException(
                 "Trying to overwrite filled/empty cell! " + \
                 str(row) + ' ' + str(col)
             )
+
+        self.rows[row][col] = self.cols[col][row] = value
+        return True
 
 
     def get_row_hints(self, row=None, block_index=None):
@@ -116,10 +117,11 @@ class Data:
         """
         if row is None:
             return self.row_hints
-        elif block_index is None:
-            return self.row_hints[row]
-        else:
+
+        if block_index is not None:
             return self.row_hints[row][block_index]
+
+        return self.row_hints[row]
 
 
     def get_col_hints(self, col=None, block_index=None):
@@ -132,10 +134,11 @@ class Data:
         """
         if col is None:
             return self.col_hints
-        elif block_index is None:
-            return self.col_hints[col]
-        else:
+
+        if block_index is not None:
             return self.col_hints[col][block_index]
+
+        return self.col_hints[col]
 
 
     def get_row(self, row=None, col=None):
@@ -147,10 +150,11 @@ class Data:
         """
         if row is None:
             return self.rows
-        elif col is None:
-            return self.rows[row]
-        else:
+
+        if col is not None:
             return self.rows[row][col]
+
+        return self.rows[row]
 
 
     def get_col(self, col=None, row=None):
@@ -162,10 +166,11 @@ class Data:
         """
         if col is None:
             return self.cols
-        elif row is None:
-            return self.cols[col]
-        else:
+
+        if row is not None:
             return self.cols[col][row]
+
+        return self.cols[col]
 
 
 class Limits:
@@ -217,10 +222,10 @@ class Limits:
         get_row_origins(row) - returns origins for a given row
         get_row_origins(row, block_index) - returns origin for a given block
         """
-        if block_index is None:
-            return self.row_block_origins[row]
-        else:
+        if block_index is not None:
             return self.row_block_origins[row][block_index]
+
+        return self.row_block_origins[row]
 
 
     def get_row_endings(self, row, block_index=None):
@@ -230,10 +235,10 @@ class Limits:
         get_row_endings(row) - returns endings for a given row
         get_row_endings(row, block_index) - returns ending for a given block
         """
-        if block_index is None:
-            return self.row_block_endings[row]
-        else:
+        if block_index is not None:
             return self.row_block_endings[row][block_index]
+
+        return self.row_block_endings[row]
 
 
     def get_col_origins(self, col, block_index=None):
@@ -243,10 +248,10 @@ class Limits:
         get_col_origins(col) - returns origins for a given column
         get_col_origins(col, block_index) - returns origin for a given block
         """
-        if block_index is None:
-            return self.col_block_origins[col]
-        else:
+        if block_index is not None:
             return self.col_block_origins[col][block_index]
+
+        return self.col_block_origins[col]
 
 
     def get_col_endings(self, col, block_index=None):
@@ -256,10 +261,10 @@ class Limits:
         get_col_endings(col) - returns endings for a given column
         get_col_endings(col, block_index) - returns ending for a given block
         """
-        if block_index is None:
-            return self.col_block_endings[col]
-        else:
+        if block_index is not None:
             return self.col_block_endings[col][block_index]
+
+        return self.col_block_endings[col]
 
 
     def set_row_origins(self, row, new_origins):
