@@ -145,7 +145,7 @@ def check_no_empty_cell_inside(line, hints, block_origins, block_index):
     return sth_changed, block_origins
 
 
-def check_no_filled_cell_just_after_block(line, hints, block_origins, block_index):
+def check_filled_cell_from_right(line, hints, block_origins, block_index):
     """
     Functions check whether there is filled cell just after the most left
     available position for the i-th block and shifts the block origin by 1
@@ -195,7 +195,7 @@ def deduce_new_block_origins(line, hints, block_origins):
         )
 
         # check for filled space enforcing push of block origin
-        changed2, block_origins = check_no_filled_cell_just_after_block(
+        changed2, block_origins = check_filled_cell_from_right(
             line, hints, block_origins, i,
         )
 
@@ -445,7 +445,7 @@ def fill_cells_to_the_left(nonogram, row, col):
     return sth_changed
 
 
-def analyze_multi_block_relations_in_row(nonogram, row):
+def analyze_multi_block_in_row(nonogram, row):
     """
     Function analyzes regions of overlapping blocks in the row trying to fill
     some cells.
@@ -490,7 +490,7 @@ def analyze_multi_block_relations(nonogram):
     for dummy_dimension in range(2):
         # loop over nonogram rows (columns)
         for row in range(nonogram.meta_data.get_number_of_rows()):
-            sth_changed_loc = analyze_multi_block_relations_in_row(nonogram, row)
+            sth_changed_loc = analyze_multi_block_in_row(nonogram, row)
             sth_changed = sth_changed or sth_changed_loc
         nonogram.transpose()
 

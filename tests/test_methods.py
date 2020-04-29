@@ -9,7 +9,7 @@ from lib.methods import push_block_origins, push_block_endings,\
     deduce_new_block_origins, deduce_new_block_endings, fill_between_the_blocks,\
     fill_inside_of_the_blocks, fill_cells_to_the_right, fill_cells_to_the_left,\
     fill_row
-from lib.methods import find_min_block_length, analyze_multi_block_relations_in_row,\
+from lib.methods import find_min_block_length, analyze_multi_block_in_row,\
     analyze_multi_block_relations
 
 hints1 = [1, 1, 1]
@@ -164,13 +164,13 @@ def test_fill_cells_to_the_left():
     assert fill_cells_to_the_left(nono_multi_3, 1, 5) == True
     assert nono_multi_3.data.rows[1] == [0, 0, 0, -1, 1, 1, 0, -1, 0, 0, 0, -1]
     
-def test_analyze_multi_block_relations_in_row():
+def test_analyze_multi_block_in_row():
     nono_multi_1.data.row_hints[1]        = [3, 3]
     nono_multi_1.limits.row_block_origins[1] = [0, 4]
     nono_multi_1.limits.row_block_endings[1] = [6, 10]
     nono_multi_1.data.rows[1] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
-    assert analyze_multi_block_relations_in_row(nono_multi_1, 1) == True
+    assert analyze_multi_block_in_row(nono_multi_1, 1) == True
     assert nono_multi_1.data.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
     nono_multi_1.data.row_hints[2]        = [3, 3]
@@ -178,7 +178,7 @@ def test_analyze_multi_block_relations_in_row():
     nono_multi_1.limits.row_block_endings[2] = [6, 10]
     nono_multi_1.data.rows[2] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
-    assert analyze_multi_block_relations_in_row(nono_multi_1, 2) == True
+    assert analyze_multi_block_in_row(nono_multi_1, 2) == True
     assert nono_multi_1.data.rows[2] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
     nono_multi_1.data.row_hints[3]        = [3, 3]
@@ -186,12 +186,12 @@ def test_analyze_multi_block_relations_in_row():
     nono_multi_1.limits.row_block_endings[3] = [6, 10]
     nono_multi_1.data.rows[3] = [0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, -1]
 
-    assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == True
+    assert analyze_multi_block_in_row(nono_multi_1, 3) == True
     assert nono_multi_1.data.rows[1] == [0, 0, 0, -1, 1, 1, 1, -1, 0, 0, 0, -1]
 
     nono_multi_1.data.rows[3] = [1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1]
 
-    assert analyze_multi_block_relations_in_row(nono_multi_1, 3) == False
+    assert analyze_multi_block_in_row(nono_multi_1, 3) == False
 
 def test_analyze_multi_block_relations():
     nono_multi_4.data.row_hints        = [[3, 3]] * 4
