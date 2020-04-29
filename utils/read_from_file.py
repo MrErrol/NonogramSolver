@@ -6,26 +6,32 @@ DEFAULT_MAPPING = {'f':1, 'F':1, 'u':0, 'U':0, 'e':-1, 'E':-1,\
 
 
 def is_beggining_of_row_hints(line):
+    "Checks whether line marks beginning of hints for rows."
     return line[:5] == 'ROWS:'
 
 
 def is_beggining_of_col_hints(line):
+    "Checks whether line marks beginning of hints for columns."
     return line[:8] == 'COLUMNS:'
 
 
 def does_it_contain_only_numbers(text):
+    "Checks whether line contains only numbers separated by whitespaces."
     return all([[letter in digits for letter in word][0] for word in text])
 
 
 def structure_raw_cells(raw_cells):
+    "Adds trailing empty (value=-1) cell at the end of each row."
     return [row + [-1] for row in raw_cells]
 
 
 def strip_trailing_empty_cells(structured_cells):
+    "Removes trailing empty (value=-1) cell at the end of each row."
     return [row[:-1] for row in structured_cells]
 
 
 def transpose_raw_cells(raw_cells):
+    "Makes transposition of matrix of cells WITHOUT trailing empty cells."
     number_of_rows = len(raw_cells)
     number_of_cols = len(raw_cells[0])
     return [[raw_cells[i][j] \
@@ -34,6 +40,7 @@ def transpose_raw_cells(raw_cells):
 
 
 def transpose_rows(rows):
+    "Transposes rows WITH trailing empty cells."
     new_rows = strip_trailing_empty_cells(rows)
     new_rows = transpose_raw_cells(new_rows)
     new_rows = structure_raw_cells(new_rows)
@@ -41,6 +48,7 @@ def transpose_rows(rows):
 
 
 def read_presolved_nonogram_representation(file, mapping=None):
+    "Function used to read datafile containing presolved cells."
     read_list = []
     while True:
         line = file.readline()
