@@ -3,18 +3,21 @@ from matplotlib import pyplot as plt
 
 
 def end_iplot():
+    "Ends interactive plot."
     plt.ioff()
     plt.show()
 
 
-def update_plot(data, fig, im, wait):
-    im.set_data(data)
+def update_plot(data, fig, image, wait):
+    "Updates interactive plot."
+    image.set_data(data)
     fig.canvas.draw()
     fig.canvas.flush_events()
     sleep(wait)
 
 
 def call_imshow(data):
+    "Calls pyplot.imshow with bunch of parameters."
     plt.axis('off')
     return plt.imshow(data,
                       cmap='binary', origin='upper',
@@ -24,13 +27,17 @@ def call_imshow(data):
 
 
 def plot(data, interactive=False):
+    """
+    Initializes plot and plots the data provided.
+    Works both for interactive and static plots.
+    """
     if interactive:
         plt.ion()
         fig = plt.figure()
         fig.canvas.draw()
-        im = call_imshow(data)
+        image = call_imshow(data)
     else:
         fig = plt.figure()
-        im = call_imshow(data)
+        image = call_imshow(data)
         plt.show()
-    return fig, im
+    return fig, image
