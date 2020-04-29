@@ -455,7 +455,7 @@ class ModeData:
 
     def __init__(self, wait=None, verbosity=-1):
         self.fig = None
-        self.im = None
+        self.image = None
         self.wait = wait
         self.verbosity = verbosity
 
@@ -472,7 +472,7 @@ class ModeData:
         """
         Calls plotting function and stores obtained figure and image.
         """
-        self.fig, self.im = plot(data, interactive=interactive)
+        self.fig, self.image = plot(data, interactive=interactive)
 
 
     def update_plot(self, data):
@@ -480,7 +480,7 @@ class ModeData:
         Calls function that updates plot.
         Figure and image are updated by it.
         """
-        update_plot(data, self.fig, self.im, self.wait)
+        update_plot(data, self.fig, self.image, self.wait)
 
 
     def end_iplot(self, data):
