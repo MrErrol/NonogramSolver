@@ -112,20 +112,20 @@ def make_assumption(nonogram, row, col):
         return False
 
     # Loops verifying all modified rows
-    for row in nono.meta_data.progress_tracker.get_rows_changed():
-        if not check_if_line_is_fillable(nono.data.get_row(row),
-                                         nono.data.get_row_hints(row),
-                                         nono.limits.get_row_origins(row),
-                                         nono.limits.get_row_endings(row),
+    for row_iter in nono.meta_data.progress_tracker.get_rows_changed():
+        if not check_if_line_is_fillable(nono.data.get_row(row_iter),
+                                         nono.data.get_row_hints(row_iter),
+                                         nono.limits.get_row_origins(row_iter),
+                                         nono.limits.get_row_endings(row_iter),
                                         ):
             return False
 
     # Loops verifying all modified columns
-    for col in nono.meta_data.progress_tracker.get_cols_changed():
-        if not check_if_line_is_fillable(nono.data.get_col(col),
-                                         nono.data.get_col_hints(col),
-                                         nono.limits.get_col_origins(col),
-                                         nono.limits.get_col_endings(col),
+    for col_iter in nono.meta_data.progress_tracker.get_cols_changed():
+        if not check_if_line_is_fillable(nono.data.get_col(col_iter),
+                                         nono.data.get_col_hints(col_iter),
+                                         nono.limits.get_col_origins(col_iter),
+                                         nono.limits.get_col_endings(col_iter),
                                         ):
             return False
 
