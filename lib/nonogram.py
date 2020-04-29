@@ -10,15 +10,7 @@ from utils.tools import print_complain, show_basic_hint, \
     show_basic_hint_assumption, show_explicit_hint
 from utils.read_from_file import read_datafile, read_presolved_datafile,\
     structure_raw_cells, strip_trailing_empty_cells, transpose_rows
-
-
-class OverwriteException(Exception):
-    """
-    Exception raised, when program tries to overwrite filled/empty cell.
-    If not raised while assumption making it means that nonogram provided
-    is unsolvable.
-    """
-    pass
+from lib.methods_advanced import OverwriteException
 
 
 class Data:

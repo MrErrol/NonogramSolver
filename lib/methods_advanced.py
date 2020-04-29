@@ -3,6 +3,15 @@ from lib.methods import deduce_new_block_origins, deduce_new_block_endings,\
     push_block_origins, push_block_endings, fill_row
 
 
+class OverwriteException(Exception):
+    """
+    Exception raised, when program tries to overwrite filled/empty cell.
+    If not raised while assumption making it means that nonogram provided
+    is unsolvable.
+    """
+    pass
+
+
 def check_if_line_is_fillable(line, hints, block_origins, block_endings):
     """
     Function performs few simple checks if it is possible to fill the line
@@ -40,7 +49,8 @@ def safe_deduce(nono, row):
     Function used while making assumptions to find discrepancy in considered
     nonogram.
     Function being safe means that it will not raise Exception while handling
-    incorrect nonogram.
+    incorrect nonogram. (To speed up solving many tests were omitted thanks to
+    assumption of existence of the solution.)
 
     Returns:
     --------
@@ -57,14 +67,16 @@ def safe_deduce(nono, row):
             nono.data.get_row_hints(row),
             nono.limits.get_row_endings(row),
             )
-    except:
+    # Incorrect nonograms may push limits outside the board
+    except IndexError:
         return True
     if sth_changed1 or sth_changed2:
         nono.limits.set_row_origins(row, block_origins)
         nono.limits.set_row_endings(row, block_endings)
         try:
             fill_row(nono, row)
-        except:
+        # Incorrect nonograms will have unsolvable cells
+        except OverwriteException:
             return True
     return False
 
