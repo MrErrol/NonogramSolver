@@ -5,9 +5,8 @@ sys.path.insert(0, os.path.dirname('__file__'))
 
 from unittest.mock import patch, call
 from utils.read_from_file import read_datafile, read_numeric_lines,\
-    read_presolved_nonogram_representation, is_beggining_of_row_hints,\
-    is_beggining_of_col_hints, \
-    does_it_contain_only_numbers, read_presolved_nonogram_representation
+    read_presolved_nonogram, is_beggining_of_row_hints,\
+    is_beggining_of_col_hints, does_it_contain_only_numbers
 from utils.tools import print_mistakes, compare_values, compare_tables,\
     compare_nonograms, show_basic_hint
 from lib.nonogram import Nonogram
@@ -69,8 +68,8 @@ def test_read_numeric_lines():
     file_small_1.close()
 
 
-def test_read_presolved_nonogram_representation():
-    assert read_presolved_nonogram_representation(file_3_pre) == (
+def test_read_presolved_nonogram():
+    assert read_presolved_nonogram(file_3_pre) == (
         [[1, 1, -1],
         [-1, 1, 0],
         [0, -1, 1]]
@@ -78,10 +77,10 @@ def test_read_presolved_nonogram_representation():
     file_3_pre.close()
 
 
-def test_read_presolved_nonogram_representation_modified_mapping():
+def test_read_presolved_nonogram_modified_mapping():
     rotated_mapping = {'f': 0, 'F': 0, 'u': -1, 'U': -1, 'e': 1, 'E': 1,
      '+': 0, '-': 1, '0': -1, '1': 0, '2': 1}
-    assert read_presolved_nonogram_representation(file_3_pre_a, mapping=rotated_mapping) == (
+    assert read_presolved_nonogram(file_3_pre_a, mapping=rotated_mapping) == (
         [[0, 0, 1],
         [1, 0, -1],
         [-1, 1, 0]]

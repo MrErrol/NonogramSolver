@@ -47,7 +47,7 @@ def transpose_rows(rows):
     return new_rows
 
 
-def read_presolved_nonogram_representation(file, mapping=None):
+def read_presolved_nonogram(file, mapping=None):
     "Function used to read datafile containing presolved cells."
     read_list = []
     while True:
@@ -137,7 +137,7 @@ def read_presolved_datafile(filename):
     Reads datafile that contains presolved cels.
     """
     file = open(filename, 'r')
-    cells = read_presolved_nonogram_representation(file)
+    cells = read_presolved_nonogram(file)
     file.close()
 
     return cells
