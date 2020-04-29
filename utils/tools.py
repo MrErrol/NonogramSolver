@@ -87,10 +87,7 @@ def compare_values(value1, value2):
     if value1 == 0 or value2 == 0:
         return True
 
-    if value1 == value2:
-        return True
-
-    return False
+    return value1 == value2
 
 
 def compare_tables(rows1, rows2):
