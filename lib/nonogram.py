@@ -218,7 +218,6 @@ class Limits:
     def get_row_origins(self, row, block_index=None):
         """
         Returns deduced minimal origins of blocks in rows.
-        get_row_origins() - returns all of them
         get_row_origins(row) - returns origins for a given row
         get_row_origins(row, block_index) - returns origin for a given block
         """
@@ -231,7 +230,6 @@ class Limits:
     def get_row_endings(self, row, block_index=None):
         """
         Returns deduced maximal endings of blocks in rows.
-        get_row_endings() - returns all of them
         get_row_endings(row) - returns endings for a given row
         get_row_endings(row, block_index) - returns ending for a given block
         """
@@ -244,7 +242,6 @@ class Limits:
     def get_col_origins(self, col, block_index=None):
         """
         Returns deduced minimal origins of blocks in columns.
-        get_col_origins() - returns all of them
         get_col_origins(col) - returns origins for a given column
         get_col_origins(col, block_index) - returns origin for a given block
         """
@@ -257,7 +254,6 @@ class Limits:
     def get_col_endings(self, col, block_index=None):
         """
         Returns deduced maximal endings of blocks in columns.
-        get_col_endings() - returns all of them
         get_col_endings(col) - returns endings for a given column
         get_col_endings(col, block_index) - returns ending for a given block
         """
