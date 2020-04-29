@@ -13,10 +13,6 @@ def is_beggining_of_col_hints(line):
     return line[:8] == 'COLUMNS:'
 
 
-def is_beggining_of_cells(line):
-    return line[:6] == 'CELLS:'
-
-
 def does_it_contain_only_numbers(text):
     return all([[letter in digits for letter in word][0] for word in text])
 

@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname('__file__'))
 from unittest.mock import patch, call
 from utils.read_from_file import read_datafile, read_numeric_lines,\
     read_presolved_nonogram_representation, is_beggining_of_row_hints,\
-    is_beggining_of_col_hints, is_beggining_of_cells,\
+    is_beggining_of_col_hints, \
     does_it_contain_only_numbers, read_presolved_nonogram_representation
 from utils.tools import print_mistakes, compare_values, compare_tables,\
     compare_nonograms, show_basic_hint
@@ -54,15 +54,9 @@ def test_is_functions():
     line = file_2.readline()
     assert is_beggining_of_row_hints(line) == True
     assert is_beggining_of_col_hints(line) == False
-    assert is_beggining_of_cells(line) == False
     line = file_2.readline()
     assert is_beggining_of_row_hints(line) == False
     assert is_beggining_of_col_hints(line) == True
-    assert is_beggining_of_cells(line) == False
-    line = file_2.readline()
-    assert is_beggining_of_row_hints(line) == False
-    assert is_beggining_of_col_hints(line) == False
-    assert is_beggining_of_cells(line) == True
     file_2.close()
 
 
