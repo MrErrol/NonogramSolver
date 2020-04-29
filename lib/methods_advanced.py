@@ -205,8 +205,8 @@ def ivestigate_row_with_assumptions(nonogram, row):
     --------
     sth_changed - bool variable informing whether nonogram state has been changed
     """
-    # gives indices of empty cells in the row
     def get_empty_cells(nonogram, row):
+        "Gives indices of empty cells in the row."
         return [index for index, value in enumerate(nonogram.data.get_row(row)) if value == 0]
 
     sth_changed = []
