@@ -51,51 +51,51 @@ def get_options(args):
     return read_options
 
 if __name__ == '__main__':
-    options = get_options(argv[1:])
+    OPTIONS = get_options(argv[1:])
 
 
     # Prevents setting interactive plot for check and hinter modes
-    if options.wait_time > -1e-9 and (options.presolved_datafile or options.verbosity >= 0):
+    if OPTIONS.wait_time > -1e-9 and (OPTIONS.presolved_datafile or OPTIONS.verbosity >= 0):
         print("Can't use live mode with hint mode or check mode.")
         quit()
 
     # Creating empty datafile for special case of hint mode giving just first move
-    if options.verbosity >= 0 and not options.presolved_datafile:
+    if OPTIONS.verbosity >= 0 and not OPTIONS.presolved_datafile:
         print("You haven't provided me any presolved cells!")
         print("Have this for a good start:")
-        find_and_print_hint(options)
+        find_and_print_hint(OPTIONS)
         quit()
 
 
-    nono = Nonogram(options.input, presolved=None, wait=options.wait_time)
+    NONOGRAM = Nonogram(OPTIONS.input, presolved=None, wait=OPTIONS.wait_time)
 
 
-    if options.wait_time > -1e-9:
-        nono.plot(interactive=True)
+    if OPTIONS.wait_time > -1e-9:
+        NONOGRAM.plot(interactive=True)
 
 
-    time_before_solving = time()
+    TIME_BEFORE_SOLVING = time()
 
-    cycle = solver(nono, searching_depth=options.searching_depth)
+    CYCLE = solver(NONOGRAM, searching_depth=OPTIONS.searching_depth)
 
-    time_after_solving = time()
+    TIME_AFTER_SOLVING = time()
 
 
-    if options.presolved_datafile:
-        user_nono = Nonogram(options.input, presolved=options.presolved_datafile)
-        compare_nonograms(nono, user_nono, verbose=options.verbosity)
+    if OPTIONS.presolved_datafile:
+        USER_NONOGRAM = Nonogram(OPTIONS.input, presolved=OPTIONS.presolved_datafile)
+        compare_nonograms(NONOGRAM, USER_NONOGRAM, verbose=OPTIONS.verbosity)
 
-        if options.verbosity >= 0:
-            find_and_print_hint(options)
+        if OPTIONS.verbosity >= 0:
+            find_and_print_hint(OPTIONS)
 
         quit()
 
-    if not nono.meta_data.progress_tracker.get_number_of_undetermind_cells():
-        print("Solved Nonogram in cycle: " + str(cycle) + ".")
+    if not NONOGRAM.meta_data.progress_tracker.get_number_of_undetermind_cells():
+        print("Solved Nonogram in cycle: " + str(CYCLE) + ".")
 
-    print("Solving took : " + str(time_after_solving - time_before_solving) + 's')
+    print("Solving took : " + str(TIME_AFTER_SOLVING - TIME_BEFORE_SOLVING) + 's')
 
-    if options.wait_time > -1e-9:
-        nono.end_iplot()
+    if OPTIONS.wait_time > -1e-9:
+        NONOGRAM.end_iplot()
     else:
-        nono.plot()
+        NONOGRAM.plot()
