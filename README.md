@@ -77,6 +77,6 @@ So far, so good!
 No mistakes found.
 ```
 
-[heart]: https://github.com/MrErrol/NonogramSolver/img/heart.png "Heart nonogram"
+[heart]: https://github.com/MrErrol/NonogramSolver/tree/master/img/heart.png "Heart nonogram"
 [heartgif]: img/heart-paused.gif
 
